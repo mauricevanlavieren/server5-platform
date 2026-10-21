@@ -1,0 +1,24 @@
+[Unit]
+Description=Server5 owner-only read-only MCP adapter
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/mau/server5-commandcenter
+ExecStart=/home/mau/.local/share/server5-commandcenter/mcp-venv/bin/python /home/mau/server5-commandcenter/web/mcp_adapter.py
+Environment=PYTHONDONTWRITEBYTECODE=1
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+RestrictAddressFamilies=AF_INET AF_UNIX
+MemoryMax=256M
+CPUQuota=50%
+TasksMax=32
+TimeoutStopSec=15
+
+[Install]
+WantedBy=default.target

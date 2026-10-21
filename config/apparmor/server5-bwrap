@@ -1,0 +1,88 @@
+# Draft: bounded /usr-only smoke tests, NOT a production Codex profile.
+# Load only after review and explicit approval. No kernel load during compilation.
+abi <abi/4.0>,
+include <tunables/global>
+
+profile server5-bwrap /usr/bin/bwrap flags=(attach_disconnected.path=/att/server5-bwrap/,mediate_deleted) {
+  userns,
+  capability setpcap,
+  capability sys_admin,
+
+  /usr/bin/bwrap mr,
+  /usr/bin/{true,cat,sleep} mr,
+  /etc/ld.so.cache r,
+  /{,usr/}lib{,64}/**.so* mr,
+  /usr/lib/locale/** r,
+
+  / r,
+  /usr/ r,
+  /proc/ r,
+  /tmp/ r,
+  /proc/sys/kernel/{overflowuid,overflowgid,cap_last_cap} r,
+  /proc/sys/user/max_user_namespaces r,
+  owner /proc/{self,@{pid}}/ r,
+  owner /proc/{self,@{pid}}/{mountinfo,status,stat} r,
+  owner /proc/{self,@{pid}}/attr/current r,
+  owner /proc/{self,@{pid}}/ns/{user,mnt,pid,cgroup} r,
+  owner /proc/{self,@{pid}}/{uid_map,gid_map,setgroups} rw,
+  # Explicit isolated prefix for disconnected proc objects; never attach at /.
+  owner /att/server5-bwrap/proc/{self,@{pid}}/ r,
+  owner /att/server5-bwrap/proc/{self,@{pid}}/{uid_map,gid_map,setgroups} rw,
+  owner /att/server5-bwrap/proc/{self,@{pid}}/{mountinfo,status,stat} r,
+  owner /att/server5-bwrap/proc/{self,@{pid}}/attr/current r,
+  owner /att/server5-bwrap/proc/{self,@{pid}}/ns/{user,mnt,pid,cgroup} r,
+
+  # Only fixed root-staging entries; no arbitrary /tmp/** write rule.
+  /tmp/{newroot,oldroot}/ rw,
+  /tmp/newroot/{usr,proc,tmp}/ rw,
+  /tmp/newroot/{bin,lib,lib64} w,
+  /{newroot,oldroot}/ rw,
+  /newroot/{usr,proc,tmp}/ rw,
+  /newroot/{bin,lib,lib64} w,
+  /oldroot/usr/ r,
+
+  # bwrap 0.9.0 setup sequence, restricted by operation/source/destination.
+  mount options=(rw,rslave) -> /,
+  mount fstype=tmpfs options=(rw,nosuid,nodev) tmpfs -> /tmp/,
+  mount options=(rw,rbind) /tmp/newroot/ -> /tmp/newroot/,
+  pivot_root oldroot=/tmp/oldroot/ /tmp/,
+  mount options=(rw,rbind) /oldroot/usr/ -> /newroot/usr/,
+  mount options=(ro,remount,bind,nosuid,nodev,relatime) -> /newroot/usr/,
+  mount fstype=proc options=(rw,nosuid,nodev,noexec) proc -> /newroot/proc/,
+  mount options=(rw,rprivate) -> /oldroot/,
+  umount /oldroot/,
+  pivot_root oldroot=/newroot/ /newroot/,
+  umount /,
+
+  # Receive termination from the invoking shell and signal own helper processes.
+  signal (receive) peer=unconfined,
+  signal (send,receive) peer=server5-bwrap,
+  signal (send,receive) peer=server5-bwrap//&server5-bwrap-child,
+  ptrace (read) peer=server5-bwrap,
+
+  # No inherited-capability fallback and no unconfined transition.
+  /usr/bin/{true,cat,sleep} px -> server5-bwrap//&server5-bwrap-child,
+}
+
+# Stacked with the parent because bwrap sets no_new_privs.
+profile server5-bwrap-child flags=(attach_disconnected.path=/att/server5-bwrap/,mediate_deleted) {
+  /usr/bin/{true,cat,sleep} mr,
+  /etc/ld.so.cache r,
+  /{,usr/}lib{,64}/**.so* mr,
+  /usr/lib/locale/** r,
+  owner /proc/{self,@{pid}}/{status,stat} r,
+  owner /proc/{self,@{pid}}/attr/current r,
+  owner /att/server5-bwrap/proc/{self,@{pid}}/{status,stat} r,
+  owner /att/server5-bwrap/proc/{self,@{pid}}/attr/current r,
+  signal (receive) peer=unconfined,
+  signal (send,receive) peer=server5-bwrap,
+  signal (send,receive) peer=server5-bwrap//&server5-bwrap-child,
+
+  audit deny capability,
+  audit deny userns,
+  audit deny mount,
+  audit deny umount,
+  audit deny pivot_root,
+  audit deny network,
+  audit deny ptrace,
+}

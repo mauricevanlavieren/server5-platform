@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily server5 configuration recovery copy
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Server5 local host health observation
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/mau/server5-commandcenter/scripts/commandcenter.py status
+UMask=0077
+NoNewPrivileges=true
+MemoryMax=96M
+CPUQuota=10%
+TasksMax=16
+TimeoutStartSec=45

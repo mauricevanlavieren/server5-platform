@@ -1,0 +1,10 @@
+[Unit]
+Description=Observe server5 health every five minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+RandomizedDelaySec=15s
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Backup reviewed server5 Git configuration
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/mau/server5-commandcenter/scripts/commandcenter.py backup
+UMask=0077
+NoNewPrivileges=true
+MemoryMax=128M
+CPUQuota=20%
+TasksMax=16
+TimeoutStartSec=90

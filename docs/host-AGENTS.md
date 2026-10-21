@@ -28,3 +28,7 @@ Voorgesteld, nog vast te stellen: Ubuntu als stabiele basis; Tailscale voor besl
 
 ## Beheerstatus
 Zie docs/statusrapport-2026-10-21.md en plans/voorbereiding.md. Dit bestand legt werkafspraken vast, geen reeds uitgerolde doelarchitectuur.
+
+
+## Aanvullende opdracht — 2026-10-21
+De gebruiker heeft fasegewijze inrichting, expliciete Notion-publicatie en updates van de bestaande MindMap AI-kaart geautoriseerd. Publiceer na ieder afgerond faseonderdeel een gedateerde Markdown-snapshot, lees terug, en werk het centrale werklog bij. Deze opdracht staat geen permanente rootverruiming, ongeplande netwerkonderbreking, dataverlies of publieke blootstelling toe. Vraag voor rootauthenticatie een concrete eenmalige handeling in de eigen terminal. De actuele implementatie staat in /home/mau/server5-commandcenter/docs/voortgang.md en plans/implementatie.md. Usermonitoring en lokale configuratiebackups zijn nu actief; Tailscale/containers zijn nog niet geïnstalleerd. Notion/MindMap-connectorrechten zijn sessiegebonden en bewijzen geen permanente ChatGPT-shellintegratie.

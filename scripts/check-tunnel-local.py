@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Local header safety checks only; no OpenAI requests or task submissions."""
 from pathlib import Path
+import argparse
 import stat
 import httpx
 
 
-def main():
+def main(expect_start_task=False):
     path = Path.home() / '.config/server5-commandcenter/mcp-authorization-header'
     assert not path.is_symlink()
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
@@ -16,7 +17,8 @@ def main():
     with httpx.Client(trust_env=False, timeout=5) as client:
         result = client.post(url, headers=headers, json=body)
         assert result.status_code == 200
-        assert {t['name'] for t in result.json()['result']['tools']} == {'task_status', 'task_result'}
+        expected = {'task_status', 'task_result'} | ({'start_task'} if expect_start_task else set())
+        assert {t['name'] for t in result.json()['result']['tools']} == expected
         for name in ['Authorization', 'authorization']:
             overridden = {k: v for k, v in headers.items() if k.lower() != name.lower()}
             overridden[name] = 'Bearer incorrect'
@@ -27,4 +29,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--expect-start-task', action='store_true')
+    main(parser.parse_args().expect_start_task)

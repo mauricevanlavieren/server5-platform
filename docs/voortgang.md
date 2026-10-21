@@ -15,3 +15,6 @@ De MindMap AI-connector kan deze kaart lezen. Schrijftoegang wordt met de geauto
 Validatie: SSH actief; .ssh 700/authorized_keys 600; sshd -t zonder root geweigerd door bestaande bestandsrechten. AppArmor actief; bwrap ontbreekt. Eerdere helpertest faalde op UID-map. sudo -n true vereist wachtwoord. Geen configuratie gewijzigd. Sysstat sar21 bevat CPU-metingen tot 05:30 UTC: historie werkt ondanks ENABLED=false in legacy-config; niet wijzigen.
 Risico: alleen aangeboden pakketinstallatie kan systeemwijziging veroorzaken; script toont simulatie, verbiedt verwijderingen en herstart SSH niet. Rollback: geen huidige runtimewijziging. Bij bwrap-profielproblemen eerst diagnose/specifiek profiel; globale AppArmor-instellingen behouden.
 Gebruikershandeling aangevraagd: bash scripts/prepare-security.sh in eigen terminal. Fase is niet volledig afgerond tot package/sandbox/sshd-rootvalidatie slagen. tldraw blijft ongeautoriseerd.
+
+## Fase 3 — voorbereidingsdeel afgerond; aansluiting wacht
+2026-10-21. Procedure in docs/toegang-en-containers.md. Tailscale ontbreekt; geen installatie of login. Afhankelijk van sudo en door gebruiker gekozen tailnet. Validatie beperkt tot lokale prerequisites, dus veilige VPN-toegang nog niet bewezen. Risico en rollback vooraf beschreven. Volgende actie: lokaal beheer onafhankelijk verder uitvoeren.

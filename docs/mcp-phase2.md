@@ -1,5 +1,11 @@
 # Fase 2 — tunnel-client voorbereid, wacht op eigenaar
 
+Actuele vervolgstatus: de eigenaar heeft de configuratie aangeleverd; runtime,
+polling, authenticatie en reconnect zijn getest en de tunneluserdienst is actief.
+Zie [runtimeacceptatie](mcp-phase2-validation.md) voor bewijs, de doctorbeperking
+en de nog openstaande ChatGPT-/telefoonacceptatie. Onderstaand verslag bewaart
+de oorspronkelijke voorbereidingsstatus.
+
 Datum: 2026-10-21 UTC. Implementatieplan en fase-1-verslag eerst gelezen.
 Status: officiële client geïnstalleerd; GEEN actieve OpenAI-verbinding.
 Het ID van de bestaande tunnel en de restricted runtimekey ontbreken.

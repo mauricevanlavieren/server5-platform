@@ -1,5 +1,8 @@
 # AppArmor-voorstel voor bwrap — 2026-10-21 UTC
 
+## Revisie R2 — runtimeanalyse 06:35:02
+De eerste tijdelijke proef is door de gebruiker uitgevoerd en mislukt; exacte exitcode ontbreekt. Beide profielen zijn volgens de gebruiker daarna verwijderd. Kandidaat hieronder is herzien, NIET opnieuw geladen. Zie docs/apparmor-bwrap-runtime-review.md voor analyse per denial, exacte diff, security-review en de leidende beperkte R2-testprocedure. De nieuwe procedure gaat vóór de oudere algemene proefbeschrijving hieronder; gebruik een nieuwe root-owned R2-kopie en bewaar de vorige kopie. Geen sys_ptrace- of SELinux-proberechten toegevoegd.
+
 ## Besluit en bewijsgrens
 Voorstel: een klein, AFGEBAKEND ENFORCE-TESTPROFIEL voor /usr/bin/bwrap met een gestapeld beperkt kindprofiel. Nog NIET laden of naar /etc installeren. Geen productieklaar Codex-profiel: alleen de hieronder beschreven /usr-only tests met true/cat/sleep zijn beoogd. De oude test met --ro-bind / / en willekeurige Codex/bash/node-programma's is bewust niet vrijgegeven. Statische syntaxcontrole slaagt; werking en security-negativetests na kernelattachment zijn nog NIET bewezen. Geen globaal permissieve/unconfined- of complain-oplossing gebruiken.
 
@@ -35,7 +38,7 @@ De exacte bronkopieën blijven lokaal in genegeerde inventory/; geen brede upstr
 Bron: /home/mau/server5-commandcenter/config/apparmor/server5-bwrap
 Beoogde testkopie na aparte toestemming: /root/server5-apparmor-review/server5-bwrap
 Eventuele latere persistente bestemming, nu NIET gebruiken: /etc/apparmor.d/server5-bwrap
-SHA256 bron: f983a387e60eda7328bf9b0f96ed484e446dedb79c8aca11b3731a15e4e8a93a.
+SHA256 bron: 9e84a1ab68b27c9ab0caefcccb03122819fc05e0edcd3c5f53a22cfb3e9978c2.
 
 ```apparmor
 # Draft: bounded /usr-only smoke tests, NOT a production Codex profile.
@@ -61,6 +64,8 @@ profile server5-bwrap /usr/bin/bwrap flags=(attach_disconnected.path=/att/server
   /proc/sys/kernel/{overflowuid,overflowgid,cap_last_cap} r,
   /proc/sys/user/max_user_namespaces r,
   owner /proc/{self,@{pid}}/ r,
+  # Directory enumeration only, for fdwalk/close_extra_fds; no fd/* access.
+  owner /proc/{self,@{pid}}/fd/ r,
   owner /proc/{self,@{pid}}/{mountinfo,status,stat} r,
   owner /proc/{self,@{pid}}/attr/current r,
   owner /proc/{self,@{pid}}/ns/{user,mnt,pid,cgroup} r,
@@ -82,14 +87,14 @@ profile server5-bwrap /usr/bin/bwrap flags=(attach_disconnected.path=/att/server
   /oldroot/usr/ r,
 
   # bwrap 0.9.0 setup sequence, restricted by operation/source/destination.
-  mount options=(rw,rslave) -> /,
+  mount options=(rw,silent,rslave) -> /,
   mount fstype=tmpfs options=(rw,nosuid,nodev) tmpfs -> /tmp/,
-  mount options=(rw,rbind) /tmp/newroot/ -> /tmp/newroot/,
+  mount options=(rw,silent,rbind) /tmp/newroot/ -> /tmp/newroot/,
   pivot_root oldroot=/tmp/oldroot/ /tmp/,
-  mount options=(rw,rbind) /oldroot/usr/ -> /newroot/usr/,
-  mount options=(ro,remount,bind,nosuid,nodev,relatime) -> /newroot/usr/,
+  mount options=(rw,silent,rbind) /oldroot/usr/ -> /newroot/usr/,
+  mount options=(ro,silent,remount,bind,nosuid,nodev,relatime) -> /newroot/usr/,
   mount fstype=proc options=(rw,nosuid,nodev,noexec) proc -> /newroot/proc/,
-  mount options=(rw,rprivate) -> /oldroot/,
+  mount options=(rw,silent,rprivate) -> /oldroot/,
   umount /oldroot/,
   pivot_root oldroot=/newroot/ /newroot/,
   umount /,
@@ -185,7 +190,7 @@ Gebruik bewust een lege root met alleen read-only /usr; niet --ro-bind / /. Geen
   /usr/bin/true
 ```
 
-Verwacht: exit 0, geen nieuwe relevante DENIED. De kandidaat is niet runtimebewezen: eerste onverwachte denial betekent STOP, audit lezen en rollback; niet overschakelen naar complain/algemene allow. Exacte cgroup/mount-/disconnectedpadregels zijn te toetsen, niet verondersteld bewezen.
+Verwacht: exit 0. Bekende niet-fatale SELinux-/namespaceprobedenials kunnen bewust blijven bestaan; beoordeel noodzakelijke stappen en FD-sanitatie apart volgens de R2-review, niet op auditstilte alleen. De kandidaat is niet runtimebewezen: eerste onverwachte denial betekent STOP, audit lezen en rollback; niet overschakelen naar complain/algemene allow. Exacte cgroup/mount-/disconnectedpadregels zijn te toetsen, niet verondersteld bewezen.
 
 Herhaal dezelfde bwrap-prefix en vervang alleen het eindprogramma door elk van:
 

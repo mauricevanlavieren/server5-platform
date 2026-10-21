@@ -21,6 +21,8 @@ profile server5-bwrap /usr/bin/bwrap flags=(attach_disconnected.path=/att/server
   /proc/sys/kernel/{overflowuid,overflowgid,cap_last_cap} r,
   /proc/sys/user/max_user_namespaces r,
   owner /proc/{self,@{pid}}/ r,
+  # Directory enumeration only, for fdwalk/close_extra_fds; no fd/* access.
+  owner /proc/{self,@{pid}}/fd/ r,
   owner /proc/{self,@{pid}}/{mountinfo,status,stat} r,
   owner /proc/{self,@{pid}}/attr/current r,
   owner /proc/{self,@{pid}}/ns/{user,mnt,pid,cgroup} r,
@@ -42,14 +44,14 @@ profile server5-bwrap /usr/bin/bwrap flags=(attach_disconnected.path=/att/server
   /oldroot/usr/ r,
 
   # bwrap 0.9.0 setup sequence, restricted by operation/source/destination.
-  mount options=(rw,rslave) -> /,
+  mount options=(rw,silent,rslave) -> /,
   mount fstype=tmpfs options=(rw,nosuid,nodev) tmpfs -> /tmp/,
-  mount options=(rw,rbind) /tmp/newroot/ -> /tmp/newroot/,
+  mount options=(rw,silent,rbind) /tmp/newroot/ -> /tmp/newroot/,
   pivot_root oldroot=/tmp/oldroot/ /tmp/,
-  mount options=(rw,rbind) /oldroot/usr/ -> /newroot/usr/,
-  mount options=(ro,remount,bind,nosuid,nodev,relatime) -> /newroot/usr/,
+  mount options=(rw,silent,rbind) /oldroot/usr/ -> /newroot/usr/,
+  mount options=(ro,silent,remount,bind,nosuid,nodev,relatime) -> /newroot/usr/,
   mount fstype=proc options=(rw,nosuid,nodev,noexec) proc -> /newroot/proc/,
-  mount options=(rw,rprivate) -> /oldroot/,
+  mount options=(rw,silent,rprivate) -> /oldroot/,
   umount /oldroot/,
   pivot_root oldroot=/newroot/ /newroot/,
   umount /,

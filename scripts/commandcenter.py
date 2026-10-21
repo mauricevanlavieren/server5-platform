@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local host checks and committed-configuration recovery; never runs remote tasks."""
+"""Local host checks and private application recovery; never runs remote tasks."""
 import argparse
 import datetime as dt
 import hashlib
@@ -89,30 +89,21 @@ def status():
 
 
 def backup():
-    if run('git', '-C', str(ROOT), 'status', '--porcelain').stdout.strip():
-        raise ValueError('Commit reviewed changes first; backup only includes clean Git HEAD')
-    commit = git('rev-parse', 'HEAD').decode().strip()
-    BACKUPS.mkdir(mode=0o700, parents=True, exist_ok=True)
-    archive = git('archive', '--format=tar.gz', 'HEAD')
-    with tarfile.open(fileobj=io.BytesIO(archive), mode='r:gz') as tf:
-        checked_members(tf)
-    path = BACKUPS / (commit + '.tar.gz')
-    digest = hashlib.sha256(archive).hexdigest()
-    if path.exists():
-        if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
-            raise ValueError('Existing backup differs; preserve for diagnosis')
-    else:
-        if sum(p.stat().st_size for p in BACKUPS.iterdir() if p.is_file()) + len(archive) > 256 * 1024**2:
-            raise ValueError('Backup budget reached; no files deleted')
-        atomic(path, archive)
-    atomic(path.with_suffix('.sha256'), (digest + '\n').encode())
-    print(json.dumps({'archive': str(path), 'commit': commit, 'sha256': digest,
-                      'scope': 'committed configuration only; no OS, credentials or workload data'}))
-    return False
+    from recovery import backup as bundle_backup
+    try:
+        print(json.dumps(bundle_backup()))
+        return False
+    except Exception:
+        print('{"error":"Recoverybackup mislukt; beoordeel lokaal zonder secrets te delen"}')
+        return True
 
 
 def restore_test(path):
     path = Path(path).resolve()
+    if path.name.startswith('recovery-'):
+        from recovery import restore_test as bundle_restore_test
+        print(json.dumps(bundle_restore_test(path)))
+        return False
     expected = path.with_suffix('.sha256').read_text().strip()
     if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
         raise ValueError('Checksum mismatch')

@@ -44,48 +44,10 @@ def checked_members(archive):
 
 
 def status():
-    mem = {}
-    for line in Path('/proc/meminfo').read_text().splitlines():
-        name, value = line.split(':', 1)
-        mem[name] = int(value.split()[0]) * 1024
-    disk = shutil.disk_usage('/')
-    failed = run('systemctl', '--failed', '--no-legend', '--plain', '--no-pager')
-    ssh = run('systemctl', 'is-active', 'ssh')
-    ntp = run('timedatectl', 'show', '-p', 'NTPSynchronized', '--value')
-    alerts = []
-    if mem['MemAvailable'] < 2 * 1024**3:
-        alerts.append('available_memory_below_2GiB')
-    if disk.free < 15 * 1024**3:
-        alerts.append('root_free_below_15GiB')
-    if failed.returncode or failed.stdout.strip():
-        alerts.append('system_units_failed_or_unknown')
-    if ssh.stdout.strip() != 'active':
-        alerts.append('ssh_not_active')
-    if ntp.stdout.strip() != 'yes':
-        alerts.append('ntp_not_synchronized_or_unknown')
-    result = {
-        'utc': dt.datetime.now(dt.timezone.utc).isoformat(),
-        'hostname': socket.gethostname(), 'load': os.getloadavg(),
-        'memory_available_bytes': mem['MemAvailable'], 'root_free_bytes': disk.free,
-        'ssh_active': ssh.stdout.strip(), 'ntp_synchronized': ntp.stdout.strip(),
-        'failed_units': failed.stdout.splitlines(),
-        'reboot_required': Path('/var/run/reboot-required').exists(),
-        'tools_present': {x: bool(shutil.which(x)) for x in ['bwrap', 'tailscale', 'docker']},
-        'alerts': alerts,
-    }
-    payload = (json.dumps(result, sort_keys=True) + '\n').encode()
-    atomic(STATE / 'latest.json', payload)
-    history = STATE / ('health-' + dt.date.today().isoformat() + '.jsonl')
-    total = sum(p.stat().st_size for p in STATE.glob('health-*.jsonl'))
-    if total + len(payload) <= 128 * 1024**2 and (not history.exists() or history.stat().st_size + len(payload) <= 1024**2):
-        with history.open('ab') as f:
-            f.write(payload)
-        history.chmod(0o600)
-    else:
-        result['alerts'].append('history_budget_reached')
-        atomic(STATE / 'latest.json', (json.dumps(result) + '\n').encode())
-    print(json.dumps(result))
-    return bool(result['alerts'])
+    from health import observe, record
+    result = record(observe(), STATE, atomic)
+    print(json.dumps(result, sort_keys=True))
+    return result['exit_code']
 
 
 def backup():

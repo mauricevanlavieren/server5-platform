@@ -18,3 +18,6 @@ Gebruikershandeling aangevraagd: bash scripts/prepare-security.sh in eigen termi
 
 ## Fase 3 — voorbereidingsdeel afgerond; aansluiting wacht
 2026-10-21. Procedure in docs/toegang-en-containers.md. Tailscale ontbreekt; geen installatie of login. Afhankelijk van sudo en door gebruiker gekozen tailnet. Validatie beperkt tot lokale prerequisites, dus veilige VPN-toegang nog niet bewezen. Risico en rollback vooraf beschreven. Volgende actie: lokaal beheer onafhankelijk verder uitvoeren.
+
+## Fase 4 — ontwerp afgerond; runtime nog niet geïnstalleerd
+2026-10-21. Rootless Docker als voorkeur; geen rootful Docker, Kubernetes of onnodige workload gestart. Subuid/subgid-range aanwezig, uidmap-tools ontbreken; usernamespace-/AppArmorcontrole en sudo vormen afhankelijkheden. Resource-/persistentie-/rollbackcriteria in docs/toegang-en-containers.md. Validatie runtime uitgesteld, geen succesvolle containertest geclaimd. Volgende actie: fase 5 monitoring en lokale configuratiebackups zonder root inrichten.

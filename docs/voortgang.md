@@ -21,3 +21,9 @@ Gebruikershandeling aangevraagd: bash scripts/prepare-security.sh in eigen termi
 
 ## Fase 4 — ontwerp afgerond; runtime nog niet geïnstalleerd
 2026-10-21. Rootless Docker als voorkeur; geen rootful Docker, Kubernetes of onnodige workload gestart. Subuid/subgid-range aanwezig, uidmap-tools ontbreken; usernamespace-/AppArmorcontrole en sudo vormen afhankelijkheden. Resource-/persistentie-/rollbackcriteria in docs/toegang-en-containers.md. Validatie runtime uitgesteld, geen succesvolle containertest geclaimd. Volgende actie: fase 5 monitoring en lokale configuratiebackups zonder root inrichten.
+
+## Fase 5 — lokale beheerbasis actief; externe backup open
+2026-10-21. Wijziging: Python-hostmeting, begrensde historie, dagelijkse configuratiebackup, usertimers en credential-commitguard geïmplementeerd. Host-AGENTS gekopieerd naar Git voor herstel. Reden: lichte controleerbare automatisering zonder poorten of rootverruiming.
+Validatie: vier herstelveiligheidstests geslaagd (traversal, links/devices, reguliere bestanden, corrupte checksum); systemd-unitcontrole geslaagd; beide handmatig gestarte units Result=success/ExecMainStatus=0; timers enabled en gepland. Werkelijk archief van commit 86ef6be hersteld in tijdelijke map: 19 bestanden byte- en executable-bitgelijk, geen productiegegevens geraakt. Gegenereerde pyc-bestanden zijn uit Git-index gehaald en genegeerd, lokale bestanden behouden.
+Risico: alleen usertaken, begrensd CPU/RAM/diskgebruik; secretsguard is heuristiek. Backups beschermen alleen gecommitte configuratie op dezelfde SSD. Linger=no beperkt automatisering na boot. Geen remote, externe backup of externe alerts ingericht.
+Rollback: timers disable --now; meet-/backupbestanden bewaren; gerichte Git-revert. Zie docs/beheer-en-herstel.md. Volgende actie: samenwerkingsworkflow met expliciete overdrachten en bewezen connectoren vastleggen.

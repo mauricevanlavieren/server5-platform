@@ -1,0 +1,8 @@
+inventory/
+.env
+.env.*
+!.env.example
+secrets/
+*.key
+*.pem
+*.sqlite*

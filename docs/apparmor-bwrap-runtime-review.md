@@ -64,7 +64,7 @@ index 1ab21b3..e4880e4 100644
    owner /proc/{self,@{pid}}/ns/{user,mnt,pid,cgroup} r,
 @@ -42,14 +44,14 @@ profile server5-bwrap /usr/bin/bwrap flags=(attach_disconnected.path=/att/server
    /oldroot/usr/ r,
- 
+
    # bwrap 0.9.0 setup sequence, restricted by operation/source/destination.
 -  mount options=(rw,rslave) -> /,
 +  mount options=(rw,silent,rslave) -> /,

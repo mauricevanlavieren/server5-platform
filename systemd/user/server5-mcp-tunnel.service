@@ -1,0 +1,28 @@
+[Unit]
+Description=Server5 read-only MCP outbound OpenAI Secure MCP Tunnel
+After=network-online.target server5-mcp.service
+ConditionPathExists=/home/mau/.config/server5-commandcenter/tunnel.yaml
+ConditionPathExists=/home/mau/.config/server5-commandcenter/tunnel-runtime-key
+ConditionPathExists=/home/mau/.config/server5-commandcenter/mcp-authorization-header
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=/home/mau/server5-commandcenter
+ExecStart=/usr/bin/env -i HOME=/home/mau PATH=/usr/bin:/bin /home/mau/.local/bin/tunnel-client run --profile-file /home/mau/.config/server5-commandcenter/tunnel.yaml --log.http-raw-unsafe=false --health.listen-addr=127.0.0.1:8797
+Restart=on-failure
+RestartSec=10
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryMax=256M
+CPUQuota=50%
+TasksMax=32
+TimeoutStopSec=20
+
+[Install]
+WantedBy=default.target

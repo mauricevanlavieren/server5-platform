@@ -1,0 +1,21 @@
+config_version: 1
+control_plane:
+  base_url: https://api.openai.com
+  tunnel_id: OWNER_EXISTING_TUNNEL_ID
+  api_key: file:/home/mau/.config/server5-commandcenter/tunnel-runtime-key
+health:
+  listen_addr: 127.0.0.1:8797
+admin_ui:
+  open_browser: false
+log:
+  level: warn
+  format: json
+  http_raw_unsafe: false
+mcp:
+  server_urls:
+    - channel: main
+      url: http://127.0.0.1:8796/mcp
+  extra_headers:
+    Authorization: file:/home/mau/.config/server5-commandcenter/mcp-authorization-header
+  discovery_extra_headers:
+    Authorization: file:/home/mau/.config/server5-commandcenter/mcp-authorization-header

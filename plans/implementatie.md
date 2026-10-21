@@ -1,5 +1,10 @@
 # Implementatieplan — 2026-10-21
 
+## Hoofddoel — toegevoegd 2026-10-21
+**Server 5 moet uiteindelijk volledig vanaf mijn telefoon bediend kunnen worden via een eenvoudige, beveiligde AI-chatinterface.** Laptopbediening blijft beschikbaar. 'Volledig' omvat regulier beheer, plannen, taakgoedkeuring, starten/stoppen, voortgang, logs, documentatie en herstelbediening binnen geautoriseerde grenzen; het betekent geen onbeperkte rootrechten of garantie op toegang bij defecte hardware/netwerk. Behoud LAN-SSH/console als noodherstelpad.
+
+De doelarchitectuur en mijlpalen M0–M8 staan in plans/mobiele-commandcenter-architectuur.md. De bestaande fasen hieronder blijven de basis. Fase 2 is een harde blokkade vóór netwerkactivatie of publicatie van een webinterface. De opdracht van vandaag autoriseert uitsluitend planning en documentatie, ook niet alvast lokaal een webserver of Codex-worker starten. prepare-security.sh blijft ongewijzigd en niet uitgevoerd; de review ervan moet vóór latere uitvoering worden verwerkt en gecontroleerd.
+
 ## Besluit en prioriteiten
 Server5 (OptiPlex 5070, Ubuntu 24.04.5, i7-8700, 7.5 GiB RAM) wordt eerst een kleine beheerhost. Git is bron, Notion een gecontroleerde momentopname, MindMap AI de architectuurweergave. Geen zware AI-modelserver, databasecluster, Kubernetes of publieke dienst in deze tranche. Bestaande LAN-SSH blijft het herstelpad.
 

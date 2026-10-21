@@ -16,3 +16,6 @@ Lokale hostchecks en backups zijn automatisch. Externe publicatie en uitvoerings
 
 ## Wijziging en validatie
 2026-10-21: workflow, overdrachtsjabloon en exportscript toegevoegd voor reproduceerbare publicatie. Notion/MindMap writes bewezen door teruggegeven resultaten en Notion-readback. Lokale export wordt op schone Git HEAD uitgevoerd en op aantal bestanden/bronhash gecontroleerd. Risico beperkt tot nieuwe lokale bestanden en expliciet geautoriseerde publicaties. Rollback: export/overdrachtsbestanden via Git-revert; geen actieve shellbrug of netwerkservice te stoppen. Bestaande snapshots blijven als auditspoor behouden.
+
+## Mobiele doelarchitectuur — planning 2026-10-21
+Hoofddoel is volledige reguliere telefoonbediening via besloten HTTPS-chat. Zie plans/mobiele-commandcenter-architectuur.md voor de geplande Tailscale/auth/backend/queue/Codex-stdio/publicatieketen en M0–M8. Dit vervangt de huidige expliciete sessieoverdracht nog niet: eigen mobiele chat, service-auth en achtergrondpublisher moeten gebouwd en bewezen worden. ChatGPT-app-integratie blijft apart onderzoek. Nu uitsluitend planning; beveiligingsstap en latere uitvoeringsvrijgave zijn voorwaarden voor netwerk/publicatie.

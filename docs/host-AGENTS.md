@@ -1,34 +1,20 @@
-# Server 5 — Platform Engineer
+# Server5 — experimenteel mobiel AI-commandocentrum
 
-## Rol en scope
-Server5 is het centrale AI-commandocentrum van het homelab. Werk uitsluitend op de lokale host server5. Controleer hostname voor wijzigingen. De geobserveerde host is Dell OptiPlex 5070, Ubuntu 24.04.5 LTS; de oorspronkelijke beschrijving noemde 5050/24.04.4. Wijzig de identiteit niet om die beschrijving te laten kloppen.
+## Actuele opdracht en voorrang — 2026-10-21
+Server5 is expliciet een experimentele speeltuin. Bouw een werkende mobiele MVP: telefoon/laptop → private Tailscale/HTTPS-toegang → mobiele webchat → lokale taakbroker → Codex-worker. ChatGPT is aanspreekpunt voor planning/review; Codex voert uit. De gebruiker autoriseert lokale omkeerbare uitvoering en sudo/root waar nodig. Dit vervangt eerdere planning-only-, M0- en sandboxvoorwaarden. Bubblewrap/AppArmor is GEEN voortgangsvoorwaarde; onderzoek of wijzig die niet verder tenzij opnieuw gevraagd. Bestaande conceptprofielen blijven als historisch onderzoek, niet actief laden.
 
-## Architectuur
-Huidig: Ubuntu-host met OpenSSH, Codex CLI/app-server en lokale beheerbestanden in /home/mau/server5-commandcenter. Geen aangetroffen Docker-, Tailscale- of Kubernetes-installatie.
-Voorgesteld, nog vast te stellen: Ubuntu als stabiele basis; Tailscale voor besloten beheer; Docker Compose voor beperkte lokale diensten; lichte hostmonitoring; Git als bron voor configuratie. Geen Kubernetes voor een expliciet architectuurbesluit. Met circa 8 GB RAM capaciteit begroten voordat AI-modellen of monitoringstacks worden gestart. Andere homelabservers vallen buiten deze opdracht.
+## Host en beheerbron
+Werk uitsluitend op server5 (Dell OptiPlex 5070, Ubuntu 24.04.5, i7-8700, circa 8 GB RAM). Bron: /home/mau/server5-commandcenter. Controleer hostname en Git-status vóór wijzigingen. Hergebruik Node/Python/Codex, hostmonitoring en backups; geen onnodige herinstallatie, containerstack of Kubernetes nodig voor deze MVP.
 
-## Werkwijze
-1. Inventariseer en controleer bestaande bestanden voordat je schrijft; behoud bestaande gegevens.
-2. Voer veilige, omkeerbare lokale voorbereidingen zelfstandig uit binnen de bestaande opdracht.
-3. Leg aanleiding, gewijzigde paden, validatie, beperkingen en herstelwijze vast in docs/. Bewaar ruwe inventaris lokaal in inventory/.
-4. Meld risicovolle wijzigingen vooraf. Plan beschikbaarheidsimpact en herstel voordat je uitvoert. Vraag alleen aanvullende toestemming wanneer de bestaande opdracht de handeling niet dekt of een expliciete grens dat vereist.
-5. Test gericht; rapporteer een mislukte of niet uitvoerbare controle eerlijk. Full Access is geen Linux-rootrecht.
-6. Gebruik Git voor beoordeelbare configuratie; geen remote push, externe berichten of automatische deployments zonder opdracht.
+## Autonomie en grenzen
+- Lokale uitvoeringsvrijheid geldt uitsluitend voor server5. Router, switch, servers1–4 en overige externe systemen niet wijzigen zonder afzonderlijke toestemming. Documentatie in het benoemde Notion-werklog en de bestaande server5-mindmap is expliciet geautoriseerd.
+- Gebruik bestaande sudo-rechten. Als interactieve authenticatie ontbreekt, laat gebruiker alleen de concrete benodigde handeling in eigen terminal uitvoeren. Geen wachtwoorden vragen/opslaan of authenticatie omzeilen; geen automatische nieuwe sudoers/NOPASSWD-regels.
+- Vermijd publieke internetblootstelling. Geen Funnel, publieke poortforward of ongevraagde externe infrastructuur. Tailscale-login vereist identiteit van gebruiker; geen onbekend account aannemen.
+- Voorkom verlies van LAN-SSH. Voor ingrijpende netwerk-, firewall- of SSH-wijzigingen eerst herstelpad vastleggen; bestaande verbinding behouden. Geen ongeplande reboot.
+- Vraag vooraf toestemming bij onomkeerbare gegevensvernietiging. Bewaar bestaande gegevens en histories; opruimen van eigen tijdelijke testartefacten mag binnen de testscope.
+- Laat bestaande beveiligingsinstellingen intact waar ze niet hinderen. De MVP-worker mag volgens deze opdracht zonder Bubblewrap draaien met expliciet danger-full-access; dat biedt GEEN technische host-/filesystemisolatie. Draai webservice niet standaard als root en vergroot rootrechten niet permanent.
+- Geen secrets/tokens/private sleutels/authbestanden in Git of Notion. Worker gebruikt bestaande lokale Codex-login zonder authbestand te kopiëren. Schakel externe apps/MCP in de MVP-worker uit waar ondersteund; externe veranderingen blijven apart geautoriseerd.
 
-## Veiligheidsgrenzen
-- Geen wijzigingen op routers, switches of andere servers; geen netwerkscans buiten deze host.
-- Geen SSH-, firewall-, DNS-, route- of netwerkconfiguratiewijzigingen die de verbinding kunnen verbreken. Geen ongeplande herstart of netwerk/serviceherstart.
-- Geen bestaande gegevens verwijderen, schijven formatteren, LVM vergroten/verkleinen of pakketten opruimen zonder afzonderlijke opdracht.
-- Sudo-configuratie alleen controleren; niet aanpassen. Geen wachtwoorden vragen of opslaan en geen privilegebeperkingen omzeilen.
-- De tldraw MCP-server uitsluitend identificeren; niet aanmelden, autoriseren of OAuth starten zonder nieuwe opdracht.
-- Geen globale uitschakeling van AppArmor of user-namespacebeveiliging. Bubblewrap via distributiepakket en zo nodig een specifiek beoordeeld AppArmor-profiel herstellen.
-- Geen Kubernetes installeren voordat de architectuur is vastgesteld.
-- Docker-installatie, poortpublicatie en Tailscale-activatie vooraf op netwerkimpact beoordelen en melden; geen subnetroutes, exit-node, Tailscale SSH of Funnel activeren zonder expliciete opdracht.
-- Geen tokens, private sleutels, authenticatiebestanden of volledige omgevingsvariabelen in logs of Git. Inventaris kan interne netwerkgegevens bevatten en blijft lokaal.
-
-## Beheerstatus
-Zie docs/statusrapport-2026-10-21.md en plans/voorbereiding.md. Dit bestand legt werkafspraken vast, geen reeds uitgerolde doelarchitectuur.
-
-
-## Aanvullende opdracht — 2026-10-21
-De gebruiker heeft fasegewijze inrichting, expliciete Notion-publicatie en updates van de bestaande MindMap AI-kaart geautoriseerd. Publiceer na ieder afgerond faseonderdeel een gedateerde Markdown-snapshot, lees terug, en werk het centrale werklog bij. Deze opdracht staat geen permanente rootverruiming, ongeplande netwerkonderbreking, dataverlies of publieke blootstelling toe. Vraag voor rootauthenticatie een concrete eenmalige handeling in de eigen terminal. De actuele implementatie staat in /home/mau/server5-commandcenter/docs/voortgang.md en plans/implementatie.md. Usermonitoring en lokale configuratiebackups zijn nu actief; Tailscale/containers zijn nog niet geïnstalleerd. Notion/MindMap-connectorrechten zijn sessiegebonden en bewijzen geen permanente ChatGPT-shellintegratie.
+## Werkwijze en bewijs
+Test de hele keten lokaal vóór private mobiele toegang. Onderscheid echte Codex-proeven van mocktests, lokale HTTP van werkende private HTTPS en geplande functies van implementatie. Eén uitvoerende taak tegelijk, meerdere taken persistent bewaren, cancellation en onbekende status na crash afhandelen zonder muterende taken automatisch te herhalen.
+Leg wijzigingen, reden, tests, risico, rollback en resterende gebruikershandelingen vast in lokale Markdown/Git. Publiceer geactualiseerde documentatie als gedateerde Notion-snapshot en lees terug; werk centraal werklog en relevante MindMap-nodes bij. Geen claim van onbeheerde Notion-publicatie of directe officiële ChatGPT-app-shelltoegang zonder bewezen integratie. Monitoring/backups blijven behouden; breid herstel uit naar nieuwe taakdata.

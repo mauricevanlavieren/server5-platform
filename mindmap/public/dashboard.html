@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Server5 Commandcenter 2.0</title>
+<style>
+:root{color-scheme:dark;font:16px system-ui;background:#0b111c;color:#e8eef7}*{box-sizing:border-box}body{margin:0}main{max-width:1200px;margin:auto;padding:clamp(16px,4vw,48px)}header{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}h1{font-size:clamp(26px,4vw,40px);margin:6px 0}h2{font-size:17px;margin:0 0 16px}p{line-height:1.6}small,.muted{color:#a8b8ce}.eyebrow{letter-spacing:.12em;color:#89bbff;font-size:12px}nav{display:flex;gap:14px;flex-wrap:wrap}a{color:#9bc7ff}#notice{padding:12px 16px;background:#17263b;border-radius:10px;border:1px solid #294363}section{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,235px),1fr));gap:16px;margin-top:20px}article{min-width:0;background:#141f30;border:1px solid #26364d;border-radius:16px;padding:22px}.value{font-size:clamp(23px,3vw,32px);font-variant-numeric:tabular-nums;margin:10px 0}.wide{grid-column:1/-1}progress{width:100%;accent-color:#76aaff;height:8px}.row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid #26364d;overflow-wrap:anywhere}.row span:first-child{min-width:0}.badge{color:#b6d6ff;white-space:nowrap}.bad{color:#ffb4a8}footer{margin-top:24px;font-size:13px;line-height:1.7}#time{overflow-wrap:anywhere}
+#network .row{flex-wrap:wrap}#network .badge{white-space:normal;flex:1 1 280px}#network .row>span:first-child{flex:0 1 220px}
+.clock-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#c62828;margin-right:8px}.clock-dot.available{background:#16803c}#server-clock{font-size:20px}
+</style>
+<main><header><div><span class="eyebrow">SERVER5 · PRIVATE COMMANDCENTER</span><h1>Commandcenter 2.0</h1><span class="muted">Host, diensten en uitvoering in één overzicht</span></div><nav aria-label="Navigatie"><a href="test-projects.html">Test Projects</a><a href="index.html">Current Projects</a></nav></header>
+<p id="notice" role="status" aria-live="polite">Lokale gegevens laden…</p>
+<section aria-label="Hoststatus">
+<article><h2>Serverklok</h2><p id="server-clock" class="value">—</p><small><span id="clock-dot" class="clock-dot" role="img" aria-label="Klokgegevens niet bereikbaar"></span><span id="clock-status">Klokgegevens niet bereikbaar</span></small></article>
+<article><h2>CPU / load</h2><p id="load" class="value">—</p><small id="cpu">Load 1 / 5 / 15 minuten</small></article>
+<article><h2>RAM</h2><p id="ram" class="value">—</p><progress id="ram-bar" max="100" value="0" aria-label="RAM gebruikt"></progress><small id="ram-detail">—</small></article>
+<article><h2>Disk /</h2><p id="disk" class="value">—</p><progress id="disk-bar" max="100" value="0" aria-label="Disk gebruikt"></progress><small id="disk-detail">—</small></article>
+<article><h2>Uptime</h2><p id="uptime" class="value">—</p><small>Tijd sinds laatste hoststart</small></article>
+<article class="wide" id="network-panel"><h2>Netwerkcentrum</h2><div id="network">Gegevens laden…</div><small>Bestaande lokale bronnen · geen scans · historische waarnemingen zijn geen actuele metingen.</small></article>
+<article class="wide"><h2>Bestaande diensten</h2><div id="services">—</div></article>
+<article class="wide"><h2>Codex queue & taken</h2><p id="counts">—</p><div id="tasks">—</div><small>Maximaal 8 recente/actieve taken · uitsluitend ID en status</small></article>
+<article class="wide"><h2>Projectstatus</h2><div id="projects">—</div><small>Bestaande brokerprojecten; Test Projects heeft een afzonderlijke mindmap.</small></article>
+</section><footer><div id="time">—</div>Live lokale hostgegevens en alleen-lezen brokerstatus · iedere 10 seconden vernieuwd · CPU-load is geen CPU-percentage.</footer></main>
+<script src="dashboard.js"></script></html>

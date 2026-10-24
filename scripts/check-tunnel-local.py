@@ -6,7 +6,7 @@ import stat
 import httpx
 
 
-def main(expect_start_task=False):
+def main(expect_start_task=False, expect_read_tools=False, expect_extended_tools=False):
     path = Path.home() / '.config/server5-commandcenter/mcp-authorization-header'
     assert not path.is_symlink()
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
@@ -18,6 +18,8 @@ def main(expect_start_task=False):
         result = client.post(url, headers=headers, json=body)
         assert result.status_code == 200
         expected = {'task_status', 'task_result'} | ({'start_task'} if expect_start_task else set())
+        expected |= {'list_tasks', 'task_logs', 'server_health'} if expect_read_tools or expect_extended_tools else set()
+        expected |= {'read_file','task_progress','git_status','test_status','backup_status','mindmap_snapshot'} if expect_extended_tools else set()
         assert {t['name'] for t in result.json()['result']['tools']} == expected
         for name in ['Authorization', 'authorization']:
             overridden = {k: v for k, v in headers.items() if k.lower() != name.lower()}
@@ -31,4 +33,7 @@ def main(expect_start_task=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--expect-start-task', action='store_true')
-    main(parser.parse_args().expect_start_task)
+    parser.add_argument('--expect-read-tools', action='store_true')
+    parser.add_argument('--expect-extended-tools', action='store_true')
+    args = parser.parse_args()
+    main(args.expect_start_task, args.expect_read_tools, args.expect_extended_tools)

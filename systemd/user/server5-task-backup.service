@@ -1,0 +1,11 @@
+[Unit]
+Description=Consistent server5 task database backup without login sessions
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/mau/server5-commandcenter/web/commandcenter.py backup
+UMask=0077
+NoNewPrivileges=true
+MemoryMax=128M
+CPUQuota=20%
+TimeoutStartSec=90

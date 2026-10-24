@@ -97,6 +97,10 @@ def db_summary(db):
         out[table] = {'count': len(rows), 'sha256': digest(json.dumps(rows, ensure_ascii=True, separators=(',', ':')).encode())}
     out['statuses'] = dict(db.execute('SELECT status,count(*) FROM tasks GROUP BY status').fetchall())
     out['sessions'] = db.execute('SELECT count(*) FROM sessions').fetchone()[0]
+    for table in ('cancel_confirmations','cancel_receipts','cancel_audit'):
+        if db.execute("SELECT 1 FROM sqlite_master WHERE name=? AND type='table'", (table,)).fetchone():
+            rows = db.execute(f'SELECT * FROM {table} ORDER BY 1').fetchall()
+            out[table] = {'count':len(rows),'sha256':digest(json.dumps(rows,ensure_ascii=True,separators=(',',':')).encode())}
     return out
 
 
@@ -112,6 +116,8 @@ def snapshot_database(source, target):
             src.backup(dest, pages=64, progress=progress, sleep=.01)
             dest.execute('PRAGMA secure_delete=ON')
             dest.execute('DELETE FROM sessions')
+            if dest.execute("SELECT 1 FROM sqlite_master WHERE name='cancel_confirmations'").fetchone():
+                dest.execute('DELETE FROM cancel_confirmations')
             dest.commit()
             # Self-contained file: no dependency on copied WAL/SHM.
             dest.execute('PRAGMA journal_mode=DELETE')
@@ -137,6 +143,36 @@ def runtime_manifest(home):
             'codex': run([str(Path(shutil.which('codex'))), '--version']).decode().strip(),
             'packages': packages, 'binaries': binaries,
             'note': 'Binaries/venv/OS not archived; reuse verified host runtime or reprovision pinned dependencies. Never copy account login files.'}
+
+
+def read_audit_snapshot(state):
+    """Optional read audit, descriptor traversal + shared nonblocking lock."""
+    fd = os.open('/', os.O_PATH | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+    try:
+        for component in Path(state).absolute().parts[1:]:
+            child = os.open(component, os.O_PATH | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC, dir_fd=fd)
+            os.close(fd); fd = child
+        try:
+            child = os.open('mcp-read-audit', os.O_PATH | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC, dir_fd=fd)
+        except FileNotFoundError:
+            return None
+        os.close(fd); fd = child
+        info = os.fstat(fd)
+        if info.st_uid != os.getuid() or info.st_mode & 0o077:
+            raise ValueError('Unsafe audit directory')
+        log = os.open('reads.jsonl', os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK | os.O_CLOEXEC, dir_fd=fd)
+        with os.fdopen(log, 'rb') as stream:
+            fcntl.flock(stream, fcntl.LOCK_SH | fcntl.LOCK_NB)
+            info = os.fstat(stream.fileno())
+            if (not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_nlink != 1
+                    or info.st_mode & 0o077 or info.st_size > MAX_FILE):
+                raise ValueError('Unsafe audit file')
+            data = stream.read(MAX_FILE + 1)
+            if len(data) > MAX_FILE or (data and not data.endswith(b'\n')):
+                raise ValueError('Invalid audit snapshot')
+            return data
+    finally:
+        os.close(fd)
 
 
 def collect(root, home, temp):
@@ -198,6 +234,18 @@ def collect(root, home, temp):
         add('settings/mcp-start-task.disabled', b'')
     summary = snapshot_database(state / 'tasks.sqlite3', temp / 'tasks.sqlite3')
     add('data/tasks.sqlite3', (temp / 'tasks.sqlite3').read_bytes())
+    if (state / 'decisions.sqlite3').exists():
+        with sqlite3.connect((state / 'decisions.sqlite3').as_uri() + '?mode=ro', uri=True) as source, sqlite3.connect(temp / 'decisions.sqlite3') as dest:
+            source.backup(dest)
+        add('data/decisions.sqlite3', (temp / 'decisions.sqlite3').read_bytes())
+    audit = read_audit_snapshot(state)
+    if audit is not None:
+        add('data/mcp-read-audit/reads.jsonl', audit)
+    if os.path.lexists(state / 'mcp-reads.disabled'):
+        add('settings/mcp-reads.disabled', b'')
+    for marker in ('mcp-extended.disabled', 'mcp-cancel.disabled'):
+        if os.path.lexists(state / marker):
+            add('settings/' + marker, b'')
     credentials = []
     for name in CREDENTIALS + ('tunnel.yaml',):
         path = config / name
@@ -307,7 +355,7 @@ def validate_into(archive, destination):
     path = destination / 'data/tasks.sqlite3'
     with contextlib.closing(sqlite3.connect(path.as_uri() + '?mode=ro&immutable=1', uri=True)) as db:
         summary = db_summary(db)
-        if summary != manifest['database'] or summary['sessions'] != 0:
+        if summary != manifest['database'] or summary['sessions'] != 0 or summary.get('cancel_confirmations',{}).get('count',0) != 0:
             raise ValueError('Recovered database differs from manifest')
     return manifest
 

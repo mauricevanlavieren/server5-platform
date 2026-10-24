@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily server5 task history backup
+
+[Timer]
+OnCalendar=*-*-* 03:45:00
+Persistent=true
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

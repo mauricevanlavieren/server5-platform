@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/home/mau/server5-commandcenter
-ExecStart=/home/mau/.local/share/server5-commandcenter/mcp-venv/bin/python /home/mau/server5-commandcenter/web/mcp_adapter.py --enable-start-task
+ExecStart=/home/mau/.local/share/server5-commandcenter/mcp-venv/bin/python /home/mau/server5-commandcenter/web/mcp_adapter.py --enable-start-task --enable-read-tools --enable-extended-tools --enable-decisions
 Environment=PYTHONDONTWRITEBYTECODE=1
 Restart=on-failure
 RestartSec=3

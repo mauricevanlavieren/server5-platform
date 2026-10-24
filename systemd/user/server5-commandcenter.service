@@ -1,0 +1,20 @@
+[Unit]
+Description=Server5 private mobile Codex commandcenter
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/mau/server5-commandcenter
+Environment=PATH=/home/mau/.nvm/versions/node/v22.23.3/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 /home/mau/server5-commandcenter/web/commandcenter.py serve
+Restart=on-failure
+RestartSec=3
+KillMode=control-group
+TimeoutStopSec=20
+UMask=0077
+MemoryMax=1536M
+CPUQuota=200%
+TasksMax=256
+
+[Install]
+WantedBy=default.target

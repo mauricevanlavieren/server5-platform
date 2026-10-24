@@ -1,0 +1,17 @@
+{
+  "enabled": false,
+  "provider": "ollama",
+  "approved_local_provider": false,
+  "model": "OWNER_MUST_SELECT_EXISTING_MODEL",
+  "max_cost_eur": 0,
+  "max_calls_per_day": 4,
+  "min_interval_seconds": 15,
+  "allowlist": {
+    "decision_example_0001": {
+      "risk": "technical-low",
+      "task_id": "example_task_00001",
+      "question": "Welke naam voor de tijdelijke offline testfixture?",
+      "options": ["fixture_a", "fixture_b"]
+    }
+  }
+}

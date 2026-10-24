@@ -1,8 +1,10 @@
 # Server5 herstellen op vervangende Ubuntu-server
 
-Status 24-10-2026: lokaal herstelpakket; NIET extern veiliggesteld. Deze Git-repository
-heeft geen remote. Een clone-URL en remote-commitbewijs ontbreken. Dit is dus nog
-geen bewezen rampenherstel. Geen migratie, installatie of serviceherstart uitgevoerd.
+Status 24-10-2026: herstelcode voor de door eigenaar aangewezen publieke repository
+https://github.com/mauricevanlavieren/server5-platform.git. Basis-herstelcommit:
+c281f8de66efd6f720001f1e72c7bb7e5aaff1d2. Remote-publicatiebewijs wordt na de push
+lokaal vastgelegd; deze handleiding alleen bewijst geen geslaagde publicatie of
+volledig rampenherstel. Geen migratie, installatie of serviceherstart uitgevoerd.
 
 ## Vereisten
 
@@ -15,10 +17,11 @@ Neem hostname server5 pas over nadat het oude apparaat buiten gebruik is.
 
 ## Herstelvolgorde
 
-1. Vul de bestaande, door eigenaar aangewezen GitHub-clone-URL en bewezen commit in.
-   `git clone <BESTAANDE-URL> /home/mau/server5-commandcenter`, daarna
-   `cd /home/mau/server5-commandcenter && git checkout <BEWEZEN-COMMIT>`.
-   Deze twee waarden ontbreken momenteel: niet gokken en geen nieuwe repo maken.
+1. Clone de bestaande, door eigenaar aangewezen repository:
+   `git clone https://github.com/mauricevanlavieren/server5-platform.git /home/mau/server5-commandcenter`,
+   daarna `cd /home/mau/server5-commandcenter`. Gebruik de bewezen remote-maincommit
+   uit het lokale publicatierapport met `git checkout <BEWEZEN-COMMIT>`.
+   De basis-herstelcommit c281f8de66efd6f720001f1e72c7bb7e5aaff1d2 blijft in de historie.
 2. Installeer op de vervanger de vereisten uit de vorige sectie via hun officiële
    distributie. Plaats Node/Codex op de PATH uit
    `systemd/user/server5-commandcenter.service` of pas die PATH aan de vervanger aan.
@@ -92,7 +95,8 @@ Codex skills/config, persoonlijke MCP-connectors, of eventueel lokale Ollama-mod
 (ai-dispatcher is optioneel). Niet-geheime dispatcher-template staat in config/.
 Bestaande backups op dezelfde Server5-schijf overleven schijfverlies niet.
 Dit pakket beschermt de commandcenteromgeving, niet alle inhoud van de host of
-andere servers. Gepubliceerde broncode op GitHub kon zonder remote niet worden bevestigd.
+andere servers. GitHub bevat na geslaagde push uitsluitend de gevolgde Git-bestanden en historie;
+werkboomwijzigingen en niet-gevolgde bestanden zijn geen onderdeel van dit pakket.
 
 ## Rollback
 

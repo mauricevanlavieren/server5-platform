@@ -1,0 +1,2 @@
+# The exact CSV acceptance artifact uses CSV-standard CRLF record endings.
+export-sample.csv whitespace=cr-at-eol

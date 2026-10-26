@@ -1,0 +1,2 @@
+# Preserve CSV-standard CRLF endings in the exact acceptance artifact.
+export-sample.csv whitespace=cr-at-eol

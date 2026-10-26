@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "primary_box": {
+    "x": 33,
+    "y": 593.578125,
+    "width": 324,
+    "height": 53.984375
+  },
+  "primary_in_view": true,
+  "horizontal_overflow": false,
+  "errors": []
+}

@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "read_only": true,
+  "revision": 150,
+  "errors": [],
+  "mobile_overflow": false,
+  "primary_box": {
+    "x": 33,
+    "y": 593.578125,
+    "width": 324,
+    "height": 78.78125
+  },
+  "regressions": [
+    "W106",
+    "W109"
+  ],
+  "access": "temporary loopback SSH forward; no phone/private HTTPS acceptance"
+}

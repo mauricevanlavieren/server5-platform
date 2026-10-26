@@ -1,0 +1,9 @@
+{
+  "results": [
+    {
+      "scenario": "betaalwaarschuwing-naar-eerdere-factuur",
+      "result": "geslaagd"
+    }
+  ],
+  "errors": []
+}

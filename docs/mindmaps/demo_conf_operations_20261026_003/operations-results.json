@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "checks": [
+    "active vs reversed metadata warnings",
+    "closed metadata fix preserves all amounts and closure",
+    "dashboard unknown-method total equals active records",
+    "unknown is not free",
+    "recurring weekday and explicit day off",
+    "day override and all busy blocks",
+    "completed visit in history and capacity",
+    "reservation/free/release/use/return",
+    "persistent duplicate request protection",
+    "W109 unchanged",
+    "metadata route for archived payment during replacement concept"
+  ]
+}

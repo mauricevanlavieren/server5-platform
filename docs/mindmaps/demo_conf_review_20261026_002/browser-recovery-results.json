@@ -1,0 +1,17 @@
+{
+  "results": [
+    {
+      "scenario": "metadata",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "opslag-en-dubbelklik",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "twee-vensters",
+      "result": "geslaagd"
+    }
+  ],
+  "errors": []
+}

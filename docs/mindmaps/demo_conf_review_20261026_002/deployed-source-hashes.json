@@ -1,0 +1,12 @@
+{
+  "app.py": "8be870b71ac587f3f5c8f3379c914bef7aef153e6f88689e153d6a31bd7015bf",
+  "business.py": "5dc0d562cbb2e405eed3d8b316cdada16cc2228ca526e0b254d6fdf3ca78e7b8",
+  "workflow.py": "a36cb75caaa5737478cf406a3a5f9a726ac716e10c473066c6f9ce9937188f89",
+  "data.py": "bbb7d0a9600baeda58877500720a9652ea176c329a136956651cf485d89ce344",
+  "improvements.py": "d10ab6c5a379ac2d539d58e4c9219bfcb8368d6855dd821ec53d2d5618c5af11",
+  "recovery.py": "75a7f597c4f36e44480c21eba0a850f717ac048e766c107edfb1cd1141431a73",
+  "README.md": "256034a7e05f520209dea02c1e9a443afe51c3fb1da5cedd379ff1f9e9ace4bc",
+  "static/app.js": "05cbb86e853d19bb72ae270374ab108e0802f1babdf99a28decce291fcb710ed",
+  "static/style.css": "d1e76c36d4ab53fdbfddbaf7877b4daac1cc91051cfeeca7eabe20e6ef64b153",
+  "static/index.html": "071906c6b56d925c89906848426c77b62bccc296b3d19e682a88fd7f2fb5bb46"
+}

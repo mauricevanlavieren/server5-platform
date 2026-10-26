@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "read_only": true,
+  "revision": 146,
+  "errors": [],
+  "mobile_overflow": false,
+  "regressions": [
+    "W106",
+    "W109"
+  ],
+  "access": "temporary loopback SSH forward; no phone/private HTTPS acceptance"
+}

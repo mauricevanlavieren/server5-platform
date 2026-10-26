@@ -1,0 +1,25 @@
+{
+  "headed": true,
+  "display": ":99",
+  "first": {
+    "windowId": 1727530193,
+    "bounds": {
+      "left": 10,
+      "top": 10,
+      "width": 1408,
+      "height": 1085,
+      "windowState": "normal"
+    }
+  },
+  "second": {
+    "windowId": 1727530195,
+    "bounds": {
+      "left": 20,
+      "top": 20,
+      "width": 1108,
+      "height": 935,
+      "windowState": "normal"
+    }
+  },
+  "distinct": true
+}

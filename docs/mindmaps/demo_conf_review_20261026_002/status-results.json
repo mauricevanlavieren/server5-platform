@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "checks": [
+    "legacy metadata preserves amounts and originals",
+    "unknown sources explicit",
+    "reopened status consistent",
+    "credit selects refund",
+    "refund then close",
+    "reverse then correct after refund",
+    "request replay after response loss",
+    "storage failure and safe retry",
+    "export signs/links/mappings/missing fields",
+    "W106/W109 exact state retained",
+    "parts guide and premature finish guards"
+  ]
+}

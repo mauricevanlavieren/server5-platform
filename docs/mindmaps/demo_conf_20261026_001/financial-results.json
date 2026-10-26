@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "checks": [
+    "payments and reversals",
+    "partial credit VAT",
+    "cumulative full-credit VAT",
+    "refund",
+    "replacement and no double ledger",
+    "close/reopen",
+    "historical F103 deduplication",
+    "W106/W112 unchanged",
+    "direct agreement/planning guards",
+    "release and return idempotency",
+    "cancellation and warranty",
+    "partial receiving and replay protection"
+  ]
+}

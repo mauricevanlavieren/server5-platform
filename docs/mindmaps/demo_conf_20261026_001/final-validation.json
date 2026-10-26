@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "snapshot_at": "2026-10-26T22:12:58.564770Z",
+  "source_sha256": "21bdabdca3e0ab622ee5ae76433ccaa183fb1b0823171e5d36804d4c0f99c73d",
+  "publication_sha256": "21bdabdca3e0ab622ee5ae76433ccaa183fb1b0823171e5d36804d4c0f99c73d",
+  "consistent": true,
+  "project_invariants_valid": true,
+  "node_count": 4,
+  "nodes": [
+    {
+      "path": "1",
+      "ids": [
+        "CURRENT-PROJECTS"
+      ],
+      "text": "Current Projects",
+      "status": "pending",
+      "block": null
+    },
+    {
+      "path": "1.1",
+      "ids": [
+        "S4-MOBILE-AI-PLAN-20261024"
+      ],
+      "text": "Server4 mobiele AI-demo — gebouwd; private telefoontoegang en acceptatie open",
+      "status": "pending",
+      "block": null
+    },
+    {
+      "path": "1.1.1",
+      "ids": [
+        "server4_build_until_blocked_20261024_01"
+      ],
+      "text": "Server4 productfase 1 — mobiele AI-demo bouwen en testen",
+      "status": "pending",
+      "block": null
+    },
+    {
+      "path": "1.1.1.1",
+      "ids": [
+        "server4_build_until_blocked_20261024_01-step"
+      ],
+      "text": "🔄 HUIDIGE STAP — 🔴 GEBLOKKEERD: private telefoonroute en telefoon-/spraakacceptatie",
+      "status": "blocked",
+      "block": {
+        "cause": "ROOD GEBLOKKEERD: demo lokaal werkend op Server4, maar geen private HTTPS/identiteitsroute of bewezen eigen telefoontunnel beschikbaar. Server4 heeft geen Tailscale-installatie. Echte telefoon- en microfoonacceptatie daardoor niet uitvoerbaar; besluit na 60 s onbeantwoord.",
+        "solution": "Eigenaar verzorgt eigen private identiteit/toegang: Tailscale-login op Server4 na provisioning of bevestigt bestaande geautoriseerde SSH-forward op de telefoon. Geen tokens/wachtwoorden/sleutels delen of Server5-identiteit kopiëren. Besluit-ID server4-phase1-private-phone-route-20261024-01.",
+        "next_action": "Hervat met hetzelfde besluit-ID; provision uitsluitend Server4 indien nodig en laat eigenaar zelf aanmelden. Maak daarna private telefoonroute naar 127.0.0.1:8764, test vier tegels/details, getypte vraag, microfoon/transcriptie of tekstfallback en demobeheer op echte telefoon. Geen publieke poorten."
+      }
+    }
+  ],
+  "projects": [
+    {
+      "id": "S4-MOBILE-AI-PLAN-20261024",
+      "status": "GEBLOKKEERD",
+      "node_status": "pending",
+      "current_steps": [],
+      "valid": true
+    }
+  ],
+  "content_is_untrusted": true
+}

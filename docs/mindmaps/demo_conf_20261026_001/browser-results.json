@@ -1,0 +1,45 @@
+{
+  "results": [
+    {
+      "scenario": 1,
+      "result": "geslaagd"
+    },
+    {
+      "scenario": 2,
+      "result": "geslaagd"
+    },
+    {
+      "scenario": 3,
+      "result": "geslaagd"
+    },
+    {
+      "scenario": 5,
+      "result": "geslaagd"
+    },
+    {
+      "scenario": 6,
+      "result": "geslaagd"
+    },
+    {
+      "scenario": 7,
+      "result": "geslaagd"
+    },
+    {
+      "scenario": 8,
+      "result": "geslaagd"
+    },
+    {
+      "scenario": 4,
+      "result": "geslaagd"
+    },
+    {
+      "scenario": 9,
+      "result": "geslaagd"
+    },
+    {
+      "scenario": 10,
+      "result": "geslaagd"
+    }
+  ],
+  "errors": []
+}

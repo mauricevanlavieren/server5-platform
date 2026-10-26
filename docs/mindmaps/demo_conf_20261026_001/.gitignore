@@ -1,0 +1,4 @@
+__pycache__/
+test-state.json
+test-config/
+failed-*.png

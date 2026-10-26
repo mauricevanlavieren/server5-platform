@@ -1,0 +1,8 @@
+{
+  "result": "PASS",
+  "read_only": true,
+  "revision": 140,
+  "errors": [],
+  "mobile_overflow": false,
+  "access": "temporary loopback SSH forward; no phone/private HTTPS acceptance"
+}

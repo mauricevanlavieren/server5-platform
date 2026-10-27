@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "backup_files": 14,
+  "restored_revision": 280,
+  "restored_net_receipts_cents": 90600,
+  "restored_revenue_cents": 125000,
+  "history_count": 250,
+  "checks": [
+    "all source/state manifest hashes",
+    "before-restore preserves newer data",
+    "restored HTTP dashboard/workflow/export/practice page",
+    "dossiers/tour rounds/history preserved",
+    "no state mutation by reads",
+    "tamper rejected before writes"
+  ],
+  "environment": "isolated temporary app/state on Server5; no live restore"
+}

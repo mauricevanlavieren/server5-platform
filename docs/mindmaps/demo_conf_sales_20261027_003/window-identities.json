@@ -1,0 +1,25 @@
+{
+  "headed": true,
+  "environment": "Chromium on existing Xvfb :97",
+  "first": {
+    "windowId": 1580214683,
+    "bounds": {
+      "left": 10,
+      "top": 10,
+      "width": 1258,
+      "height": 985,
+      "windowState": "normal"
+    }
+  },
+  "second": {
+    "windowId": 1580214685,
+    "bounds": {
+      "left": 20,
+      "top": 20,
+      "width": 1108,
+      "height": 935,
+      "windowState": "normal"
+    }
+  },
+  "distinct": true
+}

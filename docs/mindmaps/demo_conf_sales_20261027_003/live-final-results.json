@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "state_byte_identical": true,
+  "workflow_sha256": "ce2f1e62aade2aa6f00ae3a07e74b6c859273b1d061044b8803ce11be95488a2",
+  "net_receipts_cents": 77290,
+  "preserved_regressions": [
+    "I2",
+    "B2",
+    "W113"
+  ],
+  "backup_files": 15,
+  "backup_manifest_valid": true,
+  "backup_final_source_equal": true,
+  "backup_snapshot": "/home/mau/server4-mobile-demo/backups/snapshot-20261027T075741589077Z",
+  "no_speculative_time_saving": true
+}

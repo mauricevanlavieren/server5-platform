@@ -1,0 +1,24 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "scenario": "twee-vensters-conflict-en-invoerbehoud",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "automatische-synchronisatie-en-herladen",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "verloren-antwoord-geen-dubbele-verwerking",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "opslagfout-begrijpelijk-en-herstelbaar",
+      "result": "geslaagd"
+    }
+  ],
+  "errors": [],
+  "distinct_windows": true,
+  "environment": "Headed Chromium / Xvfb, no physical user device"
+}

@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "rows": 51,
+  "parents": 16,
+  "net_revenue_cents": 125000,
+  "net_receipts_cents": 90600,
+  "checks": [
+    "unique ids",
+    "every correction linked",
+    "all invoice/sale balances reconcile",
+    "dashboard revenue equals export",
+    "dashboard receipts equals export",
+    "mapping and missing fields explicit",
+    "download does not mutate state"
+  ],
+  "external_import": "NOT TESTED — no external package access"
+}

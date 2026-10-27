@@ -1,0 +1,17 @@
+{
+  "results": [
+    {
+      "scenario": "historische-factuur-doorklik",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "dagafwijking-pauze-afwezig-reistijd",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "vaste-prijs-materiaal-regressie",
+      "result": "geslaagd"
+    }
+  ],
+  "errors": []
+}

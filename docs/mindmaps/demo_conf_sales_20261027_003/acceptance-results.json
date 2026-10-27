@@ -1,0 +1,38 @@
+[
+  {
+    "script": "browser-operations.cjs",
+    "exit_code": 0,
+    "stdout": "PASS waarschuwing-dashboard-herstel\nPASS teamplanning\nPASS betaling-terugboeken-opnieuw-afsluiten\nPASS voorraad-reservering-vrijgeven-verbruik\nPASS inkoop-deelontvangst-vervolgbezoek\nPASS winkelverkoop-retour-terugbetaling\n",
+    "stderr": ""
+  },
+  {
+    "script": "browser-extra.cjs",
+    "exit_code": 0,
+    "stdout": "PASS historische-factuur-doorklik\nPASS dagafwijking-pauze-afwezig-reistijd\nPASS vaste-prijs-materiaal-regressie\n",
+    "stderr": ""
+  },
+  {
+    "script": "browser-archive.cjs",
+    "exit_code": 0,
+    "stdout": "PASS betaalwaarschuwing-naar-eerdere-factuur\n",
+    "stderr": ""
+  },
+  {
+    "script": "browser-journeys.cjs",
+    "exit_code": 0,
+    "stdout": "PASS A-monteur-offerte-tot-betaald-en-afgesloten\nPASS B-diagnose-inkoop-deellevering-opvolging-vervolg-facturatie\nPASS C-artikelzoeken-verkoop-deelretour-geld-en-voorraad\nPASS rondleiding-nieuwe-ronde-bewaart-eerdere-historie\n",
+    "stderr": ""
+  },
+  {
+    "script": "browser-fixes.cjs",
+    "exit_code": 0,
+    "stdout": "PASS zichtbare-gedeeltelijke-vrijgave-en-materiaalretour\nPASS historische-factuurdatum-aanvullen-met-bron\n",
+    "stderr": ""
+  },
+  {
+    "script": "browser-collaboration.cjs",
+    "exit_code": 0,
+    "stdout": "PASS twee-vensters-conflict-en-invoerbehoud\nPASS automatische-synchronisatie-en-herladen\nPASS verloren-antwoord-geen-dubbele-verwerking\nPASS opslagfout-begrijpelijk-en-herstelbaar\n",
+    "stderr": ""
+  }
+]

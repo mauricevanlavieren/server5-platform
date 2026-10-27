@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "checks": [
+    "separate extra approval required; quote100 + extra20 = net120/VAT25.20; final agreement immutable",
+    "explicit actual-cost agreement: quoted100 differs from 1.5h*60=90, source and approval retained"
+  ]
+}

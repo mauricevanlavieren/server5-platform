@@ -1,0 +1,27 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "width": 1366,
+      "overflow": false,
+      "keyboard_focus": true,
+      "raw_object_text": false,
+      "main_attention_visible": true
+    },
+    {
+      "width": 760,
+      "overflow": false,
+      "keyboard_focus": true,
+      "raw_object_text": false,
+      "main_attention_visible": false
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "keyboard_focus": true,
+      "raw_object_text": false,
+      "main_attention_visible": false
+    }
+  ],
+  "errors": []
+}

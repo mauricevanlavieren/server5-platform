@@ -1,0 +1,54 @@
+{
+  "result": "PASS",
+  "hostname": "server4",
+  "health": {
+    "status": "ok",
+    "data": "fictional",
+    "ai": "local-rules",
+    "external_ai_required": false
+  },
+  "endpoints": {
+    "/api/dashboard": {
+      "status": 200,
+      "sha256": "44e5450f20ebe0904ecaabfcd38eff93a556c6f2db6faf3b6f96dc544d86f8d5"
+    },
+    "/api/workflow": {
+      "status": 200,
+      "sha256": "d8ac142d39e148883a99867d74838592966328252e6d6bb9c55ff3dc5737a14b"
+    },
+    "/api/accounting-export": {
+      "status": 200,
+      "sha256": "ebc92a84b56c3a4a84eacdfdbb697efecd14c9f0bc8d468c5a5373b1abf18ff6"
+    },
+    "/": {
+      "status": 200,
+      "sha256": "49ce9bcacd8a53e8a06350e901396abedca945a7b118a55ba1df46f00182c215"
+    },
+    "/app.js": {
+      "status": 200,
+      "sha256": "0716fad44ebedcc2b51eb1238b9be42adde297d0c96888fe199f136c9becfd33"
+    },
+    "/style.css": {
+      "status": 200,
+      "sha256": "13e921c87162a917a622aba11ea3d2c3f9a19a84fde0e822e99ed4d4f5e8caef"
+    },
+    "/praktijkproef": {
+      "status": 200,
+      "sha256": "0fc2e1dbdef4da773994154ed3e101f127e2c677d572e5a67186c15d63a3f83f"
+    }
+  },
+  "live_state_sha256": "ce2f1e62aade2aa6f00ae3a07e74b6c859273b1d061044b8803ce11be95488a2",
+  "live_state_byte_identical": true,
+  "backup": "/home/mau/server4-mobile-demo/backups/demo_conf_sales_20261027_003",
+  "new_snapshot": {
+    "path": "/home/mau/server4-mobile-demo/backups/snapshot-20261027T075741589077Z",
+    "files": 15
+  },
+  "regressions": [
+    "W106",
+    "W109",
+    "W113"
+  ],
+  "revenue_cents": 103000,
+  "open_cents": 47340
+}

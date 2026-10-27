@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "checks": [
+    "I2/B2/W113 and 77290 net practice regressions preserved",
+    "partial release, partial concept return, credited final return; bounds, replay, immutable final invoice, stock and invoice controls",
+    "partial final return matches credited quantity without blocking valid invoice control",
+    "new issue dates and historical date fill with source/history; no known-date overwrite",
+    "new tour rounds append only; retries do not duplicate; prior jobs/stock/history retained",
+    "financial export and date evidence reconcile"
+  ]
+}

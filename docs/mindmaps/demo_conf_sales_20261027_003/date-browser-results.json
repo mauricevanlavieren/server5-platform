@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "scenario": "historische-factuurdatum-aanvullen-met-bron",
+      "result": "geslaagd"
+    }
+  ],
+  "errors": []
+}

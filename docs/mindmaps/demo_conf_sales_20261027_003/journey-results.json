@@ -1,0 +1,31 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "scenario": "A-monteur-offerte-tot-betaald-en-afgesloten",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "B-diagnose-inkoop-deellevering-opvolging-vervolg-facturatie",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "C-artikelzoeken-verkoop-deelretour-geld-en-voorraad",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "rondleiding-nieuwe-ronde-bewaart-eerdere-historie",
+      "result": "geslaagd"
+    }
+  ],
+  "errors": [],
+  "first_run": {
+    "id": "D1",
+    "created_at": "2026-10-27T07:53:04.851741+00:00",
+    "monteur": "W119",
+    "onderdeel": "W120",
+    "article": "Rondleiding D1 cilinder",
+    "quantity": 4,
+    "source": "Bewust door eigenaar gemaakte oefenronde; eerdere rondes/historie behouden"
+  }
+}

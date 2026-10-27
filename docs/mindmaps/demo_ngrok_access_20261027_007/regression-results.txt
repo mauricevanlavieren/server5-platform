@@ -1,0 +1,13 @@
+test_admin_boundaries_and_conflict (__main__.PilotTest.test_admin_boundaries_and_conflict) ... ok
+test_audit_logout_revocation (__main__.PilotTest.test_audit_logout_revocation) ... ok
+test_authentication_and_direct_requests (__main__.PilotTest.test_authentication_and_direct_requests) ... ok
+test_backup_restore_and_tamper (__main__.PilotTest.test_backup_restore_and_tamper) ... ok
+test_first_owner_activation_and_cookie_flags (__main__.PilotTest.test_first_owner_activation_and_cookie_flags) ... ok
+test_import_errors_duplicates_and_atomic_commit (__main__.PilotTest.test_import_errors_duplicates_and_atomic_commit) ... ok
+test_real_roles_handoff_to_invoice_payment_close (__main__.PilotTest.test_real_roles_handoff_to_invoice_payment_close) ... ok
+test_reconciliation_reports_both_source_gaps_and_tamper (__main__.PilotTest.test_reconciliation_reports_both_source_gaps_and_tamper) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 5.256s
+
+OK

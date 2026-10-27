@@ -1,0 +1,9 @@
+{
+  "name": "command_line",
+  "uri": "/api/endpoints/command_line",
+  "url": "https://prognosis-energize-calzone.ngrok-free.dev",
+  "upstream": {
+    "url": "http://localhost:80"
+  },
+  "inspect": true
+}

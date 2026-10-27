@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "nodes_before": 4,
+  "nodes_during": 6,
+  "nodes_after": 4,
+  "source_sha256": "a37803a4f6ed78cfe109f573d771106e4fdb1d7e05582f32b6afd113b299a47d",
+  "publication_sha256": "a37803a4f6ed78cfe109f573d771106e4fdb1d7e05582f32b6afd113b299a47d",
+  "all_done_nodes_are_leaves": true,
+  "card_status": "succeeded",
+  "broker_record": "none; CLI task"
+}

@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "url": "https://prognosis-energize-calzone.ngrok-free.dev",
+  "upstream": "http://127.0.0.1:8874",
+  "inspection_disabled": true,
+  "forward_active": "active",
+  "forward_enabled": "enabled",
+  "ngrok_agent": "existing user-started process retained"
+}

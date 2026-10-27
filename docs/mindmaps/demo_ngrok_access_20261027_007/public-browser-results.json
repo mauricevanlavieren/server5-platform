@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "url": "https://prognosis-energize-calzone.ngrok-free.dev",
+  "checks": [
+    "real public HTTPS",
+    "one-click demo",
+    "no personal credential forms",
+    "secure HttpOnly cookie",
+    "authenticated same-origin POST",
+    "foreign origin denied",
+    "admin/login/activation blocked",
+    "Host spoof denied",
+    "trial and accounting page",
+    "390px no overflow",
+    "logout invalidates access"
+  ],
+  "errors": [],
+  "mutations": "demo session/audit only; no business data changed",
+  "browser_warning": "automated functional test sends ngrok-skip-browser-warning; first human visit may show ngrok Visit Site interstitial"
+}

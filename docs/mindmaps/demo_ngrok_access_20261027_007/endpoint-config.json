@@ -1,0 +1,9 @@
+{
+  "name": "command_line",
+  "url": "https://prognosis-energize-calzone.ngrok-free.dev",
+  "upstream": {
+    "url": "http://127.0.0.1:8874"
+  },
+  "inspect": false,
+  "traffic_policy": "{\"on_http_request\": [{\"actions\": [{\"type\": \"add-headers\", \"config\": {\"headers\": {\"host\": \"prognosis-energize-calzone.ngrok-free.dev\"}}}]}]}"
+}

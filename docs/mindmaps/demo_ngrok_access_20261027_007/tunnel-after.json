@@ -1,0 +1,10 @@
+{
+  "name": "command_line",
+  "uri": "/api/tunnels/command_line",
+  "public_url": "https://prognosis-energize-calzone.ngrok-free.dev",
+  "proto": "https",
+  "config": {
+    "addr": "http://127.0.0.1:8874",
+    "inspect": false
+  }
+}

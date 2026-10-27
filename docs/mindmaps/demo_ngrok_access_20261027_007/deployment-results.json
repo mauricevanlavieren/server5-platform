@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "host": "server4",
+  "public_host": "prognosis-energize-calzone.ngrok-free.dev",
+  "health": {
+    "authentication": "accounts",
+    "data": "fictional",
+    "demo_access": "passwordless-fictional",
+    "external_ai_required": false,
+    "status": "ok"
+  },
+  "source_sha256": {
+    "secure_app.py": "27c355187603b482d1012bf2b53738accd7073a0a87f199cf23011b85fdcc9b2",
+    "recovery.py": "54a16333ae6e02d44b57b9ced9e9d62d8152980962587833841dd7bc2ced23b8",
+    "static/public-login.html": "9346c8fba84b4ffa8e58721e3183045a958259b56400224e03191cc2999c98bf",
+    "static/public-login.js": "0ba8920c4cb9208be13df5a2c9a9b697a56c3d282fa752514f64b9864eed56cd"
+  },
+  "workflow_sha256": "fc976fd8006aea5161726972d29c0b542c0ba61e56437b615803e2dd0c905bf1",
+  "workflow_byte_identical": true,
+  "backup": "/home/mau/server4-mobile-demo/backups/demo_ngrok_access_20261027_007",
+  "local_snapshot": {
+    "path": "/home/mau/server4-mobile-demo/backups/snapshot-20261027T165426406911Z",
+    "files": 37,
+    "external_copy": "niet uitgevoerd"
+  }
+}

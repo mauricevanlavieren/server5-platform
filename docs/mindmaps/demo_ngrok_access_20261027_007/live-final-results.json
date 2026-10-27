@@ -1,0 +1,7 @@
+{
+  "result": "PASS",
+  "workflow_sha256": "fc976fd8006aea5161726972d29c0b542c0ba61e56437b615803e2dd0c905bf1",
+  "service": "active",
+  "source_files": 4,
+  "business_state_byte_identical": true
+}

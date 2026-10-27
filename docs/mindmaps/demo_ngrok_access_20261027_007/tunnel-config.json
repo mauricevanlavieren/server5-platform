@@ -1,0 +1,11 @@
+{
+  "name": "command_line",
+  "proto": "http",
+  "addr": "http://127.0.0.1:8874",
+  "domain": "prognosis-energize-calzone.ngrok-free.dev",
+  "schemes": [
+    "https"
+  ],
+  "host_header": "prognosis-energize-calzone.ngrok-free.dev",
+  "inspect": false
+}

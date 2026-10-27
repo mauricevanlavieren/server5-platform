@@ -1,0 +1,86 @@
+--- before/secure_app.py
++++ after/secure_app.py
+@@ -1,12 +1,17 @@
+ """Authenticated loopback application. One process, existing workflow retained."""
+ import json,os,secrets,sqlite3,hashlib,time
+ from pathlib import Path
++from flask.sessions import SecureCookieSessionInterface
+ from flask import Flask,request,session,g,jsonify,send_from_directory,redirect,Response
+ import workflow,app as legacy
+ from security import Accounts,Forbidden,authorize,mechanic_view,shop_view
+ from data import dashboard,accounting_csv
+ from answers import answer
+ BASE=Path(__file__).resolve().parent
++PUBLIC_DEMO_HOST=os.environ.get('PUBLIC_DEMO_HOST','').lower()
++class DemoSessionInterface(SecureCookieSessionInterface):
++ def get_cookie_secure(self,app):
++  return bool(PUBLIC_DEMO_HOST and request.host.split(':')[0].lower()==PUBLIC_DEMO_HOST) or super().get_cookie_secure(app)
+ 
+ def create_app(state=None):
+  state=Path(state or os.environ.get('DEMO_STATE',Path.home()/'.local/state/server4-mobile-demo'))
+@@ -15,12 +20,18 @@
+  app=Flask(__name__,static_folder=None)
+  app.config.update(SECRET_KEY=accounts.secret.read_text(),SESSION_COOKIE_NAME='server4_session',SESSION_COOKIE_HTTPONLY=True,SESSION_COOKIE_SAMESITE='Strict',SESSION_COOKIE_SECURE=os.environ.get('DEMO_HTTPS')=='1',MAX_CONTENT_LENGTH=262144,PERMANENT_SESSION_LIFETIME=8*3600)
+  app.accounts=accounts
++ app.session_interface=DemoSessionInterface()
+  @app.before_request
+  def guard():
+-  if request.host.split(':')[0].lower() not in {'127.0.0.1','localhost'}:return jsonify(error='Alleen lokale private tunnel toegestaan'),403
++  g.public_demo=bool(PUBLIC_DEMO_HOST and request.host.split(':')[0].lower()==PUBLIC_DEMO_HOST)
++  if request.host.split(':')[0].lower() not in {'127.0.0.1','localhost'} and not g.public_demo:return jsonify(error='Alleen lokale private tunnel toegestaan'),403
+   g.user=accounts.current(session.get('sid'))
++  if g.public_demo:
++   if g.user and g.user['role']!='demo':session.clear();g.user=None
++   if request.path in {'/api/login','/api/activate','/api/users','/api/users/disable','/api/audit','/api/catalog','/api/migration/preview','/api/migration/history','/api/shop','/api/mechanic'} or (request.path=='/api/config' and request.method=='POST'):
++    return jsonify(error='Alleen fictieve demotoegang via deze publieke link. Persoonlijke accounts en beheer via de private route.'),403
+   if request.method=='POST':
+-   if request.headers.get('Origin') and request.headers['Origin']!=request.host_url.rstrip('/'):return jsonify(error='Ongeldige oorsprong'),403
++   if request.headers.get('Origin') and request.headers['Origin']!=('https://'+PUBLIC_DEMO_HOST if g.public_demo else request.host_url.rstrip('/')):return jsonify(error='Ongeldige oorsprong'),403
+    if not request.is_json:return jsonify(error='JSON vereist'),415
+    if not isinstance(request.get_json(silent=True),dict):return jsonify(error='JSON-object vereist'),400
+    if request.path not in {'/api/login','/api/activate','/api/demo-login'} and (not session.get('csrf') or not secrets.compare_digest(request.headers.get('X-CSRF-Token',''),session['csrf'])):return jsonify(error='Sessiecontrole mislukt; herlaad en meld aan'),403
+@@ -46,7 +57,7 @@
+  @app.get('/health')
+  def health():return jsonify(status='ok',data='fictional',authentication='accounts',demo_access='passwordless-fictional',external_ai_required=False)
+  @app.get('/login')
+- def login_page():return send_from_directory(BASE/'static','login.html')
++ def login_page():return send_from_directory(BASE/'static','public-login.html' if g.public_demo else 'login.html')
+  @app.post('/api/activate')
+  def activate():
+   v=request.get_json();token=state/'owner-activation'
+@@ -81,7 +92,7 @@
+  @app.get('/<name>')
+  def asset(name):
+   if name not in {'app.js','pilot.js','login.js','style.css','delivery.js'}:return jsonify(error='Niet gevonden'),404
+-  return send_from_directory(BASE/'static',name)
++  return send_from_directory(BASE/'static','public-login.js' if g.public_demo and name=='login.js' else name)
+  @app.get('/api/dashboard')
+  def dash():
+   with workflow.LOCK:return jsonify(dict(**dashboard(),config=legacy.config()))
+@@ -92,6 +103,7 @@
+   with workflow.LOCK:
+    value=request.get_json()
+    if not isinstance(value,dict):raise ValueError('JSON-object vereist')
++   if g.public_demo and value.get('action') in {'migration_commit','trial_decisions'}:raise Forbidden('Zakelijke keuzes en imports vereisen de private eigenaarroute')
+    if value.get('action') in {'migration_commit'} and g.user['role']!='owner':raise Forbidden('Migratie vereist eigenaar')
+    result=workflow.apply(authorize(workflow.load(),g.user,value))
+    if g.user['role']=='shop':return jsonify(shop_view(workflow.load()))
+--- before/recovery.py
++++ after/recovery.py
+@@ -3,7 +3,7 @@
+ from pathlib import Path
+ from datetime import datetime,timezone
+ import argparse,hashlib,json,os,shutil,tempfile,sqlite3,subprocess
+-SOURCES=['backup-config.example.json','accounting.py','backup-herstel.md','delivery.py','static/proefvoorstel.html','static/delivery.js','proefvoorstel.md','migratieformaat.md','aankoopbeslissingen.md','secure_app.py','security.py','pilot.py','requirements.txt','sales.py','static/praktijkproef.html','static/login.html','static/login.js','static/pilot.html','static/pilot.js','app.py','business.py','workflow.py','data.py','improvements.py','answers.py','README.md','recovery.py','static/app.js','static/index.html','static/style.css']
++SOURCES=['static/public-login.html','static/public-login.js','backup-config.example.json','accounting.py','backup-herstel.md','delivery.py','static/proefvoorstel.html','static/delivery.js','proefvoorstel.md','migratieformaat.md','aankoopbeslissingen.md','secure_app.py','security.py','pilot.py','requirements.txt','sales.py','static/praktijkproef.html','static/login.html','static/login.js','static/pilot.html','static/pilot.js','app.py','business.py','workflow.py','data.py','improvements.py','answers.py','README.md','recovery.py','static/app.js','static/index.html','static/style.css']
+ STATE_FILES=['workflow.json','tiles.json','accounts.sqlite3','session-secret','offhost-backup-status.json']
+ 
+ def backup(root,state,destination):
+--- before/static/public-login.html
++++ after/static/public-login.html
+@@ -0,0 +1 @@
++<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Toegang demo · Sleutelhuis</title><link rel="stylesheet" href="/style.css"><script src="/login.js" defer></script><body><main class="commercial"><h1>Sleutelhuis demo</h1><p>Publieke fictieve bedrijfsdemo. Bekijk opdrachten, voorraad en administratie zonder persoonlijke inloggegevens.</p><button id="demo-access" type="button">Toegang demo</button><p>Gedeelde fictieve gegevens; demo-wijzigingen blijven bewaard. Gebruik geen echte bedrijfsgegevens. Persoonlijke accounts en gebruikersbeheer zijn alleen via de private route bereikbaar.</p><p id="feedback" role="status"></p></main></body></html>
+--- before/static/public-login.js
++++ after/static/public-login.js
+@@ -0,0 +1 @@
++document.getElementById('demo-access').onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{const r=await fetch('/api/demo-login',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}),v=await r.json();if(!r.ok)throw Error(v.error||'Demo openen mislukt');location.assign('/');}catch(e){document.getElementById('feedback').textContent=e.message;b.disabled=false;}};

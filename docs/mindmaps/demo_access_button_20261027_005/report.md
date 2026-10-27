@@ -1,0 +1,21 @@
+# Toegang demo — 27 oktober 2026
+
+Succeeded. Op het bestaande Server4-inlogscherm staat één knop **Toegang demo**. Deze opent de bestaande gedeelde fictieve administratie zonder gebruikersnaam, wachtwoord of eigenaaractivering. De header vermeldt zichtbaar ‘Demomodus · gedeelde fictieve gegevens · zonder persoonlijke aanmelding’. Gewone accountlogin en eigenaaractivering blijven aanwezig.
+
+De eigenaar heeft deze concrete wijziging gevraagd binnen de eerder bevestigde Server4-opdracht. Host server5 en Git-status vooraf gecontroleerd; uitvoering via bestaande strikt geverifieerde SSH-route naar server4. Geen SSH-, firewall-, publieke toegang-, root- of netwerkconfiguratie gewijzigd. Geen externe publicatie of Notion-mutatie volgens de lopende demo-conf-afspraak.
+
+De knop maakt een intrekbare demosessie, geen echt gebruikersaccount of standaardwachtwoord. Workflowmutaties uit die sessie krijgen actor Demobezoeker/role demo en geen echte user-ID. De fictieve bedrijfsroutes blijven beschikbaar, inclusief demo-opslag. Gebruikersbeheer, accountaudit, catalogusbeheer/import en eigenaarinstellingen blijven serverzijdig afgeschermd. Deze knop bewijst geen persoonlijke authenticatie: iedereen met bestaande private demotoegang kan de gedeelde fictieve bedrijfsroutes gebruiken. Gebruik deze gedeelde omgeving uitsluitend voor fictieve gegevens.
+
+Gewijzigde Server4-bestanden: secure_app.py, security.py, static/login.html, static/login.js, static/app.js, static/pilot.js, static/praktijkproef.html en README.md. Geen nieuwe afhankelijkheid of service. Bestaande service eenmaal veilig gestopt/gestart; bronkopieën vóór wijziging en gecontroleerde backup behouden.
+
+Drie gerichte automatische testgroepen slagen: direct binnenkomen en opslaan met demo-actor; requestherhaling/afmelden/cookiehergebruik en sessieverloop; weigering van accountbeheer/import/eigenaarinstellingen, behoud van CSRF/origin/JSON-controle en behoud van gewone eigenaarlogin. test-results.txt. De acht eerdere account-/rechten-/import-/financiële-/hersteltestgroepen slagen eveneens: regression-results.txt. Geen live dossiers gebruikt voor muterende tests.
+
+Chromium/Playwright op zowel afzonderlijke testkopie als draaiend Server4 via bestaande SSH-loopbackforward: knop zonder inlogvelden ingevuld → dashboard → zichtbaar demolabel → Rondleiding → accountwerkplek zonder gebruikersbeheer → afmelden → beschermde API weer 401. Accountbeheer-API 403. Inlogscherm op 390 pixels zonder horizontale overloop. Beide browserresultaten PASS, geen JavaScript-fouten: test-browser-results.json en live-browser-results.json. Screenshots: live-login.png, live-dashboard.png, live-login-390.png. Live browser maakt alleen een demosessie en accountauditregel; geen workflowmutaties of echte accountaanmaak.
+
+Deployment: deployment-results.json. Business workflow byte-identiek vóór/na; geen dossiers/historie/voorraad/bedragen gewijzigd. Gebruikersaantal behouden. Nieuwe gecontroleerde backup inclusief gewijzigde bronnen, bedrijfsstaat en bestaande appcredentials op dezelfde host; bestemming staat in deployment-results.json. Geen externe backup of echte private HTTPS-/telefoonacceptatie geclaimd.
+
+Rollback: herstel uitsluitend de acht bovengenoemde bronbestanden uit `/home/mau/server4-mobile-demo/backups/demo_access_button_20261027_005/` na controle op latere wijzigingen, met bestaande userdienst gestopt; start dezelfde dienst en controleer /health en de normale aanmelding. Geen workflow- of accountdatabase terugzetten. Oude versie accepteert geen demosessies; echte accounts blijven bestaan. Accounts/secrets zijn nooit naar Server5 of Git gekopieerd.
+
+Taak demo_access_button_20261027_005, CLI zonder brokerrecord. Bestaande andere projecten en telefoonblokkade behouden. Current Projects 4 vóór → 6 tijdens → 4 na; eigen stap en taak na bewezen oplevering gesnoeid. Eindvalidator consistent=true, bronhash=publicatiehash, project_invariants_valid=true en iedere done-node blad; bewijs final-validation.json/publication-check.json. Kaartstatus succeeded; geen brokerrecordstatus gewijzigd.
+
+Volgende gebruikershandeling: herlaad de bestaande demopagina en klik **Toegang demo**. Geen activeringscode of inloggegevens nodig voor deze knop. Persoonlijke proefaccounts en overige externe/commerciële praktijkvoorwaarden blijven afzonderlijke functies/afspraken.

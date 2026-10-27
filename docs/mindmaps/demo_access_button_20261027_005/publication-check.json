@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "nodes_before": 4,
+  "nodes_during": 6,
+  "nodes_after": 4,
+  "source_sha256": "9de49bb0ba73edbcbd98a1ea43992b07da59d859415a670f18717e855e52e6ee",
+  "publication_sha256": "9de49bb0ba73edbcbd98a1ea43992b07da59d859415a670f18717e855e52e6ee",
+  "all_done_nodes_are_leaves": true
+}

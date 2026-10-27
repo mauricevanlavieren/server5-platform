@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "environment": "isolated temporary app and state",
+  "business_state_byte_identical": true,
+  "sections": {
+    "jobs": "35dbd183f66b088fc249d1b5347715c7912ad8e6d2f8973d9d0e9d0d604ea245",
+    "history": "afdf524f1d1bdb77c425ae881f68a3b087d13d29124dd44b0e7615fbe9f7efb9",
+    "operations": "0011e55c78701c3b79495acdb74900609a11ba572da84008aae0cca8d98ea7f4",
+    "migration_history": "6dc826e378b9308ff0690e541a117a5adcbb515dd6bb6e9e496170f87984b8fa",
+    "customers": "2b05abfd367654df0885f45a3fa3b466dfd7c4931c4bc937eb31e18aed26f886",
+    "articles": "9ef12900a14dd3b7a5fd83407ee9b7025877b784ddb9c5ee818f71ff289330bc"
+  },
+  "control_totals_before": {
+    "revenue_cents": 103000,
+    "net_received_cents": 77290,
+    "open_cents": 59440
+  },
+  "control_totals_after": {
+    "revenue_cents": 103000,
+    "net_received_cents": 77290,
+    "open_cents": 59440
+  },
+  "users_restored": 3,
+  "old_sessions_revoked": true,
+  "source_files_verified": 26
+}

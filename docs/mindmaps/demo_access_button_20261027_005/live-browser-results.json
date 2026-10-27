@@ -1,0 +1,14 @@
+{
+  "result": "PASS",
+  "url": "http://127.0.0.1:8881",
+  "checks": [
+    "button without credentials",
+    "dashboard",
+    "visible demo label",
+    "tour",
+    "account management forbidden",
+    "logout invalidates session",
+    "390 pixel login"
+  ],
+  "errors": []
+}

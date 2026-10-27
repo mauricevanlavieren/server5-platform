@@ -1,0 +1,118 @@
+--- before/secure_app.py
++++ after/secure_app.py
+@@ -23,8 +23,8 @@
+    if request.headers.get('Origin') and request.headers['Origin']!=request.host_url.rstrip('/'):return jsonify(error='Ongeldige oorsprong'),403
+    if not request.is_json:return jsonify(error='JSON vereist'),415
+    if not isinstance(request.get_json(silent=True),dict):return jsonify(error='JSON-object vereist'),400
+-   if request.path not in {'/api/login','/api/activate'} and (not session.get('csrf') or not secrets.compare_digest(request.headers.get('X-CSRF-Token',''),session['csrf'])):return jsonify(error='Sessiecontrole mislukt; herlaad en meld aan'),403
+-  public={'/health','/login','/login.js','/style.css','/api/login','/api/activate'}
++   if request.path not in {'/api/login','/api/activate','/api/demo-login'} and (not session.get('csrf') or not secrets.compare_digest(request.headers.get('X-CSRF-Token',''),session['csrf'])):return jsonify(error='Sessiecontrole mislukt; herlaad en meld aan'),403
++  public={'/health','/login','/login.js','/style.css','/api/login','/api/activate','/api/demo-login'}
+   if request.path not in public and not g.user:
+    if request.path.startswith('/api/'):return jsonify(error='Aanmelden vereist'),401
+    return redirect('/login')
+@@ -42,7 +42,7 @@
+  @app.errorhandler(OSError)
+  def storage(e):return jsonify(error='Opslag niet bevestigd. Invoer behouden; controleer en herhaal dezelfde aanvraag.'),503
+  @app.get('/health')
+- def health():return jsonify(status='ok',data='fictional',authentication='accounts',external_ai_required=False)
++ def health():return jsonify(status='ok',data='fictional',authentication='accounts',demo_access='passwordless-fictional',external_ai_required=False)
+  @app.get('/login')
+  def login_page():return send_from_directory(BASE/'static','login.html')
+  @app.post('/api/activate')
+@@ -52,6 +52,12 @@
+   accounts.create(dict(v,role='owner',employee=''),bootstrap=True)
+   token.unlink(missing_ok=True)
+   return jsonify(message='Eigenaar ingericht. Meld nu aan.')
++ @app.post('/api/demo-login')
++ def demo_login():
++  old=session.get('sid')
++  if old:accounts.logout(old)
++  session.clear();session['sid']=accounts.demo_login();session['csrf']=secrets.token_urlsafe(32);session.permanent=True
++  return jsonify(user=accounts.current(session['sid']),csrf=session['csrf'])
+  @app.post('/api/login')
+  def login():
+   v=request.get_json();result=accounts.login(v.get('username'),v.get('password'))
+--- before/security.py
++++ after/security.py
+@@ -47,11 +47,20 @@
+    d.execute('insert into sessions values(?,?,?)',(hashlib.sha256(sid.encode()).hexdigest(),u['id'],time.time()+8*3600))
+    d.execute('insert into audit(at,user_id,action,subject) values(?,?,?,?)',(time.time(),u['id'],'login',name))
+    return sid,dict(id=u['id'],username=u['username'],role=u['role'],employee=u['employee'])
++ def demo_login(self):
++  sid=secrets.token_urlsafe(32)
++  with self.db() as d:
++   d.execute('delete from sessions where expires<?',(time.time(),))
++   d.execute('insert into sessions values(?,?,?)',(hashlib.sha256(sid.encode()).hexdigest(),None,time.time()+8*3600))
++   d.execute('insert into audit(at,user_id,action,subject) values(?,?,?,?)',(time.time(),None,'demo_entered','Gedeelde fictieve demo'))
++  return sid
+  def current(self,sid):
+   if not isinstance(sid,str):return None
+   with self.db() as d:
+-   u=d.execute('select u.id,u.username,u.role,u.employee from sessions s join users u on s.user_id=u.id where s.id=? and s.expires>? and u.active=1',(hashlib.sha256(sid.encode()).hexdigest(),time.time())).fetchone()
+-   return dict(u) if u else None
++   u=d.execute('select s.user_id,u.id,u.username,u.role,u.employee from sessions s left join users u on s.user_id=u.id where s.id=? and s.expires>? and (s.user_id is null or u.active=1)',(hashlib.sha256(sid.encode()).hexdigest(),time.time())).fetchone()
++   if not u:return None
++   if u['user_id'] is None:return dict(id=None,username='Demobezoeker',role='demo',employee='')
++   return {k:u[k] for k in ('id','username','role','employee')}
+  def logout(self,sid):
+   with self.db() as d:d.execute('delete from sessions where id=?',(hashlib.sha256(sid.encode()).hexdigest(),))
+  def revoke(self,uid,actor):
+@@ -73,7 +82,7 @@
+ 
+ def authorize(s,u,v):
+  a=v.get('action');job=v.get('job',v.get('order','W105'))
+- if u['role']=='owner':return dict(v,actor=dict(u))
++ if u['role'] in {'owner','demo'}:return dict(v,actor=dict(u))
+  if u['role']=='mechanic':
+   if a not in MECHANIC or job not in assigned(s,u):raise Forbidden('Alleen uitvoering van eigen toegewezen opdrachten toegestaan')
+   if v.get('order',job)!=job:raise Forbidden('Opdrachtverwijzingen verschillen')
+--- before/README.md
++++ after/README.md
+@@ -1,3 +1,11 @@
++# Directe demotoegang — 27 oktober 2026
++
++Op /login opent **Toegang demo** zonder gebruikersnaam of wachtwoord de bestaande gedeelde fictieve administratie. De sessie heet Demobezoeker en is herkenbaar als demomodus; geen echt account of wachtwoord wordt aangemaakt. Demo-handelingen worden als demo-actor opgeslagen, niet als echte eigenaar. Bestaande dossiers blijven bewaard en demo-wijzigingen zijn gedeeld/persistent.
++
++Gebruikersbeheer, accountaudit, stamgegevensimport en eigenaarsactivering zijn niet toegankelijk via deze demosessie. De bestaande gewone login en eenmalige eigenaaractivering blijven aanwezig. Afmelden trekt de demosessie serverzijdig in. De bestaande host-/origin-/JSON-/CSRF-controles blijven gelden; nieuwe zakelijke inhoud vereist nog steeds een sessie. Geen nieuwe publieke route/netwerktoegang. Deze knop geeft iedereen met bestaande private demotoegang toegang tot de fictieve bedrijfsroutes; gebruik deze gedeelde omgeving nooit voor echte bedrijfsdata. Geen bewijs van persoonlijke authenticatie via de knop.
++
++---
++
+ # Actuele uitvoering — 27 oktober 2026, ronde 4
+ 
+ Deze sectie vervangt oudere uitspraken hieronder over ontbrekende appaccounts. Historische rondes blijven bewaard. Gebouwd voor begeleide fictieve praktijkproef; productie blijft niet gereed.
+--- before/static/praktijkproef.html
++++ after/static/praktijkproef.html
+@@ -1,4 +1,4 @@
+-<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praktijkproef en aanschaf · Sleutelhuis Demo</title><link rel="stylesheet" href="/style.css"></head><body><main class="commercial"><nav aria-label="Terug"><a href="/">← Terug naar bedrijfswerkplek</a></nav><h1>Praktijkproef en aanschaf</h1><p>Voor een sleutelservice, winkel in hang- en sluitwerk en monteurs die opdrachten, materiaal en administratie bij elkaar willen houden.</p><p><strong>Dit is een fictieve verkoopdemonstratie, geen aangeboden productiecontract.</strong> Echte accounts en serverzijdige rollen zijn geïmplementeerd en in een geïsoleerde proef getest. De historische demorolkeuze blijft uitsluitend presentatie binnen de rechten van de aangemelde gebruiker. Externe boekhoudimport en productieafspraken zijn nog niet aangetoond.</p>
++<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praktijkproef en aanschaf · Sleutelhuis Demo</title><link rel="stylesheet" href="/style.css"></head><body><main class="commercial"><nav aria-label="Terug"><a href="/">← Terug naar bedrijfswerkplek</a></nav><h1>Praktijkproef en aanschaf</h1><p><strong>Toegang demo</strong> opent de gedeelde fictieve administratie zonder persoonlijke inloggegevens. Deze demotoegang bewijst geen persoonlijke aanmelding; gebruikersbeheer en eigenaarsactivering blijven apart beveiligd. Gebruik uitsluitend fictieve gegevens.</p><p>Voor een sleutelservice, winkel in hang- en sluitwerk en monteurs die opdrachten, materiaal en administratie bij elkaar willen houden.</p><p><strong>Dit is een fictieve verkoopdemonstratie, geen aangeboden productiecontract.</strong> Echte accounts en serverzijdige rollen zijn geïmplementeerd en in een geïsoleerde proef getest. De historische demorolkeuze blijft uitsluitend presentatie binnen de rechten van de aangemelde gebruiker. Externe boekhoudimport en productieafspraken zijn nog niet aangetoond.</p>
+ <h2>Wat kunt u beoordelen?</h2><ul><li>Eén dossier van offerte en klantakkoord via planning, uren en materiaal naar factuur, fictieve betaling en afsluiting.</li><li>Onderdeelbehoefte, inkoop, deelleveringen, bestelrestant en vervolgbezoek.</li><li>Winkelvoorraad, fictieve contante verkoop, gedeeltelijke retour en terugbetaling.</li><li>Herleidbare correcties, btw, debiteuren, netto ontvangsten en controle-export.</li></ul><p>De rondleiding opent dezelfde dossiers en functies als de gewone werkplek. Nieuwe oefenrondes bewaren eerdere gegevens en historie. Er is geen gemeten tijdwinst; beoordeel zelf welke prijsregels, uren en materiaalregistraties automatisch worden overgenomen.</p>
+ <h2>Wat valt buiten de bewezen demo?</h2><p>Geen echte verzending, leveranciersbestelling, bankbetaling of boekhoudboeking. Geen bewezen bank-, mail-, leverancier- of boekhoudkoppeling. De export is een controlebestand; een externe import is niet gevalideerd. Toegangscontrole/sleutelregistratie in de demo is geen gecertificeerd toegangsbeheersysteem.</p>
+ <h2>Benodigde inrichting en import</h2><ul><li>Klanten, artikelen, verkoopprijzen, btw-afspraken, beginvoorraad, medewerkers en werktijden controleren.</li><li>Open dossiers, facturen, betalingen en beginsaldi afstemmen met brondocumenten; ontbrekende datums of betaalmethoden met bewijs aanvullen.</li><li>Gecontroleerde fictieve proefimport voor klanten, artikelen, prijzen, beginvoorraad en resterende open saldi: beschikbaar onder Account en praktijkproef, met verplichte voorvertoning, regelfouten, duplicaatcontrole en importhistorie. Herhalen voegt geen voorraad of saldi dubbel toe. Alleen EUR en 21% btw; geen volledige historische migratie. Echte bronmapping, migratiebegeleiding en toestemming voor echte gegevens: <strong>Nog vast te stellen</strong>.</li><li>Accounts en rechten: eigenaar beheert instellingen, tarieven, gebruikers en financiële correcties; monteur ziet uitsluitend eigen toegewezen uitvoering; administratie verwerkt facturen, betalingen, debiteuren en export. Niet-ingelogde API-toegang, directe ongeoorloofde mutaties en ingetrokken sessies zijn getest. Hostingafspraken en beoordeling voor echte gegevens: <strong>Nog vast te stellen</strong>.</li></ul>
+--- before/static/pilot.js
++++ after/static/pilot.js
+@@ -21,4 +21,4 @@
+ $('commit').onclick=run(async()=>{if(!preview||JSON.stringify(payload)!==JSON.stringify(JSON.parse($('import-json').value)))throw Error('Bestand gewijzigd; voorvertoning opnieuw controleren');$('commit').disabled=true;await api('/api/workflow',{role:'Eigenaar',action:'migration_commit',revision:preview.revision,payload,preview_digest:preview.digest});await history();$('preview-result').textContent+='\nProefimport verwerkt; aantallen en beginsaldo staan in de historie.';});
+ $('catalog').onclick=run(async()=>{const v=await api('/api/catalog');$('catalog-result').textContent='Klanten\n'+Object.values(v.customers).map(c=>c.id+' · '+c.name+' · '+c.address).join('\n')+'\n\nArtikelen en prijzen\n'+Object.values(v.articles).map(a=>a.id+' · '+a.name+' · '+eur(a.unit_cents)+' excl. btw · '+a.vat_percent+'% btw · bronbeginvoorraad '+a.quantity+' · '+a.location).join('\n');});
+ $('audit').onclick=run(async()=>{const v=await api('/api/audit');const labels={login:'Aangemeld',user_created:'Gebruiker aangemaakt',user_disabled:'Gebruiker beëindigd',migration_commit:'Proefimport gecontroleerd',payment:'Betaling geregistreerd',credit:'Credit geregistreerd',refund:'Terugbetaling',payment_reverse:'Betaling teruggeboekt',invoice_final:'Factuur definitief',invoice_draft:'Conceptfactuur',tariff_save:'Tarief vastgelegd',repair:'Uitvoering opgeslagen',finish:'Uitvoering gereed',note:'Dossiernotitie'};$('audit-result').textContent='Accounts\n'+v.accounts.map(a=>new Date(a.at*1000).toLocaleString('nl-NL')+' · '+(a.username||'gebruiker onbekend')+' · '+(labels[a.action]||a.action)+' · '+a.subject).join('\n')+'\n\nBedrijfshistorie\n'+v.workflow.map(h=>(h.at?new Date(h.at).toLocaleString('nl-NL'):'Tijd onbekend')+' · '+(h.actor?.username||'Historische demorol '+h.role)+' · '+(h.job||'administratie')+' · '+(labels[h.action]||h.label||'Dossier bijgewerkt')).join('\n');});
+-(async()=>{auth=await api('/api/session');$('identity').textContent='Aangemeld als '+auth.user.username+' · '+auth.user.role;if(auth.user.role==='mechanic'){$('mechanic').hidden=false;await mywork();}else{$('finance').hidden=false;if(auth.user.role==='owner'){$('owner').hidden=false;await users();await history();}}})().catch(e=>$('feedback').textContent=e.message);
++(async()=>{auth=await api('/api/session');$('identity').textContent=auth.user.role==='demo'?'Demomodus · gedeelde fictieve gegevens · gebruikersbeheer afgeschermd':'Aangemeld als '+auth.user.username+' · '+auth.user.role;if(auth.user.role==='mechanic'){$('mechanic').hidden=false;await mywork();}else{$('finance').hidden=false;if(auth.user.role==='owner'){$('owner').hidden=false;await users();await history();}}})().catch(e=>$('feedback').textContent=e.message);
+--- before/static/login.html
++++ after/static/login.html
+@@ -1 +1 @@
+-<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aanmelden · Sleutelhuis</title><link rel="stylesheet" href="/style.css"><script src="/login.js" defer></script><body><main class="commercial"><h1>Aanmelden</h1><p>Begeleide fictieve praktijkproef. Echte accounts; geen echte berichten, bestellingen of betalingen.</p><form id="login"><label>Gebruikersnaam<input name="username" autocomplete="username" required maxlength="60"></label><label>Wachtwoord<input type="password" name="password" autocomplete="current-password" required maxlength="128"></label><button>Aanmelden</button></form><p id="feedback" role="status"></p><details><summary>Eerste eigenaar inrichten</summary><p>Alleen vóór de eerste inrichting. Lees de eenmalige activeringscode in je eigen Server4-terminal: <code>cat ~/.local/state/server4-mobile-demo/owner-activation</code>. De code blijft lokaal en wordt na gebruik verwijderd. Kies zelf een wachtwoord; deel het niet in chat.</p><form id="activate"><label>Lokale activeringscode<input type="password" name="activation" autocomplete="off" required></label><label>Nieuwe eigenaarsnaam<input name="username" autocomplete="username" required></label><label>Nieuw wachtwoord (minimaal 12 tekens)<input name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required></label><button>Eigenaar activeren</button></form></details><p>Toegang uitsluitend via de bestaande private tunnel. Werkelijke HTTPS-/telefoonacceptatie en productieafspraken blijven afzonderlijk nodig.</p></main></body></html>
++<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Aanmelden · Sleutelhuis</title><link rel="stylesheet" href="/style.css"><script src="/login.js" defer></script><body><main class="commercial"><h1>Aanmelden</h1><section aria-label="Directe demotoegang"><button id="demo-access" type="button">Toegang demo</button><p>Open direct de gedeelde fictieve demo, zonder gebruikersnaam of wachtwoord. Demo-opslag blijft bewaard. Gebruikersbeheer blijft afgeschermd.</p></section><p>Begeleide fictieve praktijkproef. Echte accounts; geen echte berichten, bestellingen of betalingen.</p><form id="login"><label>Gebruikersnaam<input name="username" autocomplete="username" required maxlength="60"></label><label>Wachtwoord<input type="password" name="password" autocomplete="current-password" required maxlength="128"></label><button>Aanmelden</button></form><p id="feedback" role="status"></p><details><summary>Eerste eigenaar inrichten</summary><p>Alleen vóór de eerste inrichting. Lees de eenmalige activeringscode in je eigen Server4-terminal: <code>cat ~/.local/state/server4-mobile-demo/owner-activation</code>. De code blijft lokaal en wordt na gebruik verwijderd. Kies zelf een wachtwoord; deel het niet in chat.</p><form id="activate"><label>Lokale activeringscode<input type="password" name="activation" autocomplete="off" required></label><label>Nieuwe eigenaarsnaam<input name="username" autocomplete="username" required></label><label>Nieuw wachtwoord (minimaal 12 tekens)<input name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required></label><button>Eigenaar activeren</button></form></details><p>Toegang uitsluitend via de bestaande private tunnel. Werkelijke HTTPS-/telefoonacceptatie en productieafspraken blijven afzonderlijk nodig.</p></main></body></html>
+--- before/static/login.js
++++ after/static/login.js
+@@ -1 +1,3 @@
+ for(const name of ['login','activate'])document.getElementById(name).onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector('button');b.disabled=true;try{const r=await fetch('/api/'+name,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(f)))}),v=await r.json();if(!r.ok)throw Error(v.error||'Aanmelden mislukt');f.reset();if(name==='login')location.assign('/');else document.getElementById('feedback').textContent=v.message;}catch(e){document.getElementById('feedback').textContent=e.message;}finally{b.disabled=false;}};
++
++document.getElementById('demo-access').onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{const r=await fetch('/api/demo-login',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}),v=await r.json();if(!r.ok)throw Error(v.error||'Demo openen mislukt');location.assign('/');}catch(e){document.getElementById('feedback').textContent=e.message;b.disabled=false;}};
+--- before/static/app.js
++++ after/static/app.js
+@@ -1,4 +1,4 @@
+-let sessionInfo;const sessionReady=fetch('/api/session').then(async r=>{if(r.status===401){location.assign('/login');throw Error('Aanmelden vereist');}sessionInfo=await r.json();const badge=document.createElement('p');badge.textContent='Aangemeld als '+sessionInfo.user.username+' · '+sessionInfo.user.role;document.querySelector('header').append(badge);return sessionInfo;});
++let sessionInfo;const sessionReady=fetch('/api/session').then(async r=>{if(r.status===401){location.assign('/login');throw Error('Aanmelden vereist');}sessionInfo=await r.json();const badge=document.createElement('p');badge.textContent=sessionInfo.user.role==='demo'?'Demomodus · gedeelde fictieve gegevens · zonder persoonlijke aanmelding':'Aangemeld als '+sessionInfo.user.username+' · '+sessionInfo.user.role;document.querySelector('header').append(badge);return sessionInfo;});
+ let planningReturn=null,operationReturn=null;
+ "use strict";
+ const $=id=>document.getElementById(id), labels={revenue:'Omzet',payments:'Netto ontvangen',invoices:'Open facturen',today:'Planning & werk',stock:'Voorraadtekorten',followup:'Klantopvolging',actions:'AI-aandachtspunten'};

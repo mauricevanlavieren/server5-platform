@@ -1,0 +1,31 @@
+{
+  "result": "PASS",
+  "hostname": "server4",
+  "health": {
+    "authentication": "accounts",
+    "data": "fictional",
+    "demo_access": "passwordless-fictional",
+    "external_ai_required": false,
+    "status": "ok"
+  },
+  "source_sha256": {
+    "secure_app.py": "12b50337243e69a24cfafb439353c6771c21071fdb1ff74dfc3c1adf555b7ece",
+    "security.py": "b51998e39b8fcd14884aa8bc7034a340ad58a5dec3a982d3ff08f310b09e7995",
+    "README.md": "36e285cf7147b8b1792764062e669896f3a267f5da6e54354b0673d39b237798",
+    "static/login.html": "b044cff19c8ae0b90343edd68d5eef4ad50a69541b34cf85ab5fde54906f55e5",
+    "static/login.js": "b4c0491566d93fa596c81b85dab843a5d313196a9635b64788a7d7377fb4930c",
+    "static/app.js": "391da398e40a3e8ecadbaccce9db13047bf65b051377fe882ee906dd1f7b0bd4",
+    "static/pilot.js": "7b30166b1585dc0f5322c66c4a77aecc1df56e5c10e263f9de341910094423b1",
+    "static/praktijkproef.html": "d4f9569cf0c349af42a158d5cc7855bea49828c5b56133d3708adb4fff15a6f1"
+  },
+  "workflow_sha256": "4772b51acd7adca63ceab519c28744e7c9d8f157344b1a3eaca18b4aa5299f56",
+  "workflow_byte_identical": true,
+  "user_count": 0,
+  "users_unchanged": true,
+  "backup": "/home/mau/server4-mobile-demo/backups/demo_access_button_20261027_005",
+  "snapshot": {
+    "path": "/home/mau/server4-mobile-demo/backups/snapshot-20261027T152449656800Z",
+    "files": 27,
+    "external_copy": "niet uitgevoerd"
+  }
+}

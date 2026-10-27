@@ -1,0 +1,10 @@
+test_append_seed_preserves_all_existing_facts_and_is_idempotent (__main__.Story.test_append_seed_preserves_all_existing_facts_and_is_idempotent) ... ok
+test_friendly_input_errors_no_raw_server_details (__main__.Story.test_friendly_input_errors_no_raw_server_details) ... ok
+test_reset_archive_is_in_backup_and_isolated_restore (__main__.Story.test_reset_archive_is_in_backup_and_isolated_restore) ... ok
+test_reset_archives_old_data_and_preserves_accounts_choices_and_receipts (__main__.Story.test_reset_archives_old_data_and_preserves_accounts_choices_and_receipts) ... ok
+test_reset_rights_and_archive_failure_are_safe (__main__.Story.test_reset_rights_and_archive_failure_are_safe) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 3.869s
+
+OK

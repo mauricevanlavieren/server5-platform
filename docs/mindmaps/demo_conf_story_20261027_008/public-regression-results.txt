@@ -1,0 +1,9 @@
+test_admin_paths_and_foreign_origins_are_denied (__main__.PublicAccess.test_admin_paths_and_foreign_origins_are_denied) ... ok
+test_mutation_actor_and_logout_and_public_choice_restrictions (__main__.PublicAccess.test_mutation_actor_and_logout_and_public_choice_restrictions) ... ok
+test_private_owner_login_and_activation_still_available (__main__.PublicAccess.test_private_owner_login_and_activation_still_available) ... ok
+test_public_login_is_demo_only_and_cookie_secure (__main__.PublicAccess.test_public_login_is_demo_only_and_cookie_secure) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.454s
+
+OK

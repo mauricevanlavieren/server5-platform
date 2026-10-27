@@ -1,0 +1,17 @@
+{
+  "result": "PASS",
+  "checks": [
+    "real public HTTPS landing and branding",
+    "private-route explanation dialog",
+    "mobile entry button above fold",
+    "automatic five-step highlighted tour",
+    "three filled story dossiers",
+    "320px no horizontal overflow",
+    "existing dossier tour populated",
+    "manual tour reopen and Escape",
+    "public reset/history/admin refused"
+  ],
+  "errors": [],
+  "scope": "read-only live business checks; demo session/audit only, no live reset",
+  "ngrok_warning": "automated client sends ngrok-skip-browser-warning; first human visit may show Visit Site"
+}

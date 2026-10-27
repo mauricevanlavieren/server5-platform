@@ -1,0 +1,22 @@
+{
+  "result": "PASS",
+  "source_files": 18,
+  "service": "active",
+  "workflow_sha256": "27bd337568fc72a78036562366da343073ef758bc6f258d992d43ce850fa97ed",
+  "export_sha256": "7ea5ef2af7eab58c5ab06a858d81d67215872f09fa1c3d3a877da1d70dab48a0",
+  "control_totals": {
+    "revenue_cents": 104000,
+    "net_received_cents": 78500,
+    "open_cents": 47340
+  },
+  "featured": [
+    "W117",
+    "W118",
+    "W119"
+  ],
+  "missing_part": "Veiligheidscilinder SKG*** 40/50 maatwerk \u2014 demo",
+  "missing_part_stock": 0,
+  "live_resets": 0,
+  "workflow_matches_deployment_snapshot": true,
+  "financial_export_matches_before_seed": true
+}

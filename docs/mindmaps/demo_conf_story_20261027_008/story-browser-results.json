@@ -1,0 +1,27 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "scenario": "merk-landingspagina-en-afgeschermde-medewerkersknop",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "gevulde-demo-en-vijf-interactieve-stappen",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "klantvriendelijke-validatie-en-laadindicator",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "beheerdersreset-bewaart-historie-en-accounts",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "verloren-resetantwoord-wordt-niet-dubbel-verwerkt",
+      "result": "geslaagd"
+    }
+  ],
+  "errors": [],
+  "environment": "isolated fictitious state; public landing markup via local Host test; real public HTTPS checked separately"
+}

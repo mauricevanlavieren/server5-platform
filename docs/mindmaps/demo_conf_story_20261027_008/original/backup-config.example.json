@@ -1,0 +1,13 @@
+{
+  "status": "externe back-up: nog niet ingericht en getest",
+  "destination": null,
+  "destination_outside_server4_confirmed": false,
+  "owner_permission_reference": null,
+  "responsible_person": null,
+  "frequency": null,
+  "retention": null,
+  "encryption_and_key_custody": null,
+  "restore_goals": null,
+  "last_external_restore_test": null,
+  "active": false
+}

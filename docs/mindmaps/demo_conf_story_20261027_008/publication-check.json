@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "http_publication_matches": true,
+  "nodes_before": 4,
+  "nodes_during": 6,
+  "nodes_after": 4,
+  "card_status": "succeeded",
+  "broker_record": null,
+  "done_nodes_are_leaves": true
+}

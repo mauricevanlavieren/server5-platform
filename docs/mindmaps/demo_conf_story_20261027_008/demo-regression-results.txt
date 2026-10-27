@@ -1,0 +1,8 @@
+test_demo_cannot_manage_accounts_or_import_and_csrf_remains (__main__.DemoAccess.test_demo_cannot_manage_accounts_or_import_and_csrf_remains) ... ok
+test_entry_mutation_replay_and_revoked_logout (__main__.DemoAccess.test_entry_mutation_replay_and_revoked_logout) ... ok
+test_real_account_login_remains_and_demo_expires (__main__.DemoAccess.test_real_account_login_remains_and_demo_expires) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.455s
+
+OK

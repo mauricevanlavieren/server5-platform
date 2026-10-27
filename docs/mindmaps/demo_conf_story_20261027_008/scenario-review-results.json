@@ -1,0 +1,15 @@
+{
+  "result": "PASS",
+  "source_sha256": "625f2b11915c60a8c61018569820e9e5479c47d50867be3a33ca97331746841a",
+  "scenario_corrected": true,
+  "job": "W119",
+  "required_part": "Veiligheidscilinder SKG*** 40/50 maatwerk \u2014 demo",
+  "required_part_stock": 0,
+  "history_appended": true,
+  "old_history_retained": true,
+  "revision_after": 177,
+  "after_workflow_sha256": "27bd337568fc72a78036562366da343073ef758bc6f258d992d43ce850fa97ed",
+  "local_snapshot": "/home/mau/server4-mobile-demo/backups/snapshot-story-final-1793124046940309725",
+  "snapshot_files": 40,
+  "export_sha256": "7ea5ef2af7eab58c5ab06a858d81d67215872f09fa1c3d3a877da1d70dab48a0"
+}

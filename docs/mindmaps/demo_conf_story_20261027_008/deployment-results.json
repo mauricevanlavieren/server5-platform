@@ -1,0 +1,59 @@
+{
+  "result": "PASS",
+  "hostname": "server4",
+  "source_files": 18,
+  "source_sha256": {
+    "demo_story.py": "625f2b11915c60a8c61018569820e9e5479c47d50867be3a33ca97331746841a",
+    "demo-presentatie.md": "35d9967aa9b4b19ad2f0fe129978d3f3b7222305bfbcae9ffa9eb219890dfc7d",
+    "secure_app.py": "2bf8f968e643d1ce59ec4469125794f3a6f693f4c2392f17ace848d00f45955b",
+    "data.py": "7cec4e73e049f7845250559ed7d1143e29c7a714bf0ff5e7926c00550c990474",
+    "business.py": "992e30e07663af6bd40123eaae5c28ad59c3b5c417dbb777cb954e4ebe300db6",
+    "recovery.py": "4a4306765d1b6f048834a7ef92b35881f7cae1b2c3b0e1e2dfd6f5866aef4021",
+    "README.md": "6c620934818c1e34102b1d2ab136ba78d6d59f64566918ed69ba21ef28791efe",
+    "static/public-login.html": "b2cf84eba956a0280a4c823a30f39b97f765c34ed83f771b4aec2799a73c57bb",
+    "static/public-login.js": "b49a59b96c5ba5efd0d5e2700699552e09630de719565704eb4508faa3c701ed",
+    "static/login.js": "8d9630bc31b6dd79b0a2536075067535e98a6afc62ad59c319fe52f6dee0a61b",
+    "static/index.html": "830f4c8a5072f18e36e6090a3e6be3f7a23ca1e8cb32ee3bf5d65cb5e25f398a",
+    "static/app.js": "27678c14b801df79b00f883ac05490d04ab5db8381e9d1e4bd5d636a004040f4",
+    "static/demo-ui.js": "dee137db3ba85c7564218243ac8fa38dafed97317e354086590cfb56ef469c75",
+    "static/style.css": "5ce3202621b2f28811ed17b0bd3b5e6c18989a5d907678143eef707a46de2e84",
+    "static/pilot.html": "6dea45dc566078b6f821789472e0e6c3c0d19297af9382dc19d043c51a6aef00",
+    "static/pilot.js": "f482b0c5db9b860caeeb0b2af6ec50a04884fcc1d5888cf622e0af25183815c9",
+    "static/proefvoorstel.html": "c8067c8cc23e257ad10238eeb2dacddb03c850fda29e2126bf36ae100bcf46d0",
+    "static/delivery.js": "4b78962df907a29988a3eba950251c94134944732f77457b27bcc4a73f8c2982"
+  },
+  "before_workflow_sha256": "fc976fd8006aea5161726972d29c0b542c0ba61e56437b615803e2dd0c905bf1",
+  "after_workflow_sha256": "27bd337568fc72a78036562366da343073ef758bc6f258d992d43ce850fa97ed",
+  "old_orders_preserved": true,
+  "old_jobs_preserved": true,
+  "old_stock_preserved": true,
+  "old_tariffs_preserved": true,
+  "old_history_preserved": true,
+  "commercial_choices_preserved": true,
+  "accounts_unchanged": true,
+  "featured": [
+    "W117",
+    "W118",
+    "W119"
+  ],
+  "catalog_products": 5,
+  "financial_export_byte_identical": true,
+  "export_sha256": "7ea5ef2af7eab58c5ab06a858d81d67215872f09fa1c3d3a877da1d70dab48a0",
+  "control_totals": {
+    "revenue_cents": 104000,
+    "net_received_cents": 78500,
+    "open_cents": 47340
+  },
+  "revision_before": 175,
+  "revision_after": 177,
+  "backup": "/home/mau/server4-mobile-demo/backups/demo_conf_story_20261027_008",
+  "local_snapshot": "/home/mau/server4-mobile-demo/backups/snapshot-story-final-1793124046940309725",
+  "snapshot_files": 40,
+  "health": {
+    "authentication": "accounts",
+    "data": "fictional",
+    "demo_access": "passwordless-fictional",
+    "external_ai_required": false,
+    "status": "ok"
+  }
+}

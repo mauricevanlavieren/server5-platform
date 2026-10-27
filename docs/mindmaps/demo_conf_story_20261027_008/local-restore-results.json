@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "initial_restore_business_byte_identical": true,
+  "control_totals": {
+    "revenue_cents": 104000,
+    "net_received_cents": 78500,
+    "open_cents": 47340
+  },
+  "before_history_count": 147,
+  "before_jobs": 15,
+  "reset_archived_previous_state_exactly": true,
+  "accounts_preserved": true,
+  "restored_users": 0,
+  "reset_archive_in_backup": true,
+  "second_restore_archive_exact": true,
+  "second_restore_business_byte_identical": true,
+  "replay_safe": true,
+  "source": "isolated local restore/reset on Server4; no live reset",
+  "featured": 3
+}

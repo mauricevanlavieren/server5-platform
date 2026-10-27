@@ -1,0 +1,170 @@
+{
+  "result": "PASS",
+  "hostname": "server4",
+  "health": {
+    "authentication": "accounts",
+    "data": "fictional",
+    "external_ai_required": false,
+    "status": "ok"
+  },
+  "endpoints": {
+    "/api/dashboard": 401,
+    "/api/workflow": 401,
+    "/api/accounting-export": 401,
+    "/api/users": 401,
+    "/api/audit": 401,
+    "/login": 200,
+    "/login.js": 200,
+    "/style.css": 200
+  },
+  "live_state_sha256": "4772b51acd7adca63ceab519c28744e7c9d8f157344b1a3eaca18b4aa5299f56",
+  "live_state_byte_identical": true,
+  "backup": "/home/mau/server4-mobile-demo/backups/demo_conf_pilot_20261027_004",
+  "snapshot": {
+    "path": "/home/mau/server4-mobile-demo/backups/snapshot-20261027T145845990170Z",
+    "files": 27,
+    "external_copy": "niet uitgevoerd"
+  },
+  "source_sha256": {
+    "secure_app.py": "0f09669d3fe5dc809bcabde9e308bdb337aa8df1806c12fa68d4b47bbed9b861",
+    "security.py": "bb6980c1517b6077d31b7a15350e4b6e97e4b9c7755e9b1e1c017e68f8abe83d",
+    "pilot.py": "04aa600525d33181b27ec6cfac5b537fd7f35ebef6bac74ab792b243548f5751",
+    "requirements.txt": "8c656a31d2ab14c366a71b07ce1c4c7ac4cbfb153176a9da89449187d17196ea",
+    "migratieformaat.md": "8f6de74ead20f972f4aea76a0e332f79ba3ed2ebde1899d81eefc4a377708a89",
+    "aankoopbeslissingen.md": "bb35116a65f683f9903902926b953397eb7a1df4b02114a5351832d3eeba676b",
+    "business.py": "399580005d317fd24e6411bb07d4e502e33bc8b9dac4c5d29db71b3c004dcafb",
+    "workflow.py": "1901981e0d90d62dbf729179c29232d05ca6f7d32b3597c1b8cc3742ee3fe951",
+    "data.py": "4ffd12a32fab77ceba4fc5355d7f602ec65139d53c452e27b6c758ab70609240",
+    "improvements.py": "e8437d847131ddc0fa187cb7c51af1c7b810f181a8c3e3e450b9e4fb8c91a88c",
+    "recovery.py": "878be3eef6aa52b3d1fa99515142b2e05305de7d9636e00eccd978f7c5f85c72",
+    "README.md": "c1cabbda66dedb2449f086954fc662a2d694e410f210fd3872036501f3eacd08",
+    "static/app.js": "7859c0fafa056cc14fd5f6deecb9a6cc4446fc55157989459014738249d675b2",
+    "static/style.css": "f16de9a1f6e22f3ebff797ca1491809ef264fceb9a202202d794a875dd48be11",
+    "static/index.html": "1aa8eeae43188d3c358696729b1b14084ba63827e61e73c62b4fcf3370e1afcd",
+    "static/praktijkproef.html": "0be9e1b8d6eb3bdbb5d01ef7021e139b0daffdc8183a0ba702f070cc8dc6eb46",
+    "static/login.html": "c07cedf13e7febf6510d63b6771c8e85f3e2f465973afc892b911afdb249ce53",
+    "static/login.js": "c76c6f3cfc32fca1433bdf8ccf76c0acdb5f3a9e36835e77d45985c252634d84",
+    "static/pilot.html": "a2625aa82b7d626b2f9ab63a921705d44f61a9498e812651c4a2740504650270",
+    "static/pilot.js": "9e6e4c129c2c4805c3b97a643e08b4bcf50ade542e00cfac25fa3385a36cf89a"
+  },
+  "reconciliation": {
+    "balanced": true,
+    "ready_for_external_import": false,
+    "expected": {
+      "revenue_cents": 103000,
+      "net_received_cents": 77290,
+      "open_cents": 47340
+    },
+    "export": {
+      "revenue_cents": 103000,
+      "net_received_cents": 77290,
+      "open_cents": 47340
+    },
+    "differences": [],
+    "source_issues": [
+      {
+        "line": 2,
+        "id": "F104",
+        "message": "Bronvelden ontbreken: issued_date"
+      },
+      {
+        "line": 3,
+        "id": "F104-legacy-1",
+        "message": "Bronvelden ontbreken: method|reference"
+      },
+      {
+        "line": 4,
+        "id": "CF106",
+        "message": "Bronvelden ontbreken: issued_date"
+      },
+      {
+        "line": 6,
+        "id": "CF106-legacy-1",
+        "message": "Bronvelden ontbreken: method|reference"
+      },
+      {
+        "line": 8,
+        "id": "CF106-legacy-2",
+        "message": "Bronvelden ontbreken: method|reference"
+      },
+      {
+        "line": 11,
+        "id": "CF105",
+        "message": "Bronvelden ontbreken: issued_date"
+      },
+      {
+        "line": 12,
+        "id": "CF110",
+        "message": "Bronvelden ontbreken: issued_date"
+      },
+      {
+        "line": 13,
+        "id": "CF110-legacy-1",
+        "message": "Bronvelden ontbreken: method|reference"
+      },
+      {
+        "line": 14,
+        "id": "CF111",
+        "message": "Bronvelden ontbreken: issued_date"
+      },
+      {
+        "line": 15,
+        "id": "CF111-legacy-1",
+        "message": "Bronvelden ontbreken: method|reference"
+      },
+      {
+        "line": 16,
+        "id": "CF112",
+        "message": "Bronvelden ontbreken: issued_date"
+      },
+      {
+        "line": 17,
+        "id": "CF112-legacy-1",
+        "message": "Bronvelden ontbreken: method|reference"
+      },
+      {
+        "line": 18,
+        "id": "F101",
+        "message": "Bronvelden ontbreken: issued_date"
+      },
+      {
+        "line": 19,
+        "id": "B101",
+        "message": "Bronvelden ontbreken: reference"
+      },
+      {
+        "line": 20,
+        "id": "F102",
+        "message": "Bronvelden ontbreken: issued_date"
+      },
+      {
+        "line": 21,
+        "id": "F103",
+        "message": "Bronvelden ontbreken: issued_date"
+      },
+      {
+        "line": 22,
+        "id": "B102",
+        "message": "Bronvelden ontbreken: reference"
+      },
+      {
+        "line": 23,
+        "id": "B1",
+        "message": "Bronvelden ontbreken: date"
+      },
+      {
+        "line": 24,
+        "id": "PB1",
+        "message": "Bronvelden ontbreken: date"
+      }
+    ],
+    "export_rows": 27,
+    "opening_balances_cents": 0,
+    "external_import": "niet gevalideerd",
+    "business_date": "2026-10-26",
+    "generated_at": "2026-10-27T14:55:56.836692+00:00",
+    "revision": 168
+  },
+  "service": "active",
+  "first_owner": "pending local activation; no credentials printed"
+}

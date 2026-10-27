@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "file": "static/pilot.js",
+  "sha256": "9e6e4c129c2c4805c3b97a643e08b4bcf50ade542e00cfac25fa3385a36cf89a",
+  "snapshot": {
+    "path": "/home/mau/server4-mobile-demo/backups/snapshot-20261027T145845990170Z",
+    "files": 27,
+    "external_copy": "niet uitgevoerd"
+  }
+}

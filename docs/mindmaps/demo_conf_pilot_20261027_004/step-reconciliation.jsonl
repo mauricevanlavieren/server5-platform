@@ -1,0 +1,122 @@
+{"label":"button:Rondleiding","revision":168,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Rondleiding","revision":168,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Nieuwe oefenronde maken — historie bewaren","revision":169,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Dashboard","revision":169,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Vul fictief voorbeeld in","revision":169,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar gebruikelijke werktijden","revision":170,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Dashboard","revision":170,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Vul fictief voorbeeld in","revision":170,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar gebruikelijke werktijden","revision":171,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Dashboard","revision":171,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Vul fictief voorbeeld in","revision":171,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar gebruikelijke werktijden","revision":172,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Dashboard","revision":172,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar offerteregels","revision":173,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Maak werkorder uit opgeslagen offerte","revision":174,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar afspraak en verantwoord huidige afwijking","revision":175,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Plan werkorder","revision":176,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Materiaal reserveren voor W116","revision":176,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Reserveer vrije voorraad voor werkorder","revision":177,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Gebruik 2 × Rondleiding D2 cilinder","revision":178,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Definitief afronden en naar administratie","revision":179,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Maak concept uit registratie","revision":180,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Maak definitief na controle","revision":181,"result":"PASS","export_rows":28,"net_receipts_cents":77290,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Bewaar fictieve betaling","revision":183,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"scenario:A-monteur-offerte-tot-betaald-en-afgesloten","revision":184,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Dashboard","revision":184,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Bewaar direct opdrachtakkoord","revision":185,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Plan werkorder","revision":186,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Onderdeelbehoefte registreren","revision":186,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Wachten op onderdeel vastleggen","revision":187,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Interne inkooporder aanmaken — nog niet besteld","revision":188,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Bestelling expliciet registreren — test, geen verzending","revision":189,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Gedeeltelijke levering ontvangen","revision":190,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Gedeeltelijke levering ontvangen","revision":191,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Apart vervolg plannen — diagnosebezoek behouden","revision":192,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Klantopvolging vastleggen","revision":192,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Interne klantopvolging — geen verzending","revision":193,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Materiaal reserveren voor W117","revision":193,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Reserveer vrije voorraad voor werkorder","revision":194,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Gebruik 2 × TEST rondleiding speciaal D2","revision":195,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Definitief afronden en naar administratie","revision":196,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Maak concept uit registratie","revision":197,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Maak definitief na controle","revision":198,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"scenario:B-diagnose-inkoop-deellevering-opvolging-vervolg-facturatie","revision":199,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"button:Rondleiding","revision":199,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"button:Zoek artikel en open winkelverkoop","revision":199,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"button:Verkoop dit artikel","revision":199,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"button:Winkelbalie → fictieve contante verkoop en voorraadafboeking","revision":200,"result":"PASS","export_rows":32,"net_receipts_cents":91810,"net_revenue_cents":126000,"invoice_count":14}
+{"label":"button:Voorraad & beheer","revision":200,"result":"PASS","export_rows":32,"net_receipts_cents":91810,"net_revenue_cents":126000,"invoice_count":14}
+{"label":"button:Winkelretour en fictieve terugbetaling","revision":201,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Rondleiding","revision":201,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"scenario:C-artikelzoeken-verkoop-deelretour-geld-en-voorraad","revision":201,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Nieuwe oefenronde maken — historie bewaren","revision":202,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Rondleiding","revision":168,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Nieuwe oefenronde maken — historie bewaren","revision":169,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Dashboard","revision":169,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Vul fictief voorbeeld in","revision":169,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar gebruikelijke werktijden","revision":170,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Dashboard","revision":170,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Vul fictief voorbeeld in","revision":170,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar gebruikelijke werktijden","revision":171,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Dashboard","revision":171,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Vul fictief voorbeeld in","revision":171,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar gebruikelijke werktijden","revision":172,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Dashboard","revision":172,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar offerteregels","revision":173,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Maak werkorder uit opgeslagen offerte","revision":174,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Bewaar afspraak en verantwoord huidige afwijking","revision":175,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Plan werkorder","revision":176,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Materiaal reserveren voor W116","revision":176,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Reserveer vrije voorraad voor werkorder","revision":177,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Gebruik 2 × Rondleiding D2 cilinder","revision":178,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Definitief afronden en naar administratie","revision":179,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Maak concept uit registratie","revision":180,"result":"PASS","export_rows":27,"net_receipts_cents":77290,"net_revenue_cents":103000,"invoice_count":11}
+{"label":"button:Maak definitief na controle","revision":181,"result":"PASS","export_rows":28,"net_receipts_cents":77290,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Bewaar fictieve betaling","revision":183,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"scenario:A-monteur-offerte-tot-betaald-en-afgesloten","revision":184,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Dashboard","revision":184,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Bewaar direct opdrachtakkoord","revision":185,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Plan werkorder","revision":186,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Onderdeelbehoefte registreren","revision":186,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Wachten op onderdeel vastleggen","revision":187,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Interne inkooporder aanmaken — nog niet besteld","revision":188,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Bestelling expliciet registreren — test, geen verzending","revision":189,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Gedeeltelijke levering ontvangen","revision":190,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Gedeeltelijke levering ontvangen","revision":191,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Apart vervolg plannen — diagnosebezoek behouden","revision":192,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Klantopvolging vastleggen","revision":192,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Interne klantopvolging — geen verzending","revision":193,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Materiaal reserveren voor W117","revision":193,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Reserveer vrije voorraad voor werkorder","revision":194,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Gebruik 2 × TEST rondleiding speciaal D2","revision":195,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Definitief afronden en naar administratie","revision":196,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Maak concept uit registratie","revision":197,"result":"PASS","export_rows":29,"net_receipts_cents":89390,"net_revenue_cents":113000,"invoice_count":12}
+{"label":"button:Maak definitief na controle","revision":198,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"scenario:B-diagnose-inkoop-deellevering-opvolging-vervolg-facturatie","revision":199,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"button:Rondleiding","revision":199,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"button:Zoek artikel en open winkelverkoop","revision":199,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"button:Verkoop dit artikel","revision":199,"result":"PASS","export_rows":30,"net_receipts_cents":89390,"net_revenue_cents":124000,"invoice_count":13}
+{"label":"button:Winkelbalie → fictieve contante verkoop en voorraadafboeking","revision":200,"result":"PASS","export_rows":32,"net_receipts_cents":91810,"net_revenue_cents":126000,"invoice_count":14}
+{"label":"button:Voorraad & beheer","revision":200,"result":"PASS","export_rows":32,"net_receipts_cents":91810,"net_revenue_cents":126000,"invoice_count":14}
+{"label":"button:Winkelretour en fictieve terugbetaling","revision":201,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Rondleiding","revision":201,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"scenario:C-artikelzoeken-verkoop-deelretour-geld-en-voorraad","revision":201,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Nieuwe oefenronde maken — historie bewaren","revision":202,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"scenario:rondleiding-nieuwe-ronde-bewaart-eerdere-historie","revision":202,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Dashboard","revision":202,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Nieuwe opdracht","revision":202,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Klantintake → nieuwe werkorder","revision":203,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Bewaar direct opdrachtakkoord","revision":204,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Dashboard","revision":204,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Concept tussentijds opslaan","revision":205,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Concept tussentijds opslaan","revision":205,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Actuele dossier ophalen","revision":205,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"scenario:twee-vensters-conflict-en-invoerbehoud","revision":205,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Concept tussentijds opslaan","revision":206,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Dashboard","revision":206,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"scenario:automatische-synchronisatie-en-herladen","revision":206,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Concept tussentijds opslaan","revision":207,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"scenario:verloren-antwoord-geen-dubbele-verwerking","revision":207,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"button:Concept tussentijds opslaan","revision":208,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}
+{"label":"scenario:opslagfout-begrijpelijk-en-herstelbaar","revision":208,"result":"PASS","export_rows":34,"net_receipts_cents":90600,"net_revenue_cents":125000,"invoice_count":14}

@@ -1,0 +1,25 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "scenario": "niet-aangemeld-en-eigenaarslogin",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "gebruikersbeheer-en-beperkte-monteurswerkplek",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "proefimport-preview-fouten-en-herhaling",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "administratie-en-sessie-beeindigen",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "mobiel-scherm-geen-horizontale-overloop",
+      "result": "geslaagd"
+    }
+  ]
+}

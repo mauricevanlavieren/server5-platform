@@ -1,0 +1,4 @@
+PASS twee-vensters-conflict-en-invoerbehoud
+PASS automatische-synchronisatie-en-herladen
+PASS verloren-antwoord-geen-dubbele-verwerking
+PASS opslagfout-begrijpelijk-en-herstelbaar

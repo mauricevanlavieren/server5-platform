@@ -1,0 +1,31 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "scenario": "A-monteur-offerte-tot-betaald-en-afgesloten",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "B-diagnose-inkoop-deellevering-opvolging-vervolg-facturatie",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "C-artikelzoeken-verkoop-deelretour-geld-en-voorraad",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "rondleiding-nieuwe-ronde-bewaart-eerdere-historie",
+      "result": "geslaagd"
+    }
+  ],
+  "errors": [],
+  "first_run": {
+    "article": "Rondleiding D2 cilinder",
+    "created_at": "2026-10-27T14:50:28.800964+00:00",
+    "id": "D2",
+    "monteur": "W116",
+    "onderdeel": "W117",
+    "quantity": 4,
+    "source": "Bewust door eigenaar gemaakte oefenronde; eerdere rondes/historie behouden"
+  }
+}

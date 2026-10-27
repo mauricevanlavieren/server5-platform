@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "source": "existing SSH tunnel to Server4, local HTTP",
+  "checks": [
+    "login redirect",
+    "login HTML and assets",
+    "1366 and 390 pixels",
+    "no horizontal overflow",
+    "protected APIs 401"
+  ],
+  "authenticated_live_acceptance": "pending owner activation; no live test account created",
+  "errors": []
+}

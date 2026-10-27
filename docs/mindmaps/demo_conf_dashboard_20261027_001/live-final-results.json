@@ -1,0 +1,16 @@
+{
+  "hash": "934222da907ff39c5ef826a66fd0482a59440c80ef480a426e522856a0bb55a3",
+  "health": {
+    "status": "ok",
+    "data": "fictional",
+    "ai": "local-rules",
+    "external_ai_required": false
+  },
+  "result": "PASS",
+  "live_state_unchanged": true,
+  "published_assets": {
+    "/app.js": "e3e25a059408a5acd4e3fe0eeae196c2929338a526dfa785b1343dc36e729d3f",
+    "/style.css": "8af29e3cc1f38b3ff1a6c2e4a8ad38db8e8a5e0a02583c93affcdff6eb5b23ad",
+    "/": "ead8eed22c258259fd2e0682b80ce03472318c6c8e7aa08310f5536f86c049f6"
+  }
+}

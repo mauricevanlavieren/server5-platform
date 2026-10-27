@@ -1,0 +1,31 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "width": 1366,
+      "attention_before_planning": true,
+      "collapsed_timeline": true,
+      "payment_count": 7,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 760,
+      "attention_before_planning": true,
+      "collapsed_timeline": true,
+      "payment_count": 7,
+      "overflow": false,
+      "clipped": []
+    },
+    {
+      "width": 390,
+      "attention_before_planning": true,
+      "collapsed_timeline": true,
+      "payment_count": 7,
+      "overflow": false,
+      "clipped": []
+    }
+  ],
+  "simulation_time": "16:30",
+  "errors": []
+}

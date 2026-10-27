@@ -1,0 +1,49 @@
+{
+  "result": "PASS",
+  "hostname": "server4",
+  "health": {
+    "status": "ok",
+    "data": "fictional",
+    "ai": "local-rules",
+    "external_ai_required": false
+  },
+  "endpoints": {
+    "/api/dashboard": {
+      "status": 200,
+      "sha256": "4afa5fca1b9a29eddfccf9e688a9f8f0ec89e7546f60797bd6e6175e4161f0c8"
+    },
+    "/api/workflow": {
+      "status": 200,
+      "sha256": "5a4bc2761133cf77a8e133f8cbf66f31e99072c2acfb0fabaf9648edbf910bce"
+    },
+    "/api/accounting-export": {
+      "status": 200,
+      "sha256": "011303b0f0fea035d89f290c665a2c6c84a55dce5cc069fad1e349d128fb1eea"
+    },
+    "/": {
+      "status": 200,
+      "sha256": "71a8c656ff276589b5b79aafb0fe7bdb29ec8f634f052b29d4cb29325c90c525"
+    },
+    "/app.js": {
+      "status": 200,
+      "sha256": "c20303d988785044d9f0836aef89acae93fbd33e08f47d9309c216e13cc6e889"
+    },
+    "/style.css": {
+      "status": 200,
+      "sha256": "5e8e3362ea9b073d9b9ce510e5e3ae30f78d3247151f9daa32c6bb182eb464f1"
+    }
+  },
+  "live_state_sha256": "934222da907ff39c5ef826a66fd0482a59440c80ef480a426e522856a0bb55a3",
+  "live_state_byte_identical": true,
+  "backup": "/home/mau/server4-mobile-demo/backups/demo_conf_daily_20261027_002",
+  "new_snapshot": {
+    "path": "/home/mau/server4-mobile-demo/backups/snapshot-20261027T070331490551Z",
+    "files": 13
+  },
+  "regressions": [
+    "W106",
+    "W109"
+  ],
+  "revenue_cents": 102000,
+  "open_cents": 47340
+}

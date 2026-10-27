@@ -1,0 +1,30 @@
+{
+  "results": [
+    {
+      "scenario": "waarschuwing-dashboard-herstel",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "teamplanning",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "betaling-terugboeken-opnieuw-afsluiten",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "voorraad-reservering-vrijgeven-verbruik",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "inkoop-deelontvangst-vervolgbezoek",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "winkelverkoop-retour-terugbetaling",
+      "result": "geslaagd"
+    }
+  ],
+  "errors": [],
+  "mobile_overflow": false
+}

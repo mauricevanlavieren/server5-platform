@@ -1,0 +1,92 @@
+[
+  {
+    "step": 22,
+    "label": "button:Maak concept uit registratie",
+    "screenshot": "routes/022-button-Maak-concept-uit-registratie.png",
+    "revision": 160
+  },
+  {
+    "step": 36,
+    "label": "button:Reserveer vrije voorraad voor werkorder",
+    "screenshot": "routes/036-button-Reserveer-vrije-voorraad-voor-werkorder.png",
+    "revision": 172
+  },
+  {
+    "step": 37,
+    "label": "button:Geef niet-gebruikt materiaal vrij",
+    "screenshot": "routes/037-button-Geef-niet-gebruikt-materiaal-vrij.png",
+    "revision": 173
+  },
+  {
+    "step": 39,
+    "label": "button:Reserveer vrije voorraad voor werkorder",
+    "screenshot": "routes/039-button-Reserveer-vrije-voorraad-voor-werkorder.png",
+    "revision": 174
+  },
+  {
+    "step": 40,
+    "label": "Gebruik 1 \u00d7 TEST Werkplek voorraadcilinder",
+    "screenshot": "routes/040-Gebruik-1-TEST-Werkplek-voorraadcilinder.png",
+    "revision": 175
+  },
+  {
+    "step": 42,
+    "label": "button:Maak concept uit registratie",
+    "screenshot": "routes/042-button-Maak-concept-uit-registratie.png",
+    "revision": 177
+  },
+  {
+    "step": 59,
+    "label": "button:Reserveer vrije voorraad voor werkorder",
+    "screenshot": "routes/059-button-Reserveer-vrije-voorraad-voor-werkorder.png",
+    "revision": 187
+  },
+  {
+    "step": 60,
+    "label": "button:Gebruik 1 \u00d7 TEST Werkplek speciaal onderdeel",
+    "screenshot": "routes/060-button-Gebruik-1-TEST-Werkplek-speciaal-onderdeel.png",
+    "revision": 188
+  },
+  {
+    "step": 62,
+    "label": "button:Maak concept uit registratie",
+    "screenshot": "routes/062-button-Maak-concept-uit-registratie.png",
+    "revision": 190
+  },
+  {
+    "step": 68,
+    "label": "button:Winkelbalie \u2192 fictieve contante verkoop en voorraadafboeking",
+    "screenshot": "routes/068-button-Winkelbalie-fictieve-contante-verkoop-en-voorraadafbo.png",
+    "revision": 192
+  },
+  {
+    "step": 70,
+    "label": "Winkelretour 1",
+    "screenshot": "routes/070-Winkelretour-1.png",
+    "revision": 193
+  },
+  {
+    "step": 72,
+    "label": "Winkelretour 2",
+    "screenshot": "routes/072-Winkelretour-2.png",
+    "revision": 194
+  },
+  {
+    "step": 106,
+    "label": "button:Reserveer vrije voorraad voor werkorder",
+    "screenshot": "routes/106-button-Reserveer-vrije-voorraad-voor-werkorder.png",
+    "revision": 208
+  },
+  {
+    "step": 107,
+    "label": "button:Gebruik 1 \u00d7 TEST Werkplek voorraadcilinder",
+    "screenshot": "routes/107-button-Gebruik-1-TEST-Werkplek-voorraadcilinder.png",
+    "revision": 209
+  },
+  {
+    "step": 109,
+    "label": "button:Maak concept uit registratie",
+    "screenshot": "routes/109-button-Maak-concept-uit-registratie.png",
+    "revision": 211
+  }
+]

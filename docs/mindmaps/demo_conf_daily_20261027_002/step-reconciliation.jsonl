@@ -1,0 +1,122 @@
+{"label":"button:Controleer betaalgegevens","revision":151,"result":"PASS","export_rows":23,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Vul betaalgegevens aan","revision":151,"result":"PASS","export_rows":23,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Bewaar betaalgegevens","revision":152,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Dashboard","revision":152,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"scenario:waarschuwing-dashboard-herstel","revision":152,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Dashboard","revision":152,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Vul fictief voorbeeld in","revision":152,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Bewaar gebruikelijke werktijden","revision":153,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Dashboard","revision":153,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Vul fictief voorbeeld in","revision":153,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Bewaar gebruikelijke werktijden","revision":154,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Dashboard","revision":154,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Vul fictief voorbeeld in","revision":154,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Bewaar gebruikelijke werktijden","revision":155,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"scenario:teamplanning","revision":155,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Dashboard","revision":155,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Nieuwe opdracht","revision":155,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Klantintake → nieuwe werkorder","revision":156,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Bewaar direct opdrachtakkoord","revision":157,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Plan werkorder","revision":158,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Definitief afronden en naar administratie","revision":159,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Maak concept uit registratie","revision":160,"result":"PASS","export_rows":24,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"button:Maak definitief na controle","revision":161,"result":"PASS","export_rows":25,"net_receipts_cents":76080,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Bewaar fictieve betaling","revision":164,"result":"PASS","export_rows":27,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Bewaar fictieve betaling","revision":166,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Dashboard","revision":167,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"scenario:betaling-terugboeken-opnieuw-afsluiten","revision":167,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Voorraad & beheer","revision":167,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Boek beginvoorraad / lokale ontvangst","revision":168,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Dashboard","revision":168,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Nieuwe opdracht","revision":168,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Klantintake → nieuwe werkorder","revision":169,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Bewaar direct opdrachtakkoord","revision":170,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Plan werkorder","revision":171,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Materiaal reserveren voor W114","revision":171,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Reserveer vrije voorraad voor werkorder","revision":172,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Geef niet-gebruikt materiaal vrij","revision":173,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Materiaal reserveren voor W114","revision":173,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Reserveer vrije voorraad voor werkorder","revision":174,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"Gebruik 1 × TEST Werkplek voorraadcilinder","revision":175,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Definitief afronden en naar administratie","revision":176,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Maak concept uit registratie","revision":177,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"scenario:voorraad-reservering-vrijgeven-verbruik","revision":177,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Dashboard","revision":177,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Nieuwe opdracht","revision":177,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Klantintake → nieuwe werkorder","revision":178,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Bewaar direct opdrachtakkoord","revision":179,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Plan werkorder","revision":180,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Onderdeelbehoefte registreren","revision":180,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Wachten op onderdeel vastleggen","revision":181,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Interne inkooporder aanmaken — nog niet besteld","revision":182,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Bestelling expliciet registreren — test, geen verzending","revision":183,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Gedeeltelijke levering ontvangen","revision":184,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Dashboard","revision":184,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Dashboard","revision":184,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Gedeeltelijke levering ontvangen","revision":185,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Apart vervolg plannen — diagnosebezoek behouden","revision":186,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Materiaal reserveren voor W115","revision":186,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Reserveer vrije voorraad voor werkorder","revision":187,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Gebruik 1 × TEST Werkplek speciaal onderdeel","revision":188,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Definitief afronden en naar administratie","revision":189,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Maak concept uit registratie","revision":190,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"scenario:inkoop-deelontvangst-vervolgbezoek","revision":190,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Voorraad & beheer","revision":190,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Boek beginvoorraad / lokale ontvangst","revision":191,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Dashboard","revision":191,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Winkelverkoop","revision":191,"result":"PASS","export_rows":29,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":11}
+{"label":"button:Winkelbalie → fictieve contante verkoop en voorraadafboeking","revision":192,"result":"PASS","export_rows":31,"net_receipts_cents":85762,"net_revenue_cents":110002,"invoice_count":12}
+{"label":"button:Voorraad & beheer","revision":192,"result":"PASS","export_rows":31,"net_receipts_cents":85762,"net_revenue_cents":110002,"invoice_count":12}
+{"label":"Winkelretour 1","revision":193,"result":"PASS","export_rows":33,"net_receipts_cents":84551,"net_revenue_cents":109001,"invoice_count":12}
+{"label":"button:Voorraad & beheer","revision":193,"result":"PASS","export_rows":33,"net_receipts_cents":84551,"net_revenue_cents":109001,"invoice_count":12}
+{"label":"Winkelretour 2","revision":194,"result":"PASS","export_rows":35,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"scenario:winkelverkoop-retour-terugbetaling","revision":194,"result":"PASS","export_rows":35,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Dashboard","revision":194,"result":"PASS","export_rows":35,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Controleer betaalgegevens","revision":194,"result":"PASS","export_rows":35,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Vul betaalgegevens aan","revision":194,"result":"PASS","export_rows":35,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Bewaar betaalgegevens","revision":195,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"scenario:historische-factuur-doorklik","revision":195,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Dashboard","revision":195,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Werktijden wijzigen","revision":195,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Werktijden vastleggen","revision":196,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Dashboard","revision":196,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Pauze, reistijd of afwezigheid","revision":196,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Pauze, reistijd of afwezigheid vastleggen","revision":197,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Dashboard","revision":197,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Pauze, reistijd of afwezigheid","revision":197,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Pauze, reistijd of afwezigheid vastleggen","revision":198,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Dashboard","revision":198,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Nieuwe opdracht","revision":198,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Klantintake → nieuwe werkorder","revision":199,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Bewaar direct opdrachtakkoord","revision":200,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Plan werkorder","revision":201,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Dashboard","revision":201,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Pauze, reistijd of afwezigheid","revision":201,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Pauze, reistijd of afwezigheid vastleggen","revision":202,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Dashboard","revision":202,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"scenario:dagafwijking-pauze-afwezig-reistijd","revision":202,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Dashboard","revision":202,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Offerte maken","revision":202,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Nieuwe offerte","revision":203,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Bewaar offerteregels","revision":204,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Maak werkorder uit opgeslagen offerte","revision":205,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Bewaar afspraak en verantwoord huidige afwijking","revision":206,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Plan werkorder","revision":207,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Materiaal reserveren voor W117","revision":207,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Reserveer vrije voorraad voor werkorder","revision":208,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Gebruik 1 × TEST Werkplek voorraadcilinder","revision":209,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Definitief afronden en naar administratie","revision":210,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Maak concept uit registratie","revision":211,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"scenario:vaste-prijs-materiaal-regressie","revision":211,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Dashboard","revision":211,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Heropen dossier met reden","revision":212,"result":"PASS","export_rows":36,"net_receipts_cents":83340,"net_revenue_cents":108000,"invoice_count":12}
+{"label":"button:Maak definitieve credit (demo)","revision":213,"result":"PASS","export_rows":37,"net_receipts_cents":83340,"net_revenue_cents":102000,"invoice_count":12}
+{"label":"button:Bewaar fictieve terugbetaling","revision":214,"result":"PASS","export_rows":38,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":12}
+{"label":"button:Maak vervangend concept met verwijzing","revision":215,"result":"PASS","export_rows":38,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":12}
+{"label":"button:Bewaar betaalgegevens","revision":216,"result":"PASS","export_rows":39,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":12}
+{"label":"scenario:betaalwaarschuwing-naar-eerdere-factuur","revision":216,"result":"PASS","export_rows":39,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":12}
+{"label":"dashboard-read-and-category-checks","revision":151,"result":"PASS","export_rows":23,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"rooster-inrichten-taak-verdwijnt","revision":152,"result":"PASS","export_rows":23,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"gereeddatum-en-termijn-berekenen-prioriteit","revision":154,"result":"PASS","export_rows":23,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"bestaande-facturatieregel-wijzigen","revision":155,"result":"PASS","export_rows":23,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}
+{"label":"dashboard-read-and-category-checks","revision":151,"result":"PASS","export_rows":23,"net_receipts_cents":76080,"net_revenue_cents":102000,"invoice_count":10}

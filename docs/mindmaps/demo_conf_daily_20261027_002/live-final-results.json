@@ -1,0 +1,22 @@
+{
+  "result": "PASS",
+  "live_state_unchanged": true,
+  "workflow_sha256": "934222da907ff39c5ef826a66fd0482a59440c80ef480a426e522856a0bb55a3",
+  "backup_manifest_valid": true,
+  "backup_includes_final_source_and_state": true,
+  "backup_files": 13,
+  "snapshot": "/home/mau/server4-mobile-demo/backups/snapshot-20261027T070331490551Z",
+  "receipts": {
+    "definition": "Netto ontvangen geld na terugboekingen en terugbetalingen, inclusief btw",
+    "channels": {
+      "bank": 44040,
+      "cash": 605,
+      "card": 0,
+      "unspecified": 34460
+    },
+    "gross_cents": 79105,
+    "refund_cents": 3025,
+    "reversal_cents": 5000,
+    "net_cents": 76080
+  }
+}

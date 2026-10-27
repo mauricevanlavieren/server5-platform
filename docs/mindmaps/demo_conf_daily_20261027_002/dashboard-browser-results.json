@@ -1,0 +1,24 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "width": 1366,
+      "overflow": false,
+      "kpis_and_first_attention_in_view": true,
+      "all_receipt_categories_reconcile": true
+    },
+    {
+      "width": 760,
+      "overflow": false,
+      "kpis_and_first_attention_in_view": false,
+      "all_receipt_categories_reconcile": true
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "kpis_and_first_attention_in_view": false,
+      "all_receipt_categories_reconcile": true
+    }
+  ],
+  "errors": []
+}

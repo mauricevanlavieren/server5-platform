@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "checks": [
+    "original 76080 net = 44040 bank + 605 cash + 0 card + 34460 unknown - 3025 refunds; 5000 reversal not double counted",
+    "roster task disappears and capacity recalculates",
+    "explicit invoice rule + audited completion correction; future date and invalid rules rejected; invoice unchanged",
+    "unknown completion date does not fabricate age or deadline",
+    "card and refunds reconcile independently with the signed export",
+    "urgent then overdue then blocked then administration then setup; duplicate work actions collapsed",
+    "configuration role guard",
+    "demo finance answers use current cashflow and definition"
+  ]
+}

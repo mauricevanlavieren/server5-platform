@@ -1,0 +1,32 @@
+{
+  "financial-tests.py": {
+    "exit_code": 0,
+    "stdout": "{\n  \"result\": \"PASS\",\n  \"checks\": [\n    \"payments and reversals\",\n    \"partial credit VAT\",\n    \"cumulative full-credit VAT\",\n    \"refund\",\n    \"replacement and no double ledger\",\n    \"close/reopen\",\n    \"historical F103 deduplication\",\n    \"W106/W109 unchanged\",\n    \"direct agreement/planning guards\",\n    \"release and return idempotency\",\n    \"cancellation and warranty\",\n    \"partial receiving and replay protection\"\n  ]\n}\n",
+    "stderr": ""
+  },
+  "operations-tests.py": {
+    "exit_code": 0,
+    "stdout": "{\n  \"result\": \"PASS\",\n  \"checks\": [\n    \"active vs reversed metadata warnings\",\n    \"closed metadata fix preserves all amounts and closure\",\n    \"dashboard unknown-method total equals active records\",\n    \"unknown is not free\",\n    \"recurring weekday and explicit day off\",\n    \"day override and all busy blocks\",\n    \"completed visit in history and capacity\",\n    \"reservation/free/release/use/return\",\n    \"persistent duplicate request protection\",\n    \"W109 unchanged\",\n    \"metadata route for archived payment during replacement concept\"\n  ]\n}\n",
+    "stderr": ""
+  },
+  "status-tests.py": {
+    "exit_code": 0,
+    "stdout": "{\n  \"result\": \"PASS\",\n  \"checks\": [\n    \"legacy metadata preserves amounts and originals\",\n    \"unknown sources explicit\",\n    \"reopened status consistent\",\n    \"credit selects refund\",\n    \"refund then close\",\n    \"reverse then correct after refund\",\n    \"request replay after response loss\",\n    \"storage failure and safe retry\",\n    \"export signs/links/mappings/missing fields\",\n    \"W106/W109 exact state retained\",\n    \"parts guide and premature finish guards\"\n  ]\n}\n",
+    "stderr": ""
+  },
+  "dashboard-tests.py": {
+    "exit_code": 0,
+    "stdout": "{\n  \"result\": \"PASS\",\n  \"checks\": [\n    \"unique attention with customer/responsibility\",\n    \"missing source confirmation counted; reversal excluded\",\n    \"overlapping blocks and total/remaining capacity at five simulated times\",\n    \"missing roster stays unknown\",\n    \"overdue and follow-up validation share fixed demoday\",\n    \"automatic sale/event business dates use fixed demoday\"\n  ]\n}\n",
+    "stderr": ""
+  },
+  "daily-tests.py": {
+    "exit_code": 0,
+    "stdout": "{\n  \"result\": \"PASS\",\n  \"checks\": [\n    \"original 76080 net = 44040 bank + 605 cash + 0 card + 34460 unknown - 3025 refunds; 5000 reversal not double counted\",\n    \"roster task disappears and capacity recalculates\",\n    \"explicit invoice rule + audited completion correction; future date and invalid rules rejected; invoice unchanged\",\n    \"unknown completion date does not fabricate age or deadline\",\n    \"card and refunds reconcile independently with the signed export\",\n    \"urgent then overdue then blocked then administration then setup; duplicate work actions collapsed\",\n    \"configuration role guard\",\n    \"demo finance answers use current cashflow and definition\"\n  ]\n}",
+    "stderr": ""
+  },
+  "recovery-test.py": {
+    "exit_code": 0,
+    "stdout": "PASS backup + verified restore + before-restore preservation + tamper rejection (isolated)\n",
+    "stderr": ""
+  }
+}

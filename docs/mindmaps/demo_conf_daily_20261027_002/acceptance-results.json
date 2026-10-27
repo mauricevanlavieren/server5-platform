@@ -1,0 +1,20 @@
+[
+  {
+    "script": "browser-operations.cjs",
+    "exit_code": 0,
+    "stdout": "PASS waarschuwing-dashboard-herstel\nPASS teamplanning\nPASS betaling-terugboeken-opnieuw-afsluiten\nPASS voorraad-reservering-vrijgeven-verbruik\nPASS inkoop-deelontvangst-vervolgbezoek\nPASS winkelverkoop-retour-terugbetaling\n",
+    "stderr": ""
+  },
+  {
+    "script": "browser-extra.cjs",
+    "exit_code": 0,
+    "stdout": "PASS historische-factuur-doorklik\nPASS dagafwijking-pauze-afwezig-reistijd\nPASS vaste-prijs-materiaal-regressie\n",
+    "stderr": ""
+  },
+  {
+    "script": "browser-archive.cjs",
+    "exit_code": 0,
+    "stdout": "PASS betaalwaarschuwing-naar-eerdere-factuur\n",
+    "stderr": ""
+  }
+]

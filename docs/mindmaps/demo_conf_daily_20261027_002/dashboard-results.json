@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "checks": [
+    "unique attention with customer/responsibility",
+    "missing source confirmation counted; reversal excluded",
+    "overlapping blocks and total/remaining capacity at five simulated times",
+    "missing roster stays unknown",
+    "overdue and follow-up validation share fixed demoday",
+    "automatic sale/event business dates use fixed demoday"
+  ]
+}

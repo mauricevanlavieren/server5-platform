@@ -1,0 +1,528 @@
+--- before/accounting.py
++++ after/accounting.py
+@@ -0,0 +1,35 @@
++"""Pure package-neutral accounting serializer. No database, network or domain imports.
++
++A future chosen target adapter consumes schema_version=1 snapshots; it must not
++change invoices, credits, cash events or business rules. No target is selected.
++"""
++import csv,io,json,hashlib
++
++def export_csv(snapshot):
++ if snapshot.get('schema_version')!=1 or snapshot.get('currency')!='EUR':raise ValueError('Unsupported accounting snapshot schema/currency')
++ out=io.StringIO();writer=csv.writer(out,delimiter=';')
++ header=['record_type','id','original_invoice','parent_payment','order','date','due','net_cents','vat_cents','total_cents','received_cents','credit_cents','refund_cents','open_cents','currency','customer','method','reference_or_reason','accounting_state','source_sha256','metadata_status','missing_fields','required_mappings','net_received_cents','cashflow_effect_cents','recorded_at']
++ writer.writerow(header)
++ for document in snapshot['documents']:
++  inv=document['invoice'];job=document['order'];b=document['balance'];digest=document['source_sha256'];state=document['accounting_state']
++  def row(kind,ident,day,net='',vat='',total='',method='',ref='',parent='',source_status='',missing='',recorded_at=None):
++   writer.writerow([kind,ident,inv['id'],parent,job,day or 'UNKNOWN',inv.get('due','UNKNOWN'),net,vat,total,b['received_cents'],b['credits_cents'],b['refunded_cents'],b['open_cents'],'EUR',document['customer'],method or 'UNKNOWN',ref or 'UNKNOWN',state,digest,source_status,missing,'debiteur_id|dagboek|grootboek|btw_code; centen naar decimalen; bron controleren',b['received_cents']-b['refunded_cents'],total if kind in {'payment','payment_reversal','refund'} else 0,recorded_at or 'UNKNOWN'])
++  row('opening_balance' if inv.get('opening_balance') else 'invoice',inv['id'],inv.get('issued_date'),inv['net_cents'],inv['vat_cents'],inv['total_cents'],ref=inv.get('replaces'),missing='issued_date' if not inv.get('issued_date') else '',recorded_at=inv.get('recorded_at'))
++  for index,edit in enumerate(inv.get('date_history',[])):row('invoice_date_metadata',inv['id']+'-D'+str(index+1),edit['after'],ref=edit['source']+' · oorspronkelijk: '+str(edit['before']))
++  for cr in inv.get('credits',[]):row('credit',cr['id'],cr['date'],-cr['net_cents'],-cr['vat_cents'],-cr['total_cents'],ref=cr['reason'],recorded_at=cr.get('at'))
++  for n,pay in enumerate(inv.get('payments',[])):
++   pid=pay['id'];missing='|'.join(k for k in ['date','method','reference'] if not pay.get(k));status=pay.get('source_status') or ('unverified' if missing else 'recorded')
++   row('payment',pid,pay.get('date'),total=pay['cents'],method=pay.get('method'),ref=pay.get('reference'),source_status=status,missing=missing,recorded_at=pay.get('at'))
++   if pay.get('reversal'):row('payment_reversal',pid+'-REV',pay['reversal']['date'],total=-pay['cents'],parent=pid,ref=pay['reversal']['reason'],recorded_at=pay['reversal'].get('at'))
++   for index,edit in enumerate(pay.get('metadata_history',[])):row('payment_metadata',pid+'-M'+str(index+1),edit['at'][:10],parent=pid,ref=edit['reason']+' · '+json.dumps(dict(before=edit['before'],after=edit['after']),ensure_ascii=False),source_status=edit['after']['source_status'])
++  for pay in inv.get('refunds',[]):row('refund',pay['id'],pay['date'],total=-pay['cents'],method=pay['method'],ref=pay['reference'],recorded_at=pay.get('at'))
++ for sale in snapshot['sales']:
++  digest=hashlib.sha256(json.dumps(sale,sort_keys=True).encode()).hexdigest()
++  def sale_row(kind,ident,net='',vat='',total='',ref='',day=None,recorded_at=None):
++   writer.writerow([kind,ident,sale['id'],'','winkelbalie',day or 'UNKNOWN','',net,vat,total,sale['paid_cents'],sum(r['total_cents'] for r in sale.get('returns',[])),sum(r['total_cents'] for r in sale.get('returns',[])),0,'EUR','Winkelbalie','cash',ref,'pending',digest,'recorded' if day else 'unverified','date' if not day else '','kasdagboek|grootboek|btw_code',sale['paid_cents']-sum(r['total_cents'] for r in sale.get('returns',[])),total if kind in {'sale_payment','sale_refund'} else 0,recorded_at or sale.get('recorded_at') or 'UNKNOWN'])
++  sale_row('sale',sale['id'],sale['net_cents'],sale['vat_cents'],sale['total_cents'],ref=sale['source'],day=sale.get('date'))
++  sale_row('sale_payment','P'+sale['id'],total=sale['paid_cents'],ref='Fictieve contante verkoop '+sale['id'],day=sale.get('date'))
++  for r in sale.get('returns',[]):
++   sale_row('sale_return',r['id'],-r['net_cents'],-r['vat_cents'],-r['total_cents'],r['reason'],r['date'],recorded_at=r.get('at'))
++   sale_row('sale_refund',r['id']+'-T',total=-r['total_cents'],ref=r['reason'],day=r['date'],recorded_at=r.get('at'))
++ return ('\ufeff'+out.getvalue()).encode('utf-8')
+--- before/delivery.py
++++ after/delivery.py
+@@ -0,0 +1,69 @@
++"""Trial proposal, explicit owner decisions and attributable staff self-assessments."""
++from datetime import datetime,timezone
++import copy,json,csv,io,collections
++FIELDS={'trial_start':'Startdatum proef','trial_end':'Einddatum proef','pilot_lead':'Begeleider / aanspreekpunt','one_time_cost':'Eenmalige inrichting incl./excl. btw','recurring_cost':'Periodieke prijs en inbegrepen gebruik','included':'Inbegrepen functies en koppelingen','excluded':'Uitgesloten werkzaamheden','migration_training':'Migratie en training','support_contact':'Ondersteuningscontact','support_details':'Contactgegevens ondersteuning','support_hours':'Bereikbaarheid ondersteuning','incident_response':'Storingsafhandeling en reactieafspraak','hosting':'Hosting en verantwoordelijkheden','backup_destination':'Door eigenaar te kiezen bestemming buiten Server4','backup_policy':'Back-upfrequentie, retentie en verantwoordelijke','recovery_goal':'Hersteldoelen en testafspraak','contract_term':'Looptijd','cancellation':'Opzegging','data_exit':'Gegevensuitvoer bij vertrek','accounting_package':'Boekhoudpakket','accounting_environment':'Geautoriseerde boekhoudtestomgeving','mapping_notes':'Debiteur-, dagboek-, grootboek- en btw-mapping'}
++CASES={
++'mechanic':dict(title='Monteur: eigen opdracht uitvoeren',steps=[('assignment','Eigen toegewezen opdracht en afspraak vinden'),('execution','Bevindingen, werkelijke uren en materiaal zelfstandig opslaan'),('material','Materiaalverbruik en open reserveringen controleren'),('handoff','Gereedmelden en overdracht aan administratie controleren'),('reload','Herladen: eigen registratie behouden')]),
++'shop':dict(title='Winkel: verkoop en gedeeltelijke retour',steps=[('stock','Vrije voorraad en artikel controleren'),('sale','Fictieve verkoop opslaan; voorraad en bedrag controleren'),('return','Gedeeltelijke retour met reden en datum verwerken'),('cash','Fictieve terugbetaling en resterende voorraad controleren'),('reload','Herladen: verkoop en retourhistorie behouden')]),
++'administration':dict(title='Administratie: factuur tot afsluiting',steps=[('handoff','Gereedgemeld dossier en overgenomen uren/materiaal vinden'),('invoice','Eigenaarstarieven controleren; concept en btw beoordelen'),('payment','Definitieve factuur, fictieve betaling en debiteur controleren'),('reconcile','Netto omzet, debiteuren en geld met export afstemmen'),('accounting','Resterend boekhoudhandwerk en ontbrekende bronvelden noteren')])}
++
++def read(s,status_path=None):
++ trial=copy.deepcopy(s.get('trial',{}));evidence={}
++ if status_path and status_path.exists():
++  try:evidence=json.loads(status_path.read_text())
++  except (OSError,ValueError):evidence={}
++ if not trial.get('decisions',{}).get('backup_destination') or not evidence.get('owner_confirmed'):
++  evidence=dict(result='PENDING_OWNER_DECISION',message='Externe back-up: nog niet ingericht en getest',owner_decision_required=True)
++ if evidence.get('result')=='PASS':
++  try:evidence['age_hours']=round((datetime.now(timezone.utc)-datetime.fromisoformat(evidence['completed_at'])).total_seconds()/3600,1);evidence['stale']=evidence['age_hours']>26
++  except (ValueError,KeyError):evidence['stale']=True
++ records=trial.get('acceptance',[])
++ # A demo walkthrough never counts as independent staff acceptance.
++ accepted={k:any(a['case_id']==k and a['outcome']=='passed' and a.get('actor',{}).get('role')==k for a in records) for k in CASES}
++ return dict(revision=s['revision'],fields=FIELDS,decisions=trial.get('decisions',{}),decision_history=trial.get('decision_history',[]),cases=CASES,acceptance=records,staff_self_reported=accepted,external_backup=evidence,external_import='niet gevalideerd',proposal_status='Concept voor begeleide fictieve praktijkproef; geen overeengekomen aanbod of ondersteuning',scope=['Drie bestaande bedrijfsroutes, met uitsluitend fictieve gegevens','Bestaande persoonlijke accounts voor monteur, winkel en administratie','Controle van voorraad, btw, credits, geld en herleidbaarheid','Eén proefmigratie en gezamenlijke boekhoudvoorbereiding','Back-up op andere host met geïsoleerde herstelcontrole'],gates=['Start alleen met gekozen begeleider, deelnemers, periode en expliciete kostenafspraak','Geen echte gegevens of transacties vóór afzonderlijke toestemming en beheer-/privacyafspraken','Boekhoudimport pas bewezen na geautoriseerde testimport en teruggelezen bewijs','Gezamenlijke evaluatie na de drie routes; handwerk, fouten en herstel vastleggen','Besluit apart over vervolgproef, aanschaf en productie'])
++
++def authorize(u,v):
++ if v.get('action')=='trial_decisions':
++  if u['role']!='owner':raise ValueError('Alleen eigenaar kan zakelijke keuzes vastleggen')
++ elif v.get('action')=='trial_accept':
++  case=v.get('case_id')
++  if case not in CASES or (u['role'] not in {'owner','demo'} and u['role']!=case):raise ValueError('Registreer uitsluitend je eigen medewerkersroute')
++ else:raise ValueError('Onbekende proefactie')
++ return dict(v,role='Eigenaar',actor=dict(u))
++
++def mutate(s,v):
++ trial=s.setdefault('trial',{});now=datetime.now(timezone.utc).isoformat();actor=v.get('actor') or {}
++ if v['action']=='trial_decisions':
++  values=v.get('values');reference=v.get('reference','')
++  if not isinstance(values,dict) or set(values)-set(FIELDS) or not isinstance(reference,str) or not reference.strip() or len(reference)>500:raise ValueError('Bekende velden en bron/akkoordreferentie vereist')
++  if any(not isinstance(x,str) or len(x)>1500 for x in values.values()):raise ValueError('Keuzeveld: maximaal 1500 tekens')
++  for key in ('trial_start','trial_end'):
++   if values.get(key):
++    from datetime import date
++    if date.fromisoformat(values[key]).isoformat()!=values[key]:raise ValueError('Gebruik ISO datum')
++  start=values.get('trial_start',trial.get('decisions',{}).get('trial_start',{}).get('value',''));end=values.get('trial_end',trial.get('decisions',{}).get('trial_end',{}).get('value',''))
++  if start and end and end<start:raise ValueError('Einddatum ligt vóór startdatum')
++  before=copy.deepcopy(trial.get('decisions',{}));new=trial.setdefault('decisions',{})
++  for k,value in values.items():
++   if not value.strip():continue # Unknown stays unknown; do not clear established decisions silently.
++   new[k]=dict(value=value.strip(),actor=actor,at=now,reference=reference.strip(),status='door eigenaar vastgelegd; externe afspraken niet onafhankelijk geverifieerd')
++  trial.setdefault('decision_history',[]).append(dict(before=before,after=copy.deepcopy(new),actor=actor,at=now,reference=reference.strip()))
++ else:
++  case=v['case_id'];outcome=v.get('outcome');steps=v.get('steps');note=v.get('note')
++  if outcome not in {'passed','failed','blocked'} or not isinstance(note,str) or not note.strip() or len(note)>2000:raise ValueError('Resultaat en concrete bevinding/bewijsreferentie vereist')
++  required={k for k,_ in CASES[case]['steps']}
++  if not isinstance(steps,list) or any(not isinstance(x,str) for x in steps) or len(set(steps))!=len(steps) or not set(steps)<=required:raise ValueError('Ongeldige controlestappen')
++  if outcome=='passed' and set(steps)!=required:raise ValueError('Beoordeel alle stappen vóór geslaagd')
++  trial.setdefault('acceptance',[]).append(dict(id='P'+str(len(trial.get('acceptance',[]))+1),case_id=case,outcome=outcome,steps=steps,note=note.strip(),actor=actor,at=now,evidence_type='eigen waarneming deelnemer; geen onafhankelijke technische certificering'))
++
++def accounting_preparation():
++ from pilot import reconcile
++ from data import accounting_csv
++ report=reconcile();rows=list(csv.DictReader(io.StringIO(accounting_csv().decode('utf-8-sig')),delimiter=';'))
++ missing=collections.Counter()
++ for r in rows:
++  if r['date']=='UNKNOWN':missing['bedrijfsdatum']+=1
++  for k in filter(None,r['missing_fields'].split('|')):
++   if k not in {'date','issued_date'}:missing[{'reference':'betaalreferentie','method':'betaalmethode'}.get(k,k)]+=1
++ document_ids={r['original_invoice'] for r in rows};types=collections.Counter(r['record_type'] for r in rows)
++ return dict(revision=report['revision'],balanced=report['balanced'],totals=report['expected'],source_issues=report['source_issues'],missing_field_counts=dict(missing),records=len(rows),documents=len(document_ids),record_types=dict(types),external_import='niet gevalideerd',remaining_manual_work=['Historische bronproblemen aanvullen met echte bewijsstukken; onbekend niet als nul invullen','Stabiele debiteuren koppelen aan testadministratie','Dagboeken, grootboekrekeningen en btw-codes per documentsoort vastleggen','Importformaat/tekens en EUR-centen naar doelpakket vertalen','Facturen, credits, betalingen en retouren in doelpakket importeren en koppelen','Doelpakket teruglezen: aantallen, nettobedragen, btw, open posten en ontvangen geld vergelijken'],validation_protocol=['Kies pakket, geautoriseerde testadministratie en uitvoerder','Bewaar beginsnapshot van de testadministratie en bronexport','Leg verwachte aantallen, omzet na credits, btw, debiteuren en geld vooraf vast','Importeer één gecontroleerde fictieve batch; geen echte productieboeking','Lees doelpakket terug en vergelijk alle bedragen en relaties, ook credits en betalingen','Herhaal alleen volgens deduplicatie-afspraak en bewijs dat niets dubbel staat','Bewaar doelrapport/import-ID en afwijkingen; eigen verklaring is geen onafhankelijke validatie'],time_saved='Niet gemeten; noteer tijdens de echte proef hoeveel velden en minuten handwerk overblijven')
+--- before/secure_app.py
++++ after/secure_app.py
+@@ -3,7 +3,7 @@
+ from pathlib import Path
+ from flask import Flask,request,session,g,jsonify,send_from_directory,redirect,Response
+ import workflow,app as legacy
+-from security import Accounts,Forbidden,authorize,mechanic_view
++from security import Accounts,Forbidden,authorize,mechanic_view,shop_view
+ from data import dashboard,accounting_csv
+ from answers import answer
+ BASE=Path(__file__).resolve().parent
+@@ -28,7 +28,9 @@
+   if request.path not in public and not g.user:
+    if request.path.startswith('/api/'):return jsonify(error='Aanmelden vereist'),401
+    return redirect('/login')
+-  if g.user and g.user['role']=='mechanic' and request.path not in public|{'/','/pilot','/pilot.js','/api/session','/api/logout','/api/mechanic','/api/workflow','/praktijkproef'}:raise Forbidden('Deze gegevens zijn niet beschikbaar voor monteurs')
++  if g.user and g.user['role']=='shop' and request.path not in public|{'/','/pilot','/pilot.js','/api/session','/api/logout','/api/shop','/api/workflow','/praktijkproef','/proefvoorstel','/delivery.js','/api/trial'}:raise Forbidden('Alleen winkelwerkplek en eigen proefroute toegestaan')
++  if g.user and g.user['role']=='shop' and request.path=='/api/workflow' and request.method=='GET':raise Forbidden('Winkelrol krijgt geen volledige dossiers')
++  if g.user and g.user['role']=='mechanic' and request.path not in public|{'/','/pilot','/pilot.js','/api/session','/api/logout','/api/mechanic','/api/workflow','/praktijkproef','/proefvoorstel','/delivery.js','/api/trial'}:raise Forbidden('Deze gegevens zijn niet beschikbaar voor monteurs')
+   if g.user and g.user['role']=='mechanic' and request.path=='/api/workflow' and request.method=='GET':raise Forbidden('Gebruik uitsluitend eigen toegewezen dossiers')
+  @app.after_request
+  def headers(r):
+@@ -71,14 +73,14 @@
+  @app.post('/api/logout')
+  def logout():accounts.logout(session['sid']);session.clear();return jsonify(message='Afgemeld')
+  @app.get('/')
+- def home():return send_from_directory(BASE/'static','pilot.html' if g.user['role']=='mechanic' else 'index.html')
++ def home():return send_from_directory(BASE/'static','pilot.html' if g.user['role'] in {'mechanic','shop'} else 'index.html')
+  @app.get('/pilot')
+  def pilot_page():return send_from_directory(BASE/'static','pilot.html')
+  @app.get('/praktijkproef')
+  def commercial():return send_from_directory(BASE/'static','praktijkproef.html')
+  @app.get('/<name>')
+  def asset(name):
+-  if name not in {'app.js','pilot.js','login.js','style.css'}:return jsonify(error='Niet gevonden'),404
++  if name not in {'app.js','pilot.js','login.js','style.css','delivery.js'}:return jsonify(error='Niet gevonden'),404
+   return send_from_directory(BASE/'static',name)
+  @app.get('/api/dashboard')
+  def dash():
+@@ -92,7 +94,22 @@
+    if not isinstance(value,dict):raise ValueError('JSON-object vereist')
+    if value.get('action') in {'migration_commit'} and g.user['role']!='owner':raise Forbidden('Migratie vereist eigenaar')
+    result=workflow.apply(authorize(workflow.load(),g.user,value))
++   if g.user['role']=='shop':return jsonify(shop_view(workflow.load()))
+    return jsonify(mechanic_view(workflow.load(),g.user) if g.user['role']=='mechanic' else result)
++ @app.get('/api/shop')
++ def shop():
++  if g.user['role'] not in {'shop','owner','demo'}:raise Forbidden('Winkelrol vereist')
++  with workflow.LOCK:return jsonify(shop_view(workflow.load()))
++ @app.get('/proefvoorstel')
++ def trial_page():return send_from_directory(BASE/'static','proefvoorstel.html')
++ @app.get('/api/trial')
++ def trial():
++  from delivery import read
++  with workflow.LOCK:return jsonify(read(workflow.load(),state/'offhost-backup-status.json'))
++ @app.get('/api/trial/accounting')
++ def accounting_preparation():
++  from delivery import accounting_preparation
++  with workflow.LOCK:return jsonify(accounting_preparation())
+  @app.get('/api/config')
+  def config():return jsonify(legacy.config())
+  @app.post('/api/config')
+@@ -123,6 +140,10 @@
+   with accounts.db() as d:rows=[dict(r) for r in d.execute('select a.*,u.username from audit a left join users u on u.id=a.user_id order by a.id desc limit 200')]
+   with workflow.LOCK:history=workflow.load().get('history',[])[-200:]
+   return jsonify(accounts=rows,workflow=history)
++ @app.get('/api/accounting-snapshot')
++ def accounting_snapshot():
++  from data import accounting_snapshot
++  with workflow.LOCK:return jsonify(accounting_snapshot())
+  @app.get('/api/accounting-export')
+  def export():
+   with workflow.LOCK:return Response(accounting_csv(),mimetype='text/csv')
+--- before/security.py
++++ after/security.py
+@@ -2,7 +2,7 @@
+ import os,secrets,sqlite3,time,hashlib,re
+ from pathlib import Path
+ from werkzeug.security import generate_password_hash,check_password_hash
+-ROLES={'owner','mechanic','administration'}
++ROLES={'owner','mechanic','shop','administration'}
+ class Accounts:
+  def __init__(self,state):
+   self.state=state;state.mkdir(mode=0o700,parents=True,exist_ok=True)
+@@ -82,7 +82,14 @@
+ 
+ def authorize(s,u,v):
+  a=v.get('action');job=v.get('job',v.get('order','W105'))
++ if a in {'trial_decisions','trial_accept'}:
++  from delivery import authorize as trial_authorize
++  try:return trial_authorize(u,v)
++  except ValueError as e:raise Forbidden(str(e))
+  if u['role'] in {'owner','demo'}:return dict(v,actor=dict(u))
++ if u['role']=='shop':
++  if a not in {'sale','sale_return'}:raise Forbidden('Winkelrol kan uitsluitend verkoop en bijbehorende retour verwerken')
++  return dict(v,role='Lina',actor=dict(u))
+  if u['role']=='mechanic':
+   if a not in MECHANIC or job not in assigned(s,u):raise Forbidden('Alleen uitvoering van eigen toegewezen opdrachten toegestaan')
+   if v.get('order',job)!=job:raise Forbidden('Opdrachtverwijzingen verschillen')
+@@ -101,10 +108,12 @@
+    ref=labor_rate_reference(s,job)
+    fixed=s.get('jobs',{}).get(job,{}).get('billing',{}).get('mode') in {'fixed','extra'}
+    if not fixed and (not ref or v.get('rate_cents')!=ref.get('unit_cents') or not ref.get('unit_cents')):raise Forbidden('Eigenaar moet eerst een herleidbaar tarief vastleggen en gebruiken')
+-   for rid,price in v.get('material_prices',{}).items():
++   prices=v.get('material_prices',{})
++   if not isinstance(prices,dict) or any(not isinstance(x,dict) for x in prices.values()):raise Forbidden('Materiaalprijzen ongeldig')
++   for rid,price in prices.items():
+     material=s.get('operations',{}).get('reservations',{}).get(rid,{})
+     if price.get('unit_cents')!=material.get('unit_cents') or price.get('source')!=material.get('price_source'):raise Forbidden('Materiaalprijs wijzigen vereist eigenaar')
+-   if any(v.get(k) is not None for k in ('material_unit_cents','material_quantity','material_source')):raise Forbidden('Niet-geregistreerd materiaal vereist controle door eigenaar')
++   if any(v.get(k) not in (None,0,'') for k in ('material_unit_cents','material_quantity','material_source')):raise Forbidden('Niet-geregistreerd materiaal vereist controle door eigenaar')
+   legacy='Administratie'
+  else:raise Forbidden('Onbekende gebruikersrol')
+  return dict(v,role=legacy,actor=dict(u))
+@@ -119,3 +128,12 @@
+   result.append(dict(id=k,customer=o['customer'],scope=o.get('scope',o.get('job','')),**fields))
+  reservations=[{k:r.get(k) for k in ('id','order','key','quantity','status')} for r in s.get('operations',{}).get('reservations',{}).values() if r['order'] in assigned(s,u)]
+  return dict(revision=s['revision'],orders=result,reservations=reservations)
++
++def shop_view(s):
++ import copy
++ ops=s.get('operations',{});stock=[]
++ for key,qty in ops.get('stock',{}).items():
++  reserved=sum(r['quantity'] for r in ops.get('reservations',{}).values() if r['key']==key and r['status']=='gereserveerd')
++  item=next((a for a in s.get('articles',{}).values() if a['name']+' @ '+a['location']==key),{})
++  stock.append(dict(key=key,quantity=qty,reserved=reserved,free=qty-reserved,unit_cents=item.get('unit_cents'),price_source=('Gecontroleerde proefimport · '+item['id']) if item else None))
++ return dict(business_date=__import__('data').DAY,revision=s['revision'],stock=stock,sales=copy.deepcopy(list(ops.get('sales',{}).values())))
+--- before/data.py
++++ after/data.py
+@@ -103,41 +103,28 @@
+  result['payment_attention']=payment_attention(projected)
+  return result
+ 
+-def accounting_csv():
+- """Canonical auditable records; no package-specific import or external posting."""
+- import csv,io,json,hashlib,copy
++def accounting_snapshot():
++ """Read-only package-neutral domain snapshot for accounting adapters."""
++ import copy,hashlib,json
+  from workflow import load
+  from improvements import balance,invoice,payment_id
+- s=copy.deepcopy(load());out=io.StringIO();writer=csv.writer(out,delimiter=';')
+- header=['record_type','id','original_invoice','parent_payment','order','date','due','net_cents','vat_cents','total_cents','received_cents','credit_cents','refund_cents','open_cents','currency','customer','method','reference_or_reason','accounting_state','source_sha256','metadata_status','missing_fields','required_mappings','net_received_cents','cashflow_effect_cents','recorded_at']
+- writer.writerow(header)
++ s=copy.deepcopy(load())
+  customers={o['id']:o['customer'] for o in ORDERS};customers.update({k:o['customer'] for k,o in s.get('operations',{}).get('orders',{}).items()})
+  for old in INVOICES:invoice(s,old['order'])
++ documents=[]
+  for job,j in s.get('jobs',{}).items():
+   for inv in j.get('invoice_archive',[])+[j.get('sales_invoice',{})]:
+    if not inv or inv['status']=='concept':continue
+-   b=balance(inv);digest=hashlib.sha256(json.dumps(inv,sort_keys=True).encode()).hexdigest();account=j.get('accounting',{});state=account.get('state','pending') if account.get('invoice',inv['id'])==inv['id'] else 'pending'
+-   def row(kind,ident,day,net='',vat='',total='',method='',ref='',parent='',source_status='',missing='',recorded_at=None):
+-    writer.writerow([kind,ident,inv['id'],parent,job,day or 'UNKNOWN',inv.get('due','UNKNOWN'),net,vat,total,b['received_cents'],b['credits_cents'],b['refunded_cents'],b['open_cents'],'EUR',customers.get(job,''),method or 'UNKNOWN',ref or 'UNKNOWN',state,digest,source_status,missing,'debiteur_id|dagboek|grootboek|btw_code; centen naar decimalen; bron controleren',b['received_cents']-b['refunded_cents'],total if kind in {'payment','payment_reversal','refund'} else 0,recorded_at or 'UNKNOWN'])
+-   row('opening_balance' if inv.get('opening_balance') else 'invoice',inv['id'],inv.get('issued_date'),inv['net_cents'],inv['vat_cents'],inv['total_cents'],ref=inv.get('replaces'),missing='issued_date' if not inv.get('issued_date') else '',recorded_at=inv.get('recorded_at'))
+-   for index,edit in enumerate(inv.get('date_history',[])):row('invoice_date_metadata',inv['id']+'-D'+str(index+1),edit['after'],ref=edit['source']+' · oorspronkelijk: '+str(edit['before']))
+-   for cr in inv.get('credits',[]):row('credit',cr['id'],cr['date'],-cr['net_cents'],-cr['vat_cents'],-cr['total_cents'],ref=cr['reason'],recorded_at=cr.get('at'))
+-   for n,pay in enumerate(inv.get('payments',[])):
+-    pid=payment_id(inv,n);missing='|'.join(k for k in ['date','method','reference'] if not pay.get(k));status=pay.get('source_status') or ('unverified' if missing else 'recorded')
+-    row('payment',pid,pay.get('date'),total=pay['cents'],method=pay.get('method'),ref=pay.get('reference'),source_status=status,missing=missing,recorded_at=pay.get('at'))
+-    if pay.get('reversal'):row('payment_reversal',pid+'-REV',pay['reversal']['date'],total=-pay['cents'],parent=pid,ref=pay['reversal']['reason'],recorded_at=pay['reversal'].get('at'))
+-    for index,edit in enumerate(pay.get('metadata_history',[])):row('payment_metadata',pid+'-M'+str(index+1),edit['at'][:10],parent=pid,ref=edit['reason']+' · '+json.dumps(dict(before=edit['before'],after=edit['after']),ensure_ascii=False),source_status=edit['after']['source_status'])
+-   for pay in inv.get('refunds',[]):row('refund',pay['id'],pay['date'],total=-pay['cents'],method=pay['method'],ref=pay['reference'],recorded_at=pay.get('at'))
+- for sale in s.get('operations',{}).get('sales',{}).values():
+-  digest=hashlib.sha256(json.dumps(sale,sort_keys=True).encode()).hexdigest()
+-  def sale_row(kind,ident,net='',vat='',total='',ref='',day=None,recorded_at=None):
+-   writer.writerow([kind,ident,sale['id'],'','winkelbalie',day or 'UNKNOWN','',net,vat,total,sale['paid_cents'],sum(r['total_cents'] for r in sale.get('returns',[])),sum(r['total_cents'] for r in sale.get('returns',[])),0,'EUR','Winkelbalie','cash',ref,'pending',digest,'recorded' if day else 'unverified','date' if not day else '','kasdagboek|grootboek|btw_code',sale['paid_cents']-sum(r['total_cents'] for r in sale.get('returns',[])),total if kind in {'sale_payment','sale_refund'} else 0,recorded_at or sale.get('recorded_at') or 'UNKNOWN'])
+-  sale_row('sale',sale['id'],sale['net_cents'],sale['vat_cents'],sale['total_cents'],ref=sale['source'],day=sale.get('date'))
+-  sale_row('sale_payment','P'+sale['id'],total=sale['paid_cents'],ref='Fictieve contante verkoop '+sale['id'],day=sale.get('date'))
+-  for r in sale.get('returns',[]):
+-   sale_row('sale_return',r['id'],-r['net_cents'],-r['vat_cents'],-r['total_cents'],r['reason'],r['date'],recorded_at=r.get('at'))
+-   sale_row('sale_refund',r['id']+'-T',total=-r['total_cents'],ref=r['reason'],day=r['date'],recorded_at=r.get('at'))
+- return ('\ufeff'+out.getvalue()).encode('utf-8')
++   normalized=copy.deepcopy(inv)
++   for n,pay in enumerate(normalized.get('payments',[])):pay['id']=payment_id(inv,n)
++   account=j.get('accounting',{});state=account.get('state','pending') if account.get('invoice',inv['id'])==inv['id'] else 'pending'
++   documents.append(dict(order=job,customer=customers.get(job,''),invoice=normalized,balance=balance(inv),accounting_state=state,source_sha256=hashlib.sha256(json.dumps(inv,sort_keys=True).encode()).hexdigest()))
++ return dict(schema_version=1,revision=s['revision'],currency='EUR',business_date=DAY,documents=documents,sales=copy.deepcopy(list(s.get('operations',{}).get('sales',{}).values())))
++
++def accounting_csv():
++ """Compatibility API; package-neutral serialization is separate from domain rules."""
++ from accounting import export_csv
++ return export_csv(accounting_snapshot())
+ 
+ 
+ def owner_overview(d,w):
+--- before/workflow.py
++++ after/workflow.py
+@@ -105,6 +105,9 @@
+   from business import mutate
+   from improvements import ACTIONS,change
+   if s.get('jobs',{}).get(job,{}).get('cancelled') and a not in {'note'}:raise ValueError('Opdracht geannuleerd; historie blijft beschikbaar')
++  if a in {'trial_decisions','trial_accept'}:
++   from delivery import mutate as trial_mutate
++   trial_mutate(s,v);a='business_done'
+   if a=='migration_commit':
+    from pilot import commit_import
+    commit_import(s,v);a='business_done'
+--- before/recovery.py
++++ after/recovery.py
+@@ -3,13 +3,14 @@
+ from pathlib import Path
+ from datetime import datetime,timezone
+ import argparse,hashlib,json,os,shutil,tempfile,sqlite3,subprocess
+-SOURCES=['migratieformaat.md','aankoopbeslissingen.md','secure_app.py','security.py','pilot.py','requirements.txt','sales.py','static/praktijkproef.html','static/login.html','static/login.js','static/pilot.html','static/pilot.js','app.py','business.py','workflow.py','data.py','improvements.py','answers.py','README.md','recovery.py','static/app.js','static/index.html','static/style.css']
+-STATE_FILES=['workflow.json','tiles.json','accounts.sqlite3','session-secret']
++SOURCES=['backup-config.example.json','accounting.py','backup-herstel.md','delivery.py','static/proefvoorstel.html','static/delivery.js','proefvoorstel.md','migratieformaat.md','aankoopbeslissingen.md','secure_app.py','security.py','pilot.py','requirements.txt','sales.py','static/praktijkproef.html','static/login.html','static/login.js','static/pilot.html','static/pilot.js','app.py','business.py','workflow.py','data.py','improvements.py','answers.py','README.md','recovery.py','static/app.js','static/index.html','static/style.css']
++STATE_FILES=['workflow.json','tiles.json','accounts.sqlite3','session-secret','offhost-backup-status.json']
+ 
+ def backup(root,state,destination):
+  destination.mkdir(parents=True,mode=0o700,exist_ok=False);manifest={}
+  from workflow import LOCK
+  with LOCK:
++  source_before={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in SOURCES if (root/name).is_file()}
+   for name in SOURCES:
+    source=root/name
+    if source.exists():
+@@ -22,6 +23,9 @@
+      with sqlite3.connect(source.as_uri()+'?mode=ro',uri=True) as src,sqlite3.connect(target) as dest:src.backup(dest)
+     else:target.write_bytes(source.read_bytes())
+     os.chmod(target,0o600)
++  source_after={name:hashlib.sha256((root/name).read_bytes()).hexdigest() for name in SOURCES if (root/name).is_file()}
++  copied_source={name:hashlib.sha256((destination/'source'/name).read_bytes()).hexdigest() for name in source_before}
++  if source_before!=source_after or source_before!=copied_source:raise ValueError('Bron gewijzigd tijdens backup; geen geldige snapshot gepubliceerd')
+  for file in destination.rglob('*'):
+   if file.is_file():manifest[str(file.relative_to(destination))]=hashlib.sha256(file.read_bytes()).hexdigest()
+  (destination/'manifest.json').write_text(json.dumps(manifest,indent=2));return manifest
+--- before/README.md
++++ after/README.md
+@@ -1,4 +1,18 @@
+-# Directe demotoegang — 27 oktober 2026
++# Praktijkproef en levering — 27 oktober 2026, ronde 6
++
++Actuele aanvulling; vervangt historische uitspraken hieronder. /proefvoorstel bevat een concreet concept met voorbereiding, drie deelnemersroutes, criteria, zakelijke keuzes en evaluatie. Geen nieuwe dashboardfuncties. Prijs, periode en support blijven Nog vast te stellen totdat de eigenaar ze met bron vastlegt. Eigenaarinvoer is geen onafhankelijk bewijs van leveranciersinstemming.
++
++Nieuw accounttype Winkelmedewerker (shop): eigen beperkte werkplek voor voorraad, fictieve contante verkoop en gedeeltelijke retour/terugbetaling; geen bedrijfsdashboard, klantdossiers, debiteuren, financiële export, tarieven of accountbeheer. Bestaande monteur/eigenaar/administratierechten blijven behouden. Deelnemers kunnen onder eigen account checklist/resultaat met bevindingen vastleggen. Dit zijn eigen verklaringen. Demo-/eigenaarbeoordelingen tellen niet als zelfstandige acceptatie door medewerkers. Technische browserproeven staan apart van echte medewerkersacceptatie. Toegang demo blijft werken.
++
++Boekhouding is pakketneutraal: data.accounting_snapshot() bouwt een read-only domeinmomentopname. accounting.py serialiseert facturen, credits, betalingen, terugboekingen, refunds en winkelretouren zonder database-/netwerk-/bedrijfsregelimports. data.accounting_csv() blijft een compatibele ingang. Geen doelpakket aangenomen. Vraag de producteigenaar welk pakket de eerste klant gebruikt en of daarvoor een geautoriseerde testomgeving bestaat. Valideer daarna één koppeling volledig vóór meerdere pakketten. Tot die tijd blijft de status externe boekhoudimport niet gevalideerd. Boekhoudvoorbereiding toont bronproblemen en resterend mapping-/import-/afstemmingswerk; geen tijdwinst verzonnen.
++
++**Externe back-up: nog niet ingericht en getest.** Geen gekozen/geautoriseerde externe bestemming in gebruik. Een instelbare bestemming en niet-actief configuratievoorbeeld zijn voorbereid; lokale snapshot en geïsoleerd herstel worden getest. De eerder tijdelijk toegevoegde Server5-overdracht is op nadere eigenaarinstructie teruggedraaid; de oorspronkelijke Server5 backupservice/timer is byte-identiek behouden. Historische proefartefacten blijven afgeschermd bewaard, zonder automatische vervolgoverdracht. Deze proef geldt niet als door eigenaar gekozen externe voorziening. Zie backup-herstel.md en backup-config.example.json.
++
++Ondersteuning: contactpersoon, contactgegevens, bereikbaarheid en responstijd zijn **nog vast te stellen**. Geen externe dienst, contactgegevens of servicebelofte verzonnen. Back-upbestemming en ondersteuning worden als afzonderlijke eigenaarbeslissingen vóór echt bedrijfsgebruik opgeleverd. Ook kosten/contract, echte medewerkersacceptatie, boekhoudtest en privacy-/beheerafspraken blijven open. Productie is niet gereed.
++
++---
++
++ Directe demotoegang — 27 oktober 2026
+ 
+ Op /login opent **Toegang demo** zonder gebruikersnaam of wachtwoord de bestaande gedeelde fictieve administratie. De sessie heet Demobezoeker en is herkenbaar als demomodus; geen echt account of wachtwoord wordt aangemaakt. Demo-handelingen worden als demo-actor opgeslagen, niet als echte eigenaar. Bestaande dossiers blijven bewaard en demo-wijzigingen zijn gedeeld/persistent.
+ 
+--- before/aankoopbeslissingen.md
++++ after/aankoopbeslissingen.md
+@@ -19,3 +19,10 @@
+ | Boekhoudkoppeling | Externe import niet gevalideerd | Doelpakket, testtenant, mappings en teruggelezen proefbewijs |
+ 
+ Een visuele of technische demo geldt niet als aanbod, supportcontract of instemming met verwerking van echte bedrijfsgegevens.
++
++## Twee afzonderlijke besluiten vóór echt bedrijfsgebruik — eigenaarinstructie 27 oktober
++
++1. **Externe back-up:** nog niet ingericht en getest. Kies expliciet een bestemming buiten Server4, budget, verantwoordelijke, rechten en toestemming, frequentie/retentie en herstel-/sleutelbewaring. Configureer en test pas daarna de echte externe kopie en herstel. Het voorbereide configuratievoorbeeld is niet actief; geen externe dienst/opslag aangenomen.
++2. **Ondersteuning:** contactpersoon, contactgegevens, bereikbaarheid en responstijd zijn **nog vast te stellen**. Bevestig wie dit levert, tegen welke kosten en afspraken bij storing/onderhoud. Geen contactgegevens of servicebeloften ingevuld.
++
++Boekhouding blijft pakketneutraal en los van bedrijfsregels. De producteigenaar moet aangeven welk pakket de eerste beoogde klant gebruikt en of daarvoor een geautoriseerde testomgeving bestaat. Valideer daarna die ene koppeling volledig met teruggelezen facturen, credits, betalingen en terugbetalingen voordat meerdere pakketten worden ondersteund. Tot die tijd: **externe boekhoudimport niet gevalideerd**.
+--- before/proefvoorstel.md
++++ after/proefvoorstel.md
+@@ -0,0 +1,37 @@
++# Concept begeleide fictieve praktijkproef — 27 oktober 2026
++
++Doel: vaststellen of een monteur, winkelmedewerker en administrateur hun relevante werk zelfstandig kunnen uitvoeren, de bedragen/voorraad sluiten en herstel van een andere host lukt. Geen nieuwe dashboardfuncties. Geen overeengekomen aanbod, prijs, looptijd of supportcontract.
++
++## Voorbereiding en afbakening
++
++- Producteigenaar kiest proefperiode, begeleider/aanspreekpunt en drie deelnemers.
++- Leg vóór start inrichting/periodieke kosten of expliciete kosteloze-proefafspraak vast; het systeem neemt kosteloosheid niet aan.
++- Alleen fictieve klanten, opdrachten, artikelen, prijzen, betalingen en bronbestanden.
++- Persoonlijke proefaccounts met eigenaar-, monteur-, winkel- en administratierechten. Gedeelde demo blijft beschikbaar maar telt niet als medewerkersidentificatie.
++- Eigenaar legt werktijden, toewijzingen, bronprijzen en beginvoorraad vast. Geen ondersteuningstijden of SLA verzonnen.
++
++## Uitvoering en acceptatie
++
++1. Monteur vindt eigen toegewezen dossier, registreert bevindingen/uren/materiaal, verwerkt reserveringen, meldt gereed en controleert behoud na herladen.
++2. Winkel controleert vrije voorraad en prijsbron, verkoopt fictief contant, verwerkt een gedeeltelijke retour met reden/datum en controleert voorraad, terugbetaling en historie.
++3. Administratie controleert overgenomen werk/prijsbronnen, maakt de factuur definitief, registreert fictieve betaling, controleert debiteur/afsluiting en stemt export af.
++4. Iedere deelnemer legt zelf geslaagd/mislukt/geblokkeerd, beoordeelde stappen, benodigde hulp en concrete bevindingen vast. Dit is een eigen verklaring, geen onafhankelijke certificering. Een demo-actor telt niet mee als echte medewerkersacceptatie.
++5. Test twee sessies en een conflict/herhaalde aanvraag; behoud invoer en geen dubbele mutaties. Technische browserproeven worden apart gerapporteerd.
++6. Controleer back-up op aparte host en herstel die geïsoleerd; vergelijk alle dossiers/historie/voorraad/reserveringen/facturen/credits/betalingen en controletotalen.
++7. Kies doelboekhoudpakket/testadministratie/mappings en voer één geautoriseerde fictieve proefimport uit. Lees uit het doelpakket aantallen, btw, omzet na credits, debiteuren, betalingen en relaties terug. Zolang die toegang ontbreekt: externe import niet gevalideerd.
++
++## Boekhoudhandwerk zichtbaar maken
++
++De boekhoudvoorbereiding toont exportaantallen, documentsoorten en historische bronproblemen. Resterend werk: bronvelden met bewijs aanvullen; debiteuren matchen; dagboek/grootboek/btw-codes kiezen; doelformaat/tekens/bedragen bepalen; documenten en credits/betalingen koppelen; doelpakket teruglezen en verschillen onderzoeken. Meet benodigde hulp, velden en minuten tijdens de proef. Een download, interne vergelijking of eigen bevestiging geldt niet als bewijs van externe verwerking.
++
++## Levering, ondersteuning en uitstap
++
++Eigenaarsformulier op /proefvoorstel bewaart periode, contact, prijs, inbegrepen/uitgesloten functies, migratie/training, support, bereikbaarheid/storingsafhandeling, hosting, backupbeleid/hersteldoelen, looptijd/opzegging en gegevensuitvoer met bron/akkoordreferentie en wijzigingshistorie. Lege keuzes blijven Nog vast te stellen. Eigenaarinvoer bewijst niet automatisch instemming van een externe leverancier.
++
++Externe back-up: nog niet ingericht en getest. De producteigenaar kiest eerst een bestemming buiten Server4 en geeft afzonderlijk toestemming voor gebruik. Een instelbare kopie en lokale herstelprocedure zijn voorbereid. Gebruik nog geen externe dienst/opslag. Ondersteuning: contactpersoon, contactgegevens, bereikbaarheid en responstijd zijn nog vast te stellen. Beide punten zijn beslissingen vóór echt bedrijfsgebruik.
++
++## Evaluatiebesluit
++
++Geslaagd wanneer de drie deelnemers de route zelfstandig afronden, voorraad/geld exact sluiten, fouten herkenbaar/herstelbaar zijn en het resterende boekhoudwerk en de leveringsvoorwaarden concreet zijn. Bij fouten: oorzaak/maatregel/volgende proef vastleggen. Besluit apart over verkoopdemo, verdere fictieve proef, echte gegevens en productie. Externe boekhoudimport, commerciële overeenkomst en feitelijke medewerkersacceptatie blijven open totdat hun bewijs/keuzes beschikbaar zijn.
++
++De boekhoudadapter staat los van de bedrijfsregels: accounting.py verwerkt een pakketneutrale read-only momentopname uit data.accounting_snapshot(). Nog geen pakket gekozen. Vraag de producteigenaar welk pakket de eerste beoogde klant gebruikt en of daarvoor een geautoriseerde testomgeving beschikbaar is. Valideer vervolgens die ene koppeling volledig voordat meerdere pakketten worden ondersteund.
+--- before/backup-herstel.md
++++ after/backup-herstel.md
+@@ -0,0 +1,23 @@
++# Back-upbeslissing en lokaal herstel
++
++**Externe back-up: nog niet ingericht en getest.** Er is geen door de producteigenaar gekozen en geautoriseerde externe bestemming in gebruik. Gebruik nog geen externe dienst of opslag. De oorspronkelijke Server5-backuptaak is ongewijzigd actief; er is geen automatische Server4-overdracht meer aan gekoppeld.
++
++## Voorbereid, maar niet actief
++
++backup-config.example.json bevat een niet-actief configuratievoorbeeld met lege bestemming, toestemming, verantwoordelijke, frequentie, retentie, encryptie/sleutelbewaring en hersteldoelen. De producteigenaar kiest eerst opslag buiten de Server4-host en bevestigt gebruik. Een keuze in het proefvoorstel is een herleidbare beslissing, geen bewijs dat er al een externe kopie is gemaakt of hersteld.
++
++recovery.py kan bij een later expliciet gekozen/geautoriseerde gemounte bestemming kopiëren met `--external-destination /EXPLICIET_GEKOZEN_MOUNT`. Het pad is instelbaar en een kopie op hetzelfde filesystem wordt geweigerd. Een ander filesystem bewijst op zichzelf niet dat opslag buiten Server4 staat; laat herkomst/mount, rechten, encryptie, sleutelbewaring en eigenaarschap eerst beoordelen. Er is geen vooringevuld pad, extern account, API of cloudleverancier. Het voorbeeldbestand activeert niets.
++
++## Lokale back-up en geïsoleerde hersteltest
++
++Maak op Server4 een lokale snapshot met `.venv/bin/python recovery.py`. De snapshot bevat de applicatiebron, workflow en tegelconfig, appaccounts en sessiesleutel, en een controlemanifest. De workflow wordt als één atomisch opgeslagen bedrijfstoestand gelezen, de authdatabase met SQLite online backup. Een bronwijziging tijdens kopiëren wordt geweigerd. Behandel de snapshot als vertrouwelijk; neem nooit SSH-/Codex-authbestanden mee.
++
++Herstel eerst naar aparte lege app-/statemappen, niet over de draaiende demo. recovery.restore valideert paden/checksums vóór schrijven, bewaart eerst aanwezige nieuwere doeldata en trekt teruggezette browser-sessies in. Vergelijk workflow byte voor byte (dossiers, historie, voorraad, reserveringen, facturen, credits, betalingen), accountaantallen, exporthash en financiële controletotalen. Een gewijzigde backup moet vóór schrijven worden geweigerd. Leg resultaat en beperkingen vast.
++
++Voor live gegevensherstel: bestaande dienst stoppen, snapshot en nieuwere historie vergelijken en een aparte herstelbeslissing nemen. Overschrijf nooit nieuwere bedrijfsgegevens op basis van alleen een geslaagde test. Geen live restore uitgevoerd.
++
++## Afzonderlijke beslissing vóór echt bedrijfsgebruik
++
++De producteigenaar kiest bestemming buiten Server4, budget, eigenaar/toestemming, toegangsrechten, frequentie, retentie, encryptie/sleutelbewaring en hersteldoelen. Configureer en test daarna de echte externe kopie én herstel vanaf die bestemming. Tot die tijd blijft de externe status hierboven open.
++
++Historische technische proef: vóór de nadere eigenaarinstructie is Server5 tijdelijk als proefbestemming gebruikt. De automatische koppeling is daarna teruggedraaid; proefartefacten zijn afgeschermd behouden en tellen niet als een gekozen/ingeregelde externe voorziening. Zie het lokale opleverrapport voor dit onderscheid. De demo toont deze oude proef niet als actuele externe levering.
+--- before/backup-config.example.json
++++ after/backup-config.example.json
+@@ -0,0 +1,13 @@
++{
++  "status": "externe back-up: nog niet ingericht en getest",
++  "destination": null,
++  "destination_outside_server4_confirmed": false,
++  "owner_permission_reference": null,
++  "responsible_person": null,
++  "frequency": null,
++  "retention": null,
++  "encryption_and_key_custody": null,
++  "restore_goals": null,
++  "last_external_restore_test": null,
++  "active": false
++}
+--- before/static/proefvoorstel.html
++++ after/static/proefvoorstel.html
+@@ -0,0 +1 @@
++<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Proefvoorstel · Sleutelhuis</title><link rel="stylesheet" href="/style.css"><script src="/delivery.js" defer></script><body><main class="commercial"><nav><a href="/">Bedrijfswerkplek</a> · <a href="/pilot">Mijn account en werkplek</a> · <a href="/praktijkproef">Aanschafvoorwaarden</a></nav><h1>Voorstel voor een begeleide praktijkproef</h1><p><strong>Concept ter bespreking. Geen overeengekomen prijs, contract of supportbelofte.</strong> Begin met fictieve gegevens en echte proefaccounts. De knop Toegang demo blijft beschikbaar voor een gezamenlijke demonstratie; zij geldt niet als medewerkersaanmelding.</p><p id="identity"></p><p id="feedback" role="status"></p><h2>Wat we samen beproeven</h2><ol><li>Voorbereiden: kies begeleider, drie deelnemers, proefperiode en expliciete kostenafspraak. Richt persoonlijke accounts, werktijden, eigenaarstarieven en fictieve voorraad in.</li><li>Monteur: eigen opdracht vinden, uren en materiaal registreren en zelfstandig overdragen aan administratie.</li><li>Winkelmedewerker: voorraad controleren, fictieve verkoop en gedeeltelijke retour met terugbetaling uitvoeren.</li><li>Administratie: overgenomen registratie factureren, betaling vastleggen, debiteur en export afstemmen en overblijvend boekhoudhandwerk noteren.</li><li>Herstel en boekhouding: kies een toegestane bestemming buiten Server4 en beoordeel daarna het herstelbewijs en één geautoriseerde boekhoudtestimport zodra het doelpakket beschikbaar is.</li><li>Evalueren: deelnemers noteren fouten, benodigde hulp en handwerk. Besluit daarna afzonderlijk over vervolgproef, aanschaf of stoppen.</li></ol><h2>Wanneer is de proef geslaagd?</h2><ul><li>Iedere deelnemer doorloopt de relevante stappen zelfstandig en legt bevindingen onder het eigen account vast.</li><li>Voorraad/reserveringen, definitieve omzet na credits, debiteuren en ontvangen geld sluiten exact aan.</li><li>Herladen en een herhaalde aanvraag verliezen of verdubbelen geen gegevens; conflictsituaties zijn herkenbaar.</li><li>Een kopie op een andere host is gecontroleerd hersteld met dezelfde dossiers, historie en financiële totalen.</li><li>Het doelboekhoudpakket levert teruggelezen importbewijs; tijd en handwerk zijn tijdens de proef gemeten, niet aangenomen.</li><li>Kosten, contactpunt, ondersteuning, verantwoordelijkheden en uitstap zijn vooraf besproken en vastgelegd.</li></ul><h2>Periode, kosten en levering</h2><p>Ontbrekende keuzes staan als <strong>Nog vast te stellen</strong>. Door de eigenaar ingevulde keuzes zijn herleidbaar; een ingevuld veld bewijst geen door een externe leverancier aanvaard contract.</p><div id="decisions"></div><details id="owner-decisions" hidden><summary>Zakelijke keuzes vastleggen — eigenaar</summary><form id="decision-form"><div id="decision-fields"></div><label>Bron / akkoordreferentie<input id="decision-reference" required maxlength="500" placeholder="Wie bevestigde wat, en waar is dit vastgelegd?"></label><button>Bewaar gekozen afspraken</button></form></details><h2>Boekhouding: wat blijft handwerk?</h2><p>Een kloppende interne export is een voorbereiding op externe verwerking. Zonder geautoriseerde testadministratie blijft de import <strong>niet gevalideerd</strong>.</p><section id="accounting-section"><button id="accounting-check">Bekijk boekhoudvoorbereiding</button><div id="accounting"></div><p><a href="/api/accounting-export">Download huidige controle-export (CSV)</a> · <a href="/api/accounting-snapshot">Pakketneutrale bronmomentopname (JSON)</a></p></section><h2>Back-up buiten Server4</h2><div id="backup"></div><p>Externe back-up: nog niet ingericht en getest. Eerst kiest de producteigenaar een bestemming buiten Server4 en verleent toestemming. Instelbare kopie en lokale herstelprocedure zijn voorbereid; er wordt geen externe dienst of opslag aangenomen. Ondersteuningscontact, contactgegevens, bereikbaarheid en responstijd: nog vast te stellen.</p><h2>Medewerkersacceptatie</h2><p>Deze registraties zijn eigen waarnemingen van deelnemers. Een demobezoek of technische browsertest telt niet automatisch als onafhankelijke medewerkersacceptatie.</p><div id="acceptance-summary"></div><div id="cases"></div><h3>Vastgelegde bevindingen</h3><div id="acceptance-history"></div><p><a href="/">Terug naar de bedrijfswerkplek</a>. Voer geen echte berichten, bestellingen of betalingen uit in deze fictieve proef.</p></main></body></html>
+--- before/static/delivery.js
++++ after/static/delivery.js
+@@ -0,0 +1,16 @@
++const $=id=>document.getElementById(id),eur=c=>new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR'}).format(c/100);let auth,trial;const pending=new Map();
++function node(tag,text){const n=document.createElement(tag);n.textContent=text;return n;}
++async function api(path,value){const key=value===undefined?null:JSON.stringify(value);if(key&&path==='/api/workflow'){value.request_id=pending.get(key)||crypto.randomUUID();pending.set(key,value.request_id);}const r=await fetch(path,value===undefined?{}:{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':auth.csrf},body:JSON.stringify(value)}),v=await r.json();if(r.status===401){location.assign('/login');throw Error('Meld eerst aan');}if(!r.ok){if(r.status<500)pending.delete(key);throw Error(v.error||'Verzoek mislukt');}pending.delete(key);return v;}
++function run(fn){return async e=>{const button=e?.currentTarget;button?.setAttribute('disabled','');try{$('feedback').textContent='Bezig…';await fn();$('feedback').textContent='Bewaard / bijgewerkt.';}catch(e){$('feedback').textContent=e.message;}finally{button?.removeAttribute('disabled');}};}
++async function refresh(){trial=await api('/api/trial');render();}
++function render(){
++ $('decisions').replaceChildren();const table=document.createElement('table');for(const [key,label]of Object.entries(trial.fields)){const row=document.createElement('tr'),decision=trial.decisions[key];row.append(node('th',label),node('td',decision?.value||'Nog vast te stellen'));if(decision)row.lastChild.append(node('small',' · Vastgelegd door '+decision.actor.username+' op '+new Date(decision.at).toLocaleDateString('nl-NL')+' · '+decision.reference));table.append(row);}$('decisions').append(table);
++ if(auth.user.role==='owner'){$('owner-decisions').hidden=false;const fields=$('decision-fields');fields.replaceChildren();for(const[key,label]of Object.entries(trial.fields)){const l=node('label',label),i=document.createElement(key.endsWith('_start')||key.endsWith('_end')?'input':'textarea');i.name=key;if(i.tagName==='INPUT')i.type='date';else i.rows=2;i.value=trial.decisions[key]?.value||'';i.maxLength=1500;l.append(i);fields.append(l);}}
++ const b=trial.external_backup;$('backup').replaceChildren();if(b.result==='PASS'){$('backup').append(node('p','Versleutelde kopie op '+b.destination_host+' · '+new Date(b.completed_at).toLocaleString('nl-NL')+' · '+(b.stale?'Controle is ouder dan 26 uur; opnieuw controleren.':'Recente controle.')),node('p',b.restore_verified?'Geïsoleerd herstel van deze kopie geslaagd; dossiers, historie en financiële totalen gecontroleerd.':'Kopie aanwezig; herstel van deze kopie nog niet bewezen.'),node('p','Planning: '+(b.schedule||'Nog niet afgesproken')));if(b.last_attempt_failed)$('backup').append(node('p','Let op: de laatste back-uppoging is mislukt; bovenstaande gegevens tonen de laatste geslaagde kopie. Laat beheer dit controleren.'));if(b.control_totals)$('backup').append(node('p','Herstelde controletotalen: omzet '+eur(b.control_totals.revenue_cents)+', debiteuren '+eur(b.control_totals.open_cents)+', netto ontvangen '+eur(b.control_totals.net_received_cents)+'.'));}else $('backup').append(node('p','Externe back-up: nog niet ingericht en getest. De eigenaar kiest eerst de bestemming en geeft toestemming. Lokale Server4-backups en geïsoleerde hersteltests blijven beschikbaar.'));
++ $('acceptance-summary').replaceChildren();for(const [k,c]of Object.entries(trial.cases))$('acceptance-summary').append(node('p',c.title+': '+(trial.staff_self_reported[k]?'Deelnemer heeft eigen route als geslaagd vastgelegd.':'Nog niet door betreffende deelnemer als geslaagd vastgelegd.')));
++ $('cases').replaceChildren();for(const [key,c]of Object.entries(trial.cases)){const box=document.createElement('details');box.append(node('summary',c.title));const list=document.createElement('ol');for(const [,text]of c.steps)list.append(node('li',text));box.append(list);if(['owner','demo',key].includes(auth.user.role)){const form=document.createElement('form'),checks=[];for(const[id,text]of c.steps){const l=node('label',text),i=document.createElement('input');i.type='checkbox';i.value=id;l.prepend(i);form.append(l);checks.push(i);}const result=document.createElement('select');for(const[value,text]of [['blocked','Nog geblokkeerd'],['failed','Mislukt / hulp nodig'],['passed','Geslaagd na eigen controle']]){const o=node('option',text);o.value=value;result.append(o);}const roleLabel={mechanic:'monteur',shop:'winkelmedewerker',administration:'administrateur'}[key];result.setAttribute('aria-label','Resultaat '+roleLabel);const rl=node('label','Resultaat '+roleLabel);rl.append(result);form.append(rl);const nl=node('label','Bevindingen en bewijs '+roleLabel),note=document.createElement('textarea');note.required=true;note.maxLength=2000;nl.append(note);form.append(nl);const save=node('button','Bewaar mijn resultaat als '+roleLabel);form.append(save);form.onsubmit=e=>{e.preventDefault();run(async()=>{await api('/api/workflow',{action:'trial_accept',role:'Eigenaar',revision:trial.revision,case_id:key,outcome:result.value,steps:checks.filter(i=>i.checked).map(i=>i.value),note:note.value});await refresh();})({currentTarget:save});};box.append(form);}else box.append(node('p','Laat deze deelnemer onder het eigen account bevindingen vastleggen.'));$('cases').append(box);}
++ $('acceptance-history').replaceChildren();for(const a of [...trial.acceptance].reverse())$('acceptance-history').append(node('article',new Date(a.at).toLocaleString('nl-NL')+' · '+a.actor.username+' ('+a.actor.role+') · '+trial.cases[a.case_id].title+' · '+({passed:'geslaagd',failed:'mislukt',blocked:'geblokkeerd'}[a.outcome])+' · '+a.note));if(!trial.acceptance.length)$('acceptance-history').append(node('p','Nog geen deelnemersresultaten.'));
++}
++$('decision-form').onsubmit=e=>{e.preventDefault();run(async()=>{const values=Object.fromEntries(new FormData(e.target));await api('/api/workflow',{action:'trial_decisions',role:'Eigenaar',revision:trial.revision,values,reference:$('decision-reference').value});await refresh();})({currentTarget:e.target.querySelector('button')});};
++$('accounting-check').onclick=run(async()=>{const a=await api('/api/trial/accounting'),box=$('accounting');box.replaceChildren(node('p',(a.balanced?'Interne bedragen sluiten aan. ':'Interne verschillen eerst herstellen. ')+a.source_issues.length+' bronproblemen · '+a.records+' exportregels · '+a.documents+' documenten.'),node('p','Externe import: '+a.external_import+'. Tijdwinst: '+a.time_saved));const list=document.createElement('ol');for(const text of a.remaining_manual_work)list.append(node('li',text));box.append(list);if(Object.keys(a.missing_field_counts).length)box.append(node('p','Ontbrekende velden: '+Object.entries(a.missing_field_counts).map(([k,v])=>k+' '+v).join(', ')));const protocol=document.createElement('details');protocol.append(node('summary','Protocol voor één echte proefimport'));const steps=document.createElement('ol');for(const text of a.validation_protocol)steps.append(node('li',text));protocol.append(steps);box.append(protocol);});
++(async()=>{auth=await api('/api/session');$('identity').textContent=auth.user.role==='demo'?'Demomodus — geen persoonlijke medewerkersacceptatie':'Aangemeld als '+auth.user.username+' · '+auth.user.role;if(['mechanic','shop'].includes(auth.user.role))$('accounting-section').hidden=true;await refresh();})().catch(e=>$('feedback').textContent=e.message);
+--- before/static/index.html
++++ after/static/index.html
+@@ -1,6 +1,6 @@
+ <!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sleutelhuis · Bedrijfsassistent</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script><body>
+ <header><div><p class="eyebrow">SLEUTELHUIS / BEDRIJFSASSISTENT</p><h1>Mijn bedrijf</h1><p>Werk, planning en administratie</p><p id="demo-day" class="demo-day">Demodag: maandag 26 oktober 2026</p></div><label>Weergave <select id="mode"><option value="owner">Ondernemer</option><option value="admin">Demobeheer</option></select></label></header>
+-<nav id="main-nav" aria-label="Hoofdnavigatie"><button data-view="home">Dashboard</button><button data-view="open">Open werk</button><button data-view="to_invoice">Nog te factureren</button><button data-view="invoiced">Gefactureerde dossiers</button><button data-view="debtors">Debiteuren</button><button data-view="ops">Voorraad &amp; beheer</button><button data-view="tour">Rondleiding</button><a class="nav-link" href="/pilot">Account, rechten en praktijkproef</a><a class="nav-link" href="/praktijkproef">Praktijkproef en aanschaf</a></nav><main><section id="owner-home"><label>Zoek klant, adres, werkorder of factuur<input id="global-search" type="search" placeholder="Bijvoorbeeld W107, F104 of Familie Vos"></label><div id="search-results" aria-live="polite"></div><div id="quick-actions"><button data-op="intake">Nieuwe opdracht</button><button data-op="urgent">Spoedklus</button><button data-op="sale">Winkelverkoop</button><button data-op="quote">Offerte maken</button></div><div id="owner-counters" class="owner-grid"></div><section id="receipt-breakdown" aria-label="Uitsplitsing netto ontvangsten"></section><div id="dashboard-sections"><div class="attention-heading"><h2>Dit vraagt aandacht</h2><details class="priority-info"><summary>Waarom deze volgorde?</summary><p>Spoed eerst, daarna vervallen facturen of actiedatums, geblokkeerd werk, gewone administratie en ontbrekende inrichting. Binnen iedere groep eerst de oudste bekende actiedatum of gereedmelding. Een facturatiedeadline wordt alleen berekend na het instellen van een facturatieregel.</p></details></div><div id="owner-attention"></div><section id="payment-attention"></section><h2>Dagplanning</h2><label class="simulation-time">Simulatietijd op de demodag <input id="simulation-time" type="time" value="09:00" required></label><details><summary>Hoe wordt vrije tijd bepaald?</summary><p>Totale vrije tijd geldt voor de hele demodag. Resterende tijd begint bij het gekozen simulatietijdstip, onafhankelijk van de echte klok. Afspraken, afgeronde bezoeken, pauzes, reistijd en afwezigheid tellen als bezet. Ontbrekende inrichting of duur blijft onbekend.</p></details><div id="owner-planning" class="owner-grid"></div></div><h2 id="owner-list-title">Open werk</h2><div id="owner-list"></div></section><aside class="notice" hidden>DEMO · Alle bedrijven en bedragen zijn fictief. Lokale regels simuleren AI-antwoorden. Alleen lokale fictieve demo-opslag; geen externe uitvoering.</aside><p id="load" role="status">Dashboard laden…</p><section hidden id="priorities" aria-label="Acties en open klussen"><h2>Werkvoorraad</h2><details id="open-work" open><summary>Open klussen</summary><div id="open-orders"></div></details><div id="attention"></div></section>
++<nav id="main-nav" aria-label="Hoofdnavigatie"><button data-view="home">Dashboard</button><button data-view="open">Open werk</button><button data-view="to_invoice">Nog te factureren</button><button data-view="invoiced">Gefactureerde dossiers</button><button data-view="debtors">Debiteuren</button><button data-view="ops">Voorraad &amp; beheer</button><button data-view="tour">Rondleiding</button><a class="nav-link" href="/pilot">Account, rechten en praktijkproef</a><a class="nav-link" href="/proefvoorstel">Proefvoorstel en acceptatie</a><a class="nav-link" href="/praktijkproef">Praktijkproef en aanschaf</a></nav><main><section id="owner-home"><label>Zoek klant, adres, werkorder of factuur<input id="global-search" type="search" placeholder="Bijvoorbeeld W107, F104 of Familie Vos"></label><div id="search-results" aria-live="polite"></div><div id="quick-actions"><button data-op="intake">Nieuwe opdracht</button><button data-op="urgent">Spoedklus</button><button data-op="sale">Winkelverkoop</button><button data-op="quote">Offerte maken</button></div><div id="owner-counters" class="owner-grid"></div><section id="receipt-breakdown" aria-label="Uitsplitsing netto ontvangsten"></section><div id="dashboard-sections"><div class="attention-heading"><h2>Dit vraagt aandacht</h2><details class="priority-info"><summary>Waarom deze volgorde?</summary><p>Spoed eerst, daarna vervallen facturen of actiedatums, geblokkeerd werk, gewone administratie en ontbrekende inrichting. Binnen iedere groep eerst de oudste bekende actiedatum of gereedmelding. Een facturatiedeadline wordt alleen berekend na het instellen van een facturatieregel.</p></details></div><div id="owner-attention"></div><section id="payment-attention"></section><h2>Dagplanning</h2><label class="simulation-time">Simulatietijd op de demodag <input id="simulation-time" type="time" value="09:00" required></label><details><summary>Hoe wordt vrije tijd bepaald?</summary><p>Totale vrije tijd geldt voor de hele demodag. Resterende tijd begint bij het gekozen simulatietijdstip, onafhankelijk van de echte klok. Afspraken, afgeronde bezoeken, pauzes, reistijd en afwezigheid tellen als bezet. Ontbrekende inrichting of duur blijft onbekend.</p></details><div id="owner-planning" class="owner-grid"></div></div><h2 id="owner-list-title">Open werk</h2><div id="owner-list"></div></section><aside class="notice" hidden>DEMO · Alle bedrijven en bedragen zijn fictief. Lokale regels simuleren AI-antwoorden. Alleen lokale fictieve demo-opslag; geen externe uitvoering.</aside><p id="load" role="status">Dashboard laden…</p><section hidden id="priorities" aria-label="Acties en open klussen"><h2>Werkvoorraad</h2><details id="open-work" open><summary>Open klussen</summary><div id="open-orders"></div></details><div id="attention"></div></section>
+ <section id="detail" hidden><button id="close">← Sluit details</button><h2 id="detail-title"></h2><div id="detail-body"></div></section>
+ <p id="work-feedback" role="status" aria-live="polite"></p><section id="other-workflow" hidden><button id="other-back">← Terug naar werkvoorraad</button><h2 id="other-title"></h2><p id="other-info"></p><details><summary>Werknotities</summary><label>Eigen demo-werknotitie (geen echte uitvoering)<textarea id="other-note" maxlength="1000"></textarea></label><button id="other-save">Bewaar werknotitie</button></details><div id="other-fields"></div><p id="other-feedback" role="status"></p></section><section id="workflow" class="workflow" hidden><button id="wf-back">← Terug naar werkvoorraad</button><h2 id="wf-title">Een cilinder te laat. Wat nu?</h2><details><summary>Rol en verversen</summary><label for="wf-role">Demo bekijken als</label><select id="wf-role"><option>Lina</option><option value="Eigenaar" selected>Henk (eigenaar)</option><option>Bram</option><option>Administratie</option></select><button id="wf-refresh">Ververs gedeeld dossier</button><p>Gedeeld demodossier · ververst elke 2 seconden. Rolkeuze is presentatie, geen toegangsbeveiliging.</p></details><h3 id="wf-status"></h3><dl id="wf-summary"></dl><p id="wf-todo"></p><div id="wf-controls"></div><details><summary>Concept klantbericht bekijken — nooit verzonden</summary><p id="wf-message"></p></details><details id="invoice-details"><summary>Conceptfactuur CF105</summary><table id="wf-invoice"></table><div id="wf-invoice-actions"></div><small>Concept; niet verzonden en geen boeking.</small></details><details><summary>Geschiedenis en demotelling</summary><p id="wf-metrics"></p><ol id="wf-history"></ol></details><p id="wf-feedback" role="status" aria-live="polite"></p></section>
+ <details id="operations-panel"><summary>Bedrijfswerkplek — intake, planning, voorraad en dossiers</summary><p>Fictieve lokale administratie. Rolcontroles per handeling; rolkeuze is geen gebruikersauthenticatie. Geen echte verzending, betaling of koppeling.</p><div id="operations"></div></details><section id="completed-section" hidden><h2>Uitvoering afgerond</h2><div id="completed"></div></section><details id="business-overview"><summary>Bedrijfscijfers en overige aandachtspunten</summary><section id="tiles" aria-label="Bedrijfsoverzicht"></section><p><a href="/api/accounting-export" download="fictieve-financiele-controle.csv">Download boekhoudcontrole CSV — fictieve administratie</a> · Bedragen in centen, EUR; bestaande factuurnummers blijven behouden (CF = oorspronkelijk conceptnummer, status is leidend). Handwerk: factuurdatum, debiteuren, grootboek- en btw-codes aanvullen, importeren en betalingen afstemmen. Geen automatische boeking.</p></details><section id="trial" hidden><h2>Proef bij jouw bedrijf</h2><p>Verkennende notities; bespreek kosten, ondersteuning en koppelingen vóór een afspraak. Geen offerte of toezegging.</p><label>Indicatieve proefkosten (zelf invullen)<input id="trial-cost" placeholder="Bedrag, bandbreedte of nog te bespreken"></label><label>Ondersteuning / contact<input id="trial-contact" placeholder="Contactpersoon en gewenste ondersteuning"></label><label>Te koppelen software<input id="trial-software" placeholder="Pakketnamen en gewenste gegevens"></label><small>Deze notities blijven alleen tijdens deze pagina openstaat; er wordt niets verstuurd of gekoppeld.</small></section><details class="story" hidden><summary>Optionele demo-uitleg: het zes-stappen-verhaal</summary><p class="eyebrow">VAN KLANTVRAAG NAAR CONCEPTFACTUUR</p><h2>Eén dossier. Het hele verhaal.</h2><p>Atelier Noord · W105 · navigeer door het fictieve scenario</p><nav id="story-steps" aria-label="Verhaalstappen"></nav><h3 id="story-title"></h3><p id="story-body"></p><div class="buttons"><button id="previous">← Vorige</button><span id="story-count"></span><button id="next">Volgende →</button></div><small>Actueel fictief dossier uit de rolworkflow hierboven. Geen echt bericht, bestelling of boeking.</small></details>
+--- before/static/pilot.html
++++ after/static/pilot.html
+@@ -1 +1 @@
+-<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Account en praktijkproef · Sleutelhuis</title><link rel="stylesheet" href="/style.css"><script src="/pilot.js" defer></script><body><main class="commercial"><h1>Account en praktijkproef</h1><p id="identity"></p><nav><a href="/">Bedrijfswerkplek</a> · <a href="/praktijkproef">Aanschafvoorwaarden</a> · <button id="logout">Afmelden</button></nav><p id="feedback" role="status"></p><section id="mechanic" hidden><h2>Mijn toegewezen opdrachten</h2><p>Uitsluitend jouw uitvoering, uren en toegewezen materiaal. Tarieven, betalingen en andere dossiers zijn niet toegankelijk.</p><div id="jobs"></div><h2>Toegewezen materiaal</h2><div id="reservations"></div><button id="reload">Actuele gegevens laden</button></section><section id="finance" hidden><h2>Financiële afstemming</h2><button id="reconcile">Controleer omzet, debiteuren en geld</button><pre id="reconciliation"></pre><p><a href="/api/accounting-export">Download controle-export</a>. Externe import is niet gevalideerd. Ontbrekende historische bronvelden blijven zichtbaar.</p></section><section id="owner" hidden><h2>Gebruikers en rechten</h2><p>Eigenaar: instellingen, tarieven, gebruikers en financiële correcties. Monteur: eigen opdrachten/uitvoering. Administratie: facturatie, betalingen, debiteuren en export; tariefbeheer en financiële correcties vereisen eigenaar.</p><div id="users"></div><form id="user-form"><label>Gebruikersnaam<input name="username" required minlength="3" maxlength="60" autocomplete="off"></label><label>Nieuw wachtwoord<input type="password" name="password" required minlength="12" maxlength="128" autocomplete="new-password"></label><label>Gebruikersrol<select name="role"><option value="mechanic">Monteur</option><option value="administration">Administratie</option><option value="owner">Eigenaar</option></select></label><label>Medewerker voor monteur<select name="employee"><option value="Bram">Bram</option><option value="Noor">Noor</option><option value="Lina">Lina</option><option value="">Niet van toepassing</option></select></label><button>Gebruiker aanmaken</button></form><h2>Gecontroleerde proefmigratie</h2><p>Alleen fictieve JSON-bestanden. Voorvertoning met regelfouten en mogelijke duplicaten is verplicht. Dubbele bron-ID’s worden geblokkeerd; herhalen van dezelfde batch voegt niets opnieuw toe. Openingssaldi zijn resterende vorderingen, geen nieuwe omzet of eerdere ontvangsten.</p><label>Fictief migratiebestand<input id="import-file" type="file" accept="application/json,.json"></label><label>JSON proefbestand<textarea id="import-json" rows="10" maxlength="240000"></textarea></label><button id="example">Vul fictief voorbeeld in</button><button id="preview">Voorvertoning controleren</button><pre id="preview-result"></pre><button id="commit" disabled>Verwerk gecontroleerde proefimport</button><h3>Geïmporteerde klanten, artikelen en prijzen</h3><button id="catalog">Toon geïmporteerde stamgegevens</button><pre id="catalog-result"></pre><h3>Importhistorie</h3><pre id="import-history"></pre><h2>Herleidbaarheid</h2><button id="audit">Bekijk gebruikers- en mutatiehistorie</button><pre id="audit-result"></pre></section><p>Alle gegevens en transacties blijven fictief. Deze testvoorzieningen zijn geen productiegarantie.</p></main></body></html>
++<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Account en praktijkproef · Sleutelhuis</title><link rel="stylesheet" href="/style.css"><script src="/pilot.js" defer></script><body><main class="commercial"><h1>Account en praktijkproef</h1><p id="identity"></p><nav><a href="/">Bedrijfswerkplek</a> · <a href="/proefvoorstel">Proefvoorstel en acceptatie</a> · <a href="/praktijkproef">Aanschafvoorwaarden</a> · <button id="logout">Afmelden</button></nav><p id="feedback" role="status"></p><section id="mechanic" hidden><h2>Mijn toegewezen opdrachten</h2><p>Uitsluitend jouw uitvoering, uren en toegewezen materiaal. Tarieven, betalingen en andere dossiers zijn niet toegankelijk.</p><div id="jobs"></div><h2>Toegewezen materiaal</h2><div id="reservations"></div><button id="reload">Actuele gegevens laden</button></section><section id="shop" hidden><h2>Mijn winkelwerkplek</h2><p>Voorraad, fictieve contante verkoop en bijbehorende retour. Geen toegang tot klantdossiers, debiteuren of gebruikersbeheer.</p><div id="shop-stock"></div><form id="shop-sale"><label>Artikel uit vrije winkelvoorraad<select aria-label="Artikel uit vrije winkelvoorraad" id="shop-part" required></select></label><label>Aantal verkopen<input id="shop-quantity" type="number" min="1" step="1" value="1" required></label><label>Verkoopprijs per stuk excl. btw<input id="shop-price" inputmode="decimal" required></label><label>Bron van de verkoopprijs<input id="shop-source" required maxlength="300"></label><button>Bewaar fictieve winkelverkoop</button></form><h3>Gedeeltelijke retour en terugbetaling</h3><form id="shop-return"><label>Oorspronkelijke winkelverkoop<select aria-label="Oorspronkelijke winkelverkoop" id="shop-sale-id" required></select></label><label>Aantal retour<input id="shop-return-quantity" type="number" min="1" step="1" value="1" required></label><label>Retourdatum<input id="shop-return-date" type="date" required></label><label>Reden retour<input id="shop-return-reason" required maxlength="1000"></label><button>Bewaar winkelretour en fictieve terugbetaling</button></form><h3>Verkoop- en retourhistorie</h3><div id="shop-sales"></div><button id="shop-reload">Actuele winkelgegevens laden</button></section><section id="finance" hidden><h2>Financiële afstemming</h2><button id="reconcile">Controleer omzet, debiteuren en geld</button><pre id="reconciliation"></pre><p><a href="/api/accounting-export">Download controle-export</a>. Externe import is niet gevalideerd. Ontbrekende historische bronvelden blijven zichtbaar.</p></section><section id="owner" hidden><h2>Gebruikers en rechten</h2><p>Eigenaar: instellingen, tarieven, gebruikers en financiële correcties. Monteur: eigen opdrachten/uitvoering. Administratie: facturatie, betalingen, debiteuren en export; tariefbeheer en financiële correcties vereisen eigenaar.</p><div id="users"></div><form id="user-form"><label>Gebruikersnaam<input name="username" required minlength="3" maxlength="60" autocomplete="off"></label><label>Nieuw wachtwoord<input type="password" name="password" required minlength="12" maxlength="128" autocomplete="new-password"></label><label>Gebruikersrol<select name="role"><option value="mechanic">Monteur</option><option value="shop">Winkelmedewerker</option><option value="administration">Administratie</option><option value="owner">Eigenaar</option></select></label><label>Medewerker voor monteur<select name="employee"><option value="Bram">Bram</option><option value="Noor">Noor</option><option value="Lina">Lina</option><option value="">Niet van toepassing</option></select></label><button>Gebruiker aanmaken</button></form><h2>Gecontroleerde proefmigratie</h2><p>Alleen fictieve JSON-bestanden. Voorvertoning met regelfouten en mogelijke duplicaten is verplicht. Dubbele bron-ID’s worden geblokkeerd; herhalen van dezelfde batch voegt niets opnieuw toe. Openingssaldi zijn resterende vorderingen, geen nieuwe omzet of eerdere ontvangsten.</p><label>Fictief migratiebestand<input id="import-file" type="file" accept="application/json,.json"></label><label>JSON proefbestand<textarea id="import-json" rows="10" maxlength="240000"></textarea></label><button id="example">Vul fictief voorbeeld in</button><button id="preview">Voorvertoning controleren</button><pre id="preview-result"></pre><button id="commit" disabled>Verwerk gecontroleerde proefimport</button><h3>Geïmporteerde klanten, artikelen en prijzen</h3><button id="catalog">Toon geïmporteerde stamgegevens</button><pre id="catalog-result"></pre><h3>Importhistorie</h3><pre id="import-history"></pre><h2>Herleidbaarheid</h2><button id="audit">Bekijk gebruikers- en mutatiehistorie</button><pre id="audit-result"></pre></section><p>Alle gegevens en transacties blijven fictief. Deze testvoorzieningen zijn geen productiegarantie.</p></main></body></html>
+--- before/static/pilot.js
++++ after/static/pilot.js
+@@ -10,6 +10,13 @@
+ async function users(){const v=await api('/api/users');$('users').replaceChildren();for(const u of v.users){const a=node('article',`${u.username} · ${u.role} · ${u.employee||''} · ${u.active?'actief':'beëindigd'}`);if(u.active&&u.id!==auth.user.id){const b=node('button','Beëindig gebruiker '+u.username);b.onclick=run(async()=>{await api('/api/users/disable',{id:u.id});await users();});a.append(b);}$('users').append(a);}}
+ async function history(){const v=await api('/api/migration/history');$('import-history').textContent=v.imports.length?v.imports.map(h=>rows(h.batch_id+' · '+new Date(h.at).toLocaleString('nl-NL')+' · '+(h.actor?.username||'gebruiker onbekend'),[['Klanten',h.totals.customers],['Artikelen',h.totals.articles],['Beginvoorraad',h.totals.stock_quantity],['Beginsaldi',eur(h.totals.opening_cents)]])).join('\n\n'):'Nog geen proefimport verwerkt.';}
+ async function mywork(){state=await api('/api/mechanic');$('jobs').replaceChildren();for(const o of state.orders){const a=node('article','');a.append(node('h3',o.id+' · '+o.customer),node('p',o.scope));if(o.completed){a.append(node('p','Uitvoering afgerond · '+(o.findings||o.note||'')));}else{const f=document.createElement('form'),find=field(f,'Bevindingen '+o.id,o.findings||''),hours=field(f,'Gewerkte uren '+o.id,o.hours??'','number'),mat=field(f,(o.id==='W105'?'Aantal cilinders ':'Materiaaltoelichting ')+o.id,o.materials||'');hours.step='0.25';hours.min='0';hours.max='24';const save=node('button','Bewaar uitvoering '+o.id),finish=node('button','Gereedmelden '+o.id);finish.type='button';const submit=async action=>{await api('/api/workflow',{role:'Bram',job:o.id,revision:state.revision,action:o.id==='W105'?'register':action,findings:find.value,hours:hours.value===''?null:Number(hours.value),materials:o.id==='W105'?Number(mat.value):mat.value,material_reason:o.id==='W105'?'Geen materiaal — monteurregistratie':'',visit_hours:o.visit_hours});await mywork();};f.onsubmit=e=>{e.preventDefault();run(()=>submit('repair'))();};finish.onclick=run(()=>submit('finish'));f.append(save,finish);a.append(f);}$('jobs').append(a);}$('reservations').replaceChildren();for(const r of state.reservations){const a=node('article',`${r.order} · ${r.key} · ${r.quantity} · ${r.status}`);if(r.status==='gereserveerd'){const b=node('button','Gebruik materiaal '+r.id);b.onclick=run(async()=>{await api('/api/workflow',{role:'Bram',job:r.order,revision:state.revision,action:'stock_use',reservation:r.id});await mywork();});a.append(b);const reason=field(a,'Reden vrijgave '+r.id),release=node('button','Geef reservering vrij '+r.id);release.onclick=run(async()=>{await api('/api/workflow',{role:'Bram',job:r.order,revision:state.revision,action:'reservation_release',reservation:r.id,quantity:r.quantity,reason:reason.value});await mywork();});a.append(release);}$('reservations').append(a);}}
++let shopState;
++function shopPrice(){const key=$('shop-part').value,item=shopState.stock.find(x=>x.key===key);$('shop-price').value=item?.unit_cents!=null?(item.unit_cents/100).toFixed(2).replace('.',','):'';$('shop-source').value=item?.price_source||'';}
++async function shopLoad(){shopState=await api('/api/shop');$('shop-stock').replaceChildren();$('shop-part').replaceChildren();for(const item of shopState.stock){$('shop-stock').append(node('p',item.key+' · fysiek '+item.quantity+' · gereserveerd '+item.reserved+' · vrij '+item.free));if(item.free>0){const o=node('option',item.key+' · '+item.free+' vrij');o.value=item.key;$('shop-part').append(o);}}shopPrice();$('shop-sale-id').replaceChildren();$('shop-sales').replaceChildren();for(const sale of shopState.sales){const returned=(sale.returns||[]).reduce((n,r)=>n+r.quantity,0),left=sale.quantity-returned;const card=node('article',sale.id+' · '+sale.key+' · '+sale.quantity+' verkocht · '+eur(sale.total_cents)+' ontvangen · '+left+' nog retourneerbaar');for(const r of sale.returns||[])card.append(node('p',r.date+' · '+r.quantity+' retour · '+eur(r.total_cents)+' fictief terugbetaald · '+r.reason));$('shop-sales').append(card);if(left>0){const o=node('option',sale.id+' · '+sale.key+' · maximaal '+left);o.value=sale.id;$('shop-sale-id').append(o);}}$('shop-return-date').value=shopState.business_date;}
++$('shop-part').onchange=shopPrice;
++$('shop-reload').onclick=run(shopLoad);
++$('shop-sale').onsubmit=e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;run(async()=>{const key=$('shop-part').value,index=key.lastIndexOf(' @ '),unit=Math.round(Number($('shop-price').value.replace(',','.'))*100);if(index<0||!Number.isFinite(unit))throw Error('Kies artikel en geldige prijs');await api('/api/workflow',{role:'Lina',action:'sale',job:'W104',revision:shopState.revision,part:key.slice(0,index),location:key.slice(index+3),quantity:Number($('shop-quantity').value),unit_cents:unit,source:$('shop-source').value});await shopLoad();$('shop-quantity').value='1';})().finally(()=>b.disabled=false);};
++$('shop-return').onsubmit=e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;run(async()=>{await api('/api/workflow',{role:'Lina',action:'sale_return',job:'W104',revision:shopState.revision,sale:$('shop-sale-id').value,quantity:Number($('shop-return-quantity').value),date:$('shop-return-date').value,reason:$('shop-return-reason').value});await shopLoad();})().finally(()=>b.disabled=false);};
+ $('logout').onclick=run(async()=>{await api('/api/logout',{});location.assign('/login');});
+ $('reload').onclick=run(mywork);
+ $('reconcile').onclick=run(async()=>{$('reconciliation').textContent=showReconciliation(await api('/api/reconciliation'));});
+@@ -21,4 +28,4 @@
+ $('commit').onclick=run(async()=>{if(!preview||JSON.stringify(payload)!==JSON.stringify(JSON.parse($('import-json').value)))throw Error('Bestand gewijzigd; voorvertoning opnieuw controleren');$('commit').disabled=true;await api('/api/workflow',{role:'Eigenaar',action:'migration_commit',revision:preview.revision,payload,preview_digest:preview.digest});await history();$('preview-result').textContent+='\nProefimport verwerkt; aantallen en beginsaldo staan in de historie.';});
+ $('catalog').onclick=run(async()=>{const v=await api('/api/catalog');$('catalog-result').textContent='Klanten\n'+Object.values(v.customers).map(c=>c.id+' · '+c.name+' · '+c.address).join('\n')+'\n\nArtikelen en prijzen\n'+Object.values(v.articles).map(a=>a.id+' · '+a.name+' · '+eur(a.unit_cents)+' excl. btw · '+a.vat_percent+'% btw · bronbeginvoorraad '+a.quantity+' · '+a.location).join('\n');});
+ $('audit').onclick=run(async()=>{const v=await api('/api/audit');const labels={login:'Aangemeld',user_created:'Gebruiker aangemaakt',user_disabled:'Gebruiker beëindigd',migration_commit:'Proefimport gecontroleerd',payment:'Betaling geregistreerd',credit:'Credit geregistreerd',refund:'Terugbetaling',payment_reverse:'Betaling teruggeboekt',invoice_final:'Factuur definitief',invoice_draft:'Conceptfactuur',tariff_save:'Tarief vastgelegd',repair:'Uitvoering opgeslagen',finish:'Uitvoering gereed',note:'Dossiernotitie'};$('audit-result').textContent='Accounts\n'+v.accounts.map(a=>new Date(a.at*1000).toLocaleString('nl-NL')+' · '+(a.username||'gebruiker onbekend')+' · '+(labels[a.action]||a.action)+' · '+a.subject).join('\n')+'\n\nBedrijfshistorie\n'+v.workflow.map(h=>(h.at?new Date(h.at).toLocaleString('nl-NL'):'Tijd onbekend')+' · '+(h.actor?.username||'Historische demorol '+h.role)+' · '+(h.job||'administratie')+' · '+(labels[h.action]||h.label||'Dossier bijgewerkt')).join('\n');});
+-(async()=>{auth=await api('/api/session');$('identity').textContent=auth.user.role==='demo'?'Demomodus · gedeelde fictieve gegevens · gebruikersbeheer afgeschermd':'Aangemeld als '+auth.user.username+' · '+auth.user.role;if(auth.user.role==='mechanic'){$('mechanic').hidden=false;await mywork();}else{$('finance').hidden=false;if(auth.user.role==='owner'){$('owner').hidden=false;await users();await history();}}})().catch(e=>$('feedback').textContent=e.message);
++(async()=>{auth=await api('/api/session');$('identity').textContent=auth.user.role==='demo'?'Demomodus · gedeelde fictieve gegevens · gebruikersbeheer afgeschermd':'Aangemeld als '+auth.user.username+' · '+auth.user.role;if(auth.user.role==='shop'){$('shop').hidden=false;await shopLoad();}else if(auth.user.role==='mechanic'){$('mechanic').hidden=false;await mywork();}else{$('finance').hidden=false;if(auth.user.role==='owner'){$('owner').hidden=false;await users();await history();}}})().catch(e=>$('feedback').textContent=e.message);
+--- before/static/praktijkproef.html
++++ after/static/praktijkproef.html
+@@ -1,7 +1,7 @@
+-<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praktijkproef en aanschaf · Sleutelhuis Demo</title><link rel="stylesheet" href="/style.css"></head><body><main class="commercial"><nav aria-label="Terug"><a href="/">← Terug naar bedrijfswerkplek</a></nav><h1>Praktijkproef en aanschaf</h1><p><strong>Toegang demo</strong> opent de gedeelde fictieve administratie zonder persoonlijke inloggegevens. Deze demotoegang bewijst geen persoonlijke aanmelding; gebruikersbeheer en eigenaarsactivering blijven apart beveiligd. Gebruik uitsluitend fictieve gegevens.</p><p>Voor een sleutelservice, winkel in hang- en sluitwerk en monteurs die opdrachten, materiaal en administratie bij elkaar willen houden.</p><p><strong>Dit is een fictieve verkoopdemonstratie, geen aangeboden productiecontract.</strong> Echte accounts en serverzijdige rollen zijn geïmplementeerd en in een geïsoleerde proef getest. De historische demorolkeuze blijft uitsluitend presentatie binnen de rechten van de aangemelde gebruiker. Externe boekhoudimport en productieafspraken zijn nog niet aangetoond.</p>
++<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Praktijkproef en aanschaf · Sleutelhuis Demo</title><link rel="stylesheet" href="/style.css"></head><body><main class="commercial"><nav aria-label="Terug"><a href="/">← Terug naar bedrijfswerkplek</a></nav><h1>Praktijkproef en aanschaf</h1><p><a href="/proefvoorstel">Open het concrete proefvoorstel, boekhoudvoorbereiding en medewerkersacceptatie</a>. Dit voorstel heeft stappen en criteria; prijs, periode en ondersteuning worden pas als gekozen getoond wanneer de eigenaar ze met bron vastlegt.</p><p><strong>Toegang demo</strong> opent de gedeelde fictieve administratie zonder persoonlijke inloggegevens. Deze demotoegang bewijst geen persoonlijke aanmelding; gebruikersbeheer en eigenaarsactivering blijven apart beveiligd. Gebruik uitsluitend fictieve gegevens.</p><p>Voor een sleutelservice, winkel in hang- en sluitwerk en monteurs die opdrachten, materiaal en administratie bij elkaar willen houden.</p><p><strong>Dit is een fictieve verkoopdemonstratie, geen aangeboden productiecontract.</strong> Echte accounts en serverzijdige rollen zijn geïmplementeerd en in een geïsoleerde proef getest. De historische demorolkeuze blijft uitsluitend presentatie binnen de rechten van de aangemelde gebruiker. Externe boekhoudimport en productieafspraken zijn nog niet aangetoond.</p>
+ <h2>Wat kunt u beoordelen?</h2><ul><li>Eén dossier van offerte en klantakkoord via planning, uren en materiaal naar factuur, fictieve betaling en afsluiting.</li><li>Onderdeelbehoefte, inkoop, deelleveringen, bestelrestant en vervolgbezoek.</li><li>Winkelvoorraad, fictieve contante verkoop, gedeeltelijke retour en terugbetaling.</li><li>Herleidbare correcties, btw, debiteuren, netto ontvangsten en controle-export.</li></ul><p>De rondleiding opent dezelfde dossiers en functies als de gewone werkplek. Nieuwe oefenrondes bewaren eerdere gegevens en historie. Er is geen gemeten tijdwinst; beoordeel zelf welke prijsregels, uren en materiaalregistraties automatisch worden overgenomen.</p>
+ <h2>Wat valt buiten de bewezen demo?</h2><p>Geen echte verzending, leveranciersbestelling, bankbetaling of boekhoudboeking. Geen bewezen bank-, mail-, leverancier- of boekhoudkoppeling. De export is een controlebestand; een externe import is niet gevalideerd. Toegangscontrole/sleutelregistratie in de demo is geen gecertificeerd toegangsbeheersysteem.</p>
+-<h2>Benodigde inrichting en import</h2><ul><li>Klanten, artikelen, verkoopprijzen, btw-afspraken, beginvoorraad, medewerkers en werktijden controleren.</li><li>Open dossiers, facturen, betalingen en beginsaldi afstemmen met brondocumenten; ontbrekende datums of betaalmethoden met bewijs aanvullen.</li><li>Gecontroleerde fictieve proefimport voor klanten, artikelen, prijzen, beginvoorraad en resterende open saldi: beschikbaar onder Account en praktijkproef, met verplichte voorvertoning, regelfouten, duplicaatcontrole en importhistorie. Herhalen voegt geen voorraad of saldi dubbel toe. Alleen EUR en 21% btw; geen volledige historische migratie. Echte bronmapping, migratiebegeleiding en toestemming voor echte gegevens: <strong>Nog vast te stellen</strong>.</li><li>Accounts en rechten: eigenaar beheert instellingen, tarieven, gebruikers en financiële correcties; monteur ziet uitsluitend eigen toegewezen uitvoering; administratie verwerkt facturen, betalingen, debiteuren en export. Niet-ingelogde API-toegang, directe ongeoorloofde mutaties en ingetrokken sessies zijn getest. Hostingafspraken en beoordeling voor echte gegevens: <strong>Nog vast te stellen</strong>.</li></ul>
++<h2>Benodigde inrichting en import</h2><ul><li>Klanten, artikelen, verkoopprijzen, btw-afspraken, beginvoorraad, medewerkers en werktijden controleren.</li><li>Open dossiers, facturen, betalingen en beginsaldi afstemmen met brondocumenten; ontbrekende datums of betaalmethoden met bewijs aanvullen.</li><li>Gecontroleerde fictieve proefimport voor klanten, artikelen, prijzen, beginvoorraad en resterende open saldi: beschikbaar onder Account en praktijkproef, met verplichte voorvertoning, regelfouten, duplicaatcontrole en importhistorie. Herhalen voegt geen voorraad of saldi dubbel toe. Alleen EUR en 21% btw; geen volledige historische migratie. Echte bronmapping, migratiebegeleiding en toestemming voor echte gegevens: <strong>Nog vast te stellen</strong>.</li><li>Accounts en rechten: eigenaar beheert instellingen, tarieven, gebruikers en financiële correcties; monteur ziet uitsluitend eigen toegewezen uitvoering; winkelmedewerker verwerkt alleen voorraad/verkoop en bijbehorende retour; administratie verwerkt facturen, betalingen, debiteuren en export. Niet-ingelogde API-toegang, directe ongeoorloofde mutaties en ingetrokken sessies zijn getest. Hostingafspraken en beoordeling voor echte gegevens: <strong>Nog vast te stellen</strong>.</li></ul>
+ <h2>Begeleiding, ondersteuning en verantwoordelijkheden</h2><table><thead><tr><th>Onderwerp</th><th>Bevestigde status</th></tr></thead><tbody><tr><td>Overstappen en begeleiding</td><td>Fictieve rondleiding beschikbaar. Migratiebegeleiding, training, uitvoerder en planning: Nog vast te stellen.</td></tr><tr><td>Ondersteuning</td><td>Contactpunt, bereikbaarheid, responstijd en onderhoudsafspraken: Nog vast te stellen.</td></tr><tr><td>Prijs en contract</td><td>Prijs, licentie, looptijd, opzegging en aansprakelijkheid: Nog vast te stellen. Geen aanbod of servicebelofte.</td></tr><tr><td>Eigenaar van de administratie</td><td>Ondernemer moet brongegevens en uitkomsten beoordelen. Definitieve verantwoordelijkheden en verwerkingsovereenkomst: Nog vast te stellen.</td></tr></tbody></table>
+-<h2>Opslag, backup, herstel en uitvoer</h2><p>De huidige demo gebruikt één lokale JSON-opslag op Server4 met revisiecontrole en atomisch schrijven. Eén schrijfproces; geen schaalbaarheids- of beschikbaarheidsgarantie. Bron en gegevens kunnen met het bestaande recovery-script naar een manifest-gecontroleerde backup op dezelfde host worden gekopieerd en gecontroleerd hersteld. Een herstel in een geïsoleerde omgeving is getest op dossiers/historie, voorraad/reserveringen, facturen/credits/betalingen en financiële controletotalen. Accounts worden meegenomen; oude sessies worden bij herstel ingetrokken. Deze lokale backup beschermt niet tegen verlies van de hele host. Externe kopie is voorbereid voor een geautoriseerde afzonderlijke mount, maar er is geen werkende externe bestemming of externe hersteltest aangetoond.</p><p>JSON-dossieruitvoer en CSV-financiële controle zijn beschikbaar. Een download betekent niet dat gegevens boekhoudkundig verwerkt zijn. Externe backupbestemming, bewaartermijnen, eigenaarschap, toegang en hersteldoelen: <strong>Nog vast te stellen</strong>.</p>
+-<h2>Voorstel voor een afgebakende praktijkproef</h2><p>Voorstel ter besluitvorming; geen afgesproken duur, prijs of contract. Begin begeleid met fictieve gegevens. Gebruik echte bedrijfsgegevens pas na afzonderlijke toestemming en afspraken over accounts, privacy, backup en herstel.</p><ol><li>Doorloop de drie klantreizen met vooraf vastgelegde beginvoorraad en controlebedragen.</li><li>Succescriterium: voorraad, debiteuren, btw en netto ontvangsten sluiten exact aan op de getekende export; geen dubbele verwerking bij dubbelklikken of herhalen.</li><li>Succescriterium: twee sessies zien wijzigingen; conflicten en verbindingsfouten behouden onopgeslagen invoer en melden de benodigde vervolgstap.</li><li>Succescriterium: een backup wordt in een geïsoleerde omgeving hersteld en op dossiers, historie en bedragen gecontroleerd.</li><li>Noteer aantal overgenomen bronregistraties en eventuele herinvoer; meet tijd alleen met vooraf afgesproken methode. Geen aangenomen besparingspercentages.</li><li>Besluit na afloop apart over verkoopdemo, begeleide praktijkproef en productie. Een geslaagde demo maakt productie niet automatisch gereed.</li></ol><h2>Stand van bewijs · 27 oktober 2026</h2><p>Financiële afstemming vergelijkt netto omzet na credits, debiteuren en netto ontvangen geld met de export en rapporteert verschillen en ontbrekende bronvelden. Bedrijfsdatum en werkelijk registratietijdstip worden apart bewaard; onbekende historische velden blijven onbekend. Controleer het rapport onder <a href="/pilot">Account en praktijkproef</a>. Een sluitend intern rapport bewijst geen verwerking door een extern boekhoudpakket.</p><p><strong>Verkoopdemo:</strong> geschikt voor fictieve demonstratie. <strong>Begeleide praktijkproef:</strong> technisch te oefenen met fictieve gegevens en ingerichte gebruikers; gezamenlijke medewerkersacceptatie en externe voorzieningen blijven open. <strong>Productiegebruik:</strong> niet gereed. Prijs en contract, support, externe backup en boekhoudtest moeten nog worden vastgesteld of bewezen.</p><h2>Beslispunten vóór aanschaf</h2><ol><li>Eerste eigenaar en medewerkers zelf inrichten; rechten zijn technisch getest, maar acceptatie met eigen medewerkers, hosting en beveiligings-/privacyvoorwaarden voor echte gegevens blijven open.</li><li>Gevalideerde boekhoud-/bank-/mail-/leverancierskoppelingen en proefmigratie.</li><li>Externe backup, hersteldoelen, operationeel beheer en verantwoordelijkheden.</li><li>Prijs, contractvoorwaarden, ondersteuning en begeleiding: Nog vast te stellen.</li></ol><p><a href="/">Open bedrijfswerkplek en Rondleiding</a></p></main></body></html>
++<h2>Opslag, backup, herstel en uitvoer</h2><p>De huidige demo gebruikt één lokale JSON-opslag op Server4 met revisiecontrole en atomisch schrijven. Eén schrijfproces; geen schaalbaarheids- of beschikbaarheidsgarantie. Bron en gegevens kunnen met het bestaande recovery-script naar een manifest-gecontroleerde backup op dezelfde host worden gekopieerd en gecontroleerd hersteld. Een herstel in een geïsoleerde omgeving is getest op dossiers/historie, voorraad/reserveringen, facturen/credits/betalingen en financiële controletotalen. Accounts worden meegenomen; oude sessies worden bij herstel ingetrokken. Deze lokale backup beschermt niet tegen verlies van de hele host. <strong>Externe back-up: nog niet ingericht en getest.</strong> Er is geen door de eigenaar gekozen en geautoriseerde externe bestemming in gebruik. Een instelbare bestemming buiten Server4 is voorbereid; eerst kiest de eigenaar de opslag en verleent toestemming. Het maken en geïsoleerd herstellen van een lokale back-up is getest.</p><p>JSON-dossieruitvoer en CSV-financiële controle zijn beschikbaar. Een download betekent niet dat gegevens boekhoudkundig verwerkt zijn. Externe bestemming, bewaartermijnen, beheerverantwoordelijkheid, sleutelbewaring en hersteldoelen: <strong>Nog vast te stellen</strong>.</p>
++<h2>Voorstel voor een afgebakende praktijkproef</h2><p>Voorstel ter besluitvorming; geen afgesproken duur, prijs of contract. Begin begeleid met fictieve gegevens. Gebruik echte bedrijfsgegevens pas na afzonderlijke toestemming en afspraken over accounts, privacy, backup en herstel.</p><ol><li>Doorloop de drie klantreizen met vooraf vastgelegde beginvoorraad en controlebedragen.</li><li>Succescriterium: voorraad, debiteuren, btw en netto ontvangsten sluiten exact aan op de getekende export; geen dubbele verwerking bij dubbelklikken of herhalen.</li><li>Succescriterium: twee sessies zien wijzigingen; conflicten en verbindingsfouten behouden onopgeslagen invoer en melden de benodigde vervolgstap.</li><li>Succescriterium: een backup wordt in een geïsoleerde omgeving hersteld en op dossiers, historie en bedragen gecontroleerd.</li><li>Noteer aantal overgenomen bronregistraties en eventuele herinvoer; meet tijd alleen met vooraf afgesproken methode. Geen aangenomen besparingspercentages.</li><li>Besluit na afloop apart over verkoopdemo, begeleide praktijkproef en productie. Een geslaagde demo maakt productie niet automatisch gereed.</li></ol><h2>Stand van bewijs · 27 oktober 2026</h2><p>Financiële afstemming vergelijkt netto omzet na credits, debiteuren en netto ontvangen geld met de export en rapporteert verschillen en ontbrekende bronvelden. Bedrijfsdatum en werkelijk registratietijdstip worden apart bewaard; onbekende historische velden blijven onbekend. Controleer het rapport onder <a href="/pilot">Account en praktijkproef</a>. Een sluitend intern rapport bewijst geen verwerking door een extern boekhoudpakket.</p><p><strong>Verkoopdemo:</strong> geschikt voor fictieve demonstratie. <strong>Begeleide praktijkproef:</strong> technisch te oefenen met fictieve gegevens en ingerichte gebruikers; gezamenlijke medewerkersacceptatie en externe voorzieningen blijven open. <strong>Productiegebruik:</strong> niet gereed. Prijs en contract, support, backupbeleid, sleutelbewaring en boekhoudtest moeten nog worden vastgesteld of bewezen. Een geslaagde back-upkopie is geen supportcontract.</p><h2>Beslispunten vóór aanschaf</h2><ol><li>Eerste eigenaar en medewerkers zelf inrichten; rechten zijn technisch getest, maar acceptatie met eigen medewerkers, hosting en beveiligings-/privacyvoorwaarden voor echte gegevens blijven open.</li><li>Gevalideerde boekhoud-/bank-/mail-/leverancierskoppelingen en proefmigratie.</li><li>Eigenaar kiest externe back-upbestemming en toestemming; daarna inrichten en herstel testen. Hersteldoelen, retentie en verantwoordelijkheden afspreken.</li><li>Prijs, contractvoorwaarden, ondersteuning en begeleiding: Nog vast te stellen.</li></ol><p><a href="/">Open bedrijfswerkplek en Rondleiding</a></p></main></body></html>

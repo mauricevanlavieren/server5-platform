@@ -1,0 +1,51 @@
+{
+  "result": "PASS",
+  "hostname": "server4",
+  "health": {
+    "authentication": "accounts",
+    "data": "fictional",
+    "demo_access": "passwordless-fictional",
+    "external_ai_required": false,
+    "status": "ok"
+  },
+  "source_sha256": {
+    "accounting.py": "a120d801be22af0a7d846405611414ffba54e89b2da819d319b3004c70e7dab2",
+    "delivery.py": "402a3b1269101e31a5359645605b93a93186b5c6b37d426e3984d43c0defcdbd",
+    "secure_app.py": "340fbc93845642060ae63607f6902ded30625133c7e72c46e232ec8a2cdfe51d",
+    "security.py": "81fac84e50002dee8ed39e43e551d577bf797ef0f05848c7f309226f4e3a2295",
+    "data.py": "c2e92e7fcc6b26d55efdf755e6d496772604dd43211619011405c3da5609d8ff",
+    "workflow.py": "939ec6f817b4611a8096dc9859e66ec31779292d43abb8f3495584fda91ac986",
+    "recovery.py": "546d22e724d9b9565a60d0ea38b8a6b14eb6bbf49d5ebd1153cc24108903cd22",
+    "README.md": "6f88ef5c8feeeb227a68a83621a70afd23b657fabab171872423c26a79d8b94b",
+    "aankoopbeslissingen.md": "08076a04121d4664d7ba1739257184342c33582fd0750f3e53923da3986a1c51",
+    "proefvoorstel.md": "a461359fed4c61adbb4fcb426e127214fe155fa33055ac22e02fb07eed55f3dc",
+    "backup-herstel.md": "055404521a218e2342b1b727c9fd09e15c6bd396b3b02f158a8bb47ea020dd1c",
+    "backup-config.example.json": "39bc8de23dd752dff1fb6d68a5c3353d3a885f3f7c02592c3795397708599af2",
+    "static/proefvoorstel.html": "7fe983f0e4d10567fc615cbd676ef3c1397701816d8b1a730be654b20db5c7be",
+    "static/delivery.js": "4c0ce9420aecbe6da6b809bd25a5b585cd65c3bef3e610d4d320d7995e39cdac",
+    "static/index.html": "e246d2a427fc9aa2a146bcffc2addd319eb6de37cc780e53fdc33c115c226ca9",
+    "static/pilot.html": "cb20b253f82f13c320658b36be96a34c118d0ea4b4bbc441fd64f0a55cb494dc",
+    "static/pilot.js": "a1ced740b46d67441758d01e4e8c34f3bd3f9c9d20ae46fb26582d559da9fe3c",
+    "static/praktijkproef.html": "11cf6c1c9bebc1ce10997a8f18ac0c762f7fbf8512a9f7a26f65e9df4f9aadc4"
+  },
+  "workflow_sha256": "4772b51acd7adca63ceab519c28744e7c9d8f157344b1a3eaca18b4aa5299f56",
+  "workflow_byte_identical": true,
+  "user_count": 0,
+  "users_unchanged": true,
+  "backup": "/home/mau/server4-mobile-demo/backups/demo_conf_delivery_20261027_006",
+  "local_snapshot": {
+    "path": "/home/mau/server4-mobile-demo/backups/snapshot-20261027T160213961682Z",
+    "files": 35,
+    "external_copy": "niet uitgevoerd"
+  },
+  "control_totals": {
+    "revenue_cents": 103000,
+    "net_received_cents": 77290,
+    "open_cents": 47340
+  },
+  "source_issues": 19,
+  "export_sha256": "975883d8806838cffb4fc8af736ada30ae10777115274b862daed28a4ce2f1d9",
+  "external_backup": "nog niet ingericht en getest",
+  "external_import": "niet gevalideerd",
+  "owner_decisions": "open; no prices or support invented"
+}

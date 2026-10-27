@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "checks": [
+    "one-click demo preserved",
+    "trial proposal",
+    "blank commercial decisions",
+    "backup pending owner selection",
+    "19 accounting source issues",
+    "external import not validated",
+    "canonical JSON export",
+    "demo cannot edit owner choices",
+    "no live acceptance invented",
+    "1366/390px no overflow",
+    "purchase page no prototype backup claim"
+  ],
+  "errors": [],
+  "scope": "read-only live browser checks; only demo session/auth audit created"
+}

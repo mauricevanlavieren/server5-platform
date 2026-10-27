@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "automatic_server4_transfer_removed": true,
+  "original_server5_backup_service_byte_identical": true,
+  "original_timer_active": true,
+  "previous_test_artifacts_preserved": true,
+  "selected_external_destination": null,
+  "prototype_payloads_removed": true,
+  "temporary_prototype_keys_removed": true,
+  "nonsecret_historical_test_metadata_preserved": true,
+  "active_external_destination": null
+}

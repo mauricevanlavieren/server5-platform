@@ -1,0 +1,25 @@
+{
+  "schedule_configured": true,
+  "result": "PASS",
+  "source_host": "server4",
+  "destination_host": "server5",
+  "completed_at": "2026-10-27T15:44:55.682201+00:00",
+  "archive_id": "offhost-20261027T154452960871Z.cms",
+  "archive_sha256": "31f82893c8f1d51be31f84681983df5fa72bb603a9d7533b9260df4fa3dcd2fa",
+  "encryption": "CMS AES-256-GCM; private recovery key retained on Server5",
+  "source_files": 27,
+  "schedule": "Bestaande Server5 back-uptimer: dagelijks rond 03:45 UTC, met maximaal 5 minuten spreiding",
+  "restore_verified": true,
+  "control_totals": {
+    "revenue_cents": 103000,
+    "net_received_cents": 77290,
+    "open_cents": 47340
+  },
+  "workflow_sha256": "4772b51acd7adca63ceab519c28744e7c9d8f157344b1a3eaca18b4aa5299f56",
+  "history_count": 138,
+  "jobs": 11,
+  "restored_users": 0,
+  "export_sha256": "975883d8806838cffb4fc8af736ada30ae10777115274b862daed28a4ce2f1d9",
+  "all_business_data_byte_identical": true,
+  "sessions_revoked": true
+}

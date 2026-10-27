@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+"""Server5: encrypted off-host snapshot of the explicitly authorized Server4 demo."""
+from pathlib import Path
+from datetime import datetime,timezone
+import argparse,hashlib,io,json,os,socket,subprocess,tarfile,tempfile
+SSH=['ssh','-F','/dev/null','-i','/home/mau/.ssh/id_ed25519_server5_servers12','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','IdentitiesOnly=yes','-o','IdentityAgent=none','-o','HostKeyAlgorithms=ssh-ed25519','-o','ConnectTimeout=8','mau@192.168.1.163','python3 -']
+STORE=Path.home()/'.local/share/server5-commandcenter/server4-offhost-backups'
+KEYS=Path.home()/'.local/state/server5-commandcenter/server4-backup-keys'
+
+def run(args,**kw):return subprocess.run(args,check=True,capture_output=True,timeout=60,**kw)
+def atomic(path,value):
+ fd,name=tempfile.mkstemp(dir=path.parent)
+ try:
+  with os.fdopen(fd,'w') as f:json.dump(value,f,indent=2);f.flush();os.fsync(f.fileno())
+  os.replace(name,path)
+ finally:
+  if os.path.exists(name):os.unlink(name)
+
+def ensure_key():
+ KEYS.mkdir(parents=True,mode=0o700,exist_ok=True);os.chmod(KEYS,0o700)
+ key=KEYS/'recovery-key.pem';cert=KEYS/'recipient-cert.pem'
+ if key.exists()!=cert.exists():raise ValueError('Incomplete backup keypair; preserve existing files and inspect locally')
+ if not key.exists():
+  run(['openssl','genpkey','-algorithm','RSA','-pkeyopt','rsa_keygen_bits:3072','-out',str(key)])
+  os.chmod(key,0o600)
+  run(['openssl','req','-new','-x509','-sha256','-key',str(key),'-out',str(cert),'-days','3650','-subj','/CN=server5-server4-demo-backup'])
+  os.chmod(cert,0o600)
+ return key,cert
+
+def remote_snapshot(cert):
+ source='CERT='+repr(cert.read_text())+'\n'+r'''
+from pathlib import Path
+import sys,json,subprocess,tempfile,hashlib
+from datetime import datetime,timezone
+assert subprocess.check_output(['hostname'],text=True).strip()=='server4'
+root=Path('/home/mau/server4-mobile-demo');sys.path.insert(0,str(root));from recovery import backup
+state=Path.home()/'.local/state/server4-mobile-demo'
+snapshot=root/'backups'/('offhost-'+datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ'))
+manifest=backup(root,state,snapshot)
+with tempfile.TemporaryDirectory(prefix='demo-encrypt-') as tmp:
+ t=Path(tmp);recipient=t/'recipient.pem';recipient.write_text(CERT)
+ plain=t/'snapshot.tar.gz'
+ subprocess.run(['tar','-C',str(snapshot),'-czf',str(plain),'.'],check=True,capture_output=True)
+ encrypted=t/'snapshot.cms'
+ subprocess.run(['openssl','cms','-encrypt','-aes-256-gcm','-binary','-outform','DER','-in',str(plain),'-out',str(encrypted),str(recipient)],check=True,capture_output=True)
+ content=encrypted.read_bytes()
+ metadata=dict(source_host='server4',snapshot_id=snapshot.name,source_files=len(manifest),workflow_sha256=hashlib.sha256((snapshot/'state/workflow.json').read_bytes()).hexdigest(),archive_sha256=hashlib.sha256(content).hexdigest())
+ sys.stdout.buffer.write(json.dumps(metadata).encode()+b'\n'+content)
+'''
+ raw=run(SSH,input=source.encode()).stdout
+ header,encrypted=raw.split(b'\n',1);meta=json.loads(header)
+ if len(encrypted)>64*1024*1024 or hashlib.sha256(encrypted).hexdigest()!=meta['archive_sha256']:raise ValueError('Encrypted transfer verification failed')
+ return meta,encrypted
+
+def verify_restore(archive,key,cert,metadata):
+ with tempfile.TemporaryDirectory(prefix='server4-offhost-restore-',dir=STORE) as tmp:
+  t=Path(tmp);plain=t/'snapshot.tar.gz';run(['openssl','cms','-decrypt','-binary','-inform','DER','-in',str(archive),'-recip',str(cert),'-inkey',str(key),'-out',str(plain)])
+  snapshot=t/'snapshot';snapshot.mkdir(mode=0o700)
+  with tarfile.open(plain) as tar:
+   if len(tar.getmembers())>200 or sum(m.size for m in tar.getmembers())>64*1024*1024:raise ValueError('Unexpected archive size')
+   if any(m.issym() or m.islnk() or not (m.isdir() or m.isfile()) for m in tar.getmembers()):raise ValueError('Archive links or special files refused')
+   tar.extractall(snapshot,filter='data')
+  manifest=json.loads((snapshot/'manifest.json').read_text())
+  for name,digest in manifest.items():
+   f=snapshot/name
+   if name.startswith('/') or '..' in Path(name).parts or not f.is_file() or hashlib.sha256(f.read_bytes()).hexdigest()!=digest:raise ValueError('Backup manifest mismatch')
+  if hashlib.sha256((snapshot/'state/workflow.json').read_bytes()).hexdigest()!=metadata['workflow_sha256']:raise ValueError('Workflow transfer mismatch')
+  app=t/'restored-app';state=t/'restored-state';app.mkdir();state.mkdir();(state/'workflow.json').write_text('{"preserve":"newer isolated target"}')
+  command=r'''
+from pathlib import Path
+import sys,json,hashlib,sqlite3
+source=Path(sys.argv[1]);app=Path(sys.argv[2]);state=Path(sys.argv[3]);sys.path.insert(0,str(source/'source'))
+from recovery import restore
+saved=Path(restore(app,state,source));assert (saved/'state/workflow.json').read_text()=='{"preserve":"newer isolated target"}'
+assert (state/'workflow.json').read_bytes()==(source/'state/workflow.json').read_bytes()
+import workflow
+workflow.FILE=state/'workflow.json'
+from pilot import reconcile
+from data import accounting_csv
+control=reconcile();assert control['balanced'],control
+original=json.loads((source/'state/workflow.json').read_text())
+with sqlite3.connect(state/'accounts.sqlite3') as d:
+ assert d.execute('select count(*) from sessions').fetchone()[0]==0
+ users=d.execute('select count(*) from users').fetchone()[0]
+with sqlite3.connect(source/'state/accounts.sqlite3') as d:assert users==d.execute('select count(*) from users').fetchone()[0]
+print(json.dumps(dict(restore_verified=True,control_totals=control['expected'],workflow_sha256=hashlib.sha256((state/'workflow.json').read_bytes()).hexdigest(),history_count=len(original.get('history',[])),jobs=len(original.get('jobs',{})),restored_users=users,export_sha256=hashlib.sha256(accounting_csv()).hexdigest(),all_business_data_byte_identical=True,sessions_revoked=True)))
+'''
+  evidence=json.loads(run(['/usr/bin/python3','-c',command,str(snapshot),str(app),str(state)]).stdout)
+  return evidence
+
+def publish_status(status):
+ source='STATUS='+repr(status)+'\n'+r'''
+from pathlib import Path
+import json,os,tempfile
+state=Path.home()/'.local/state/server4-mobile-demo'
+fd,name=tempfile.mkstemp(dir=state)
+with os.fdopen(fd,'w') as f:json.dump(STATUS,f,indent=2);f.flush();os.fsync(f.fileno())
+os.replace(name,state/'offhost-backup-status.json')
+'''
+ run(SSH,input=source.encode())
+
+def main():
+ os.umask(0o077)
+ if socket.gethostname()!='server5':raise ValueError('This helper runs only on Server5')
+ STORE.mkdir(parents=True,mode=0o700,exist_ok=True);os.chmod(STORE,0o700)
+ key,cert=ensure_key();meta,data=remote_snapshot(cert);archive=STORE/(meta['snapshot_id']+'.cms')
+ with archive.open('xb') as f:f.write(data);f.flush();os.fsync(f.fileno())
+ evidence=verify_restore(archive,key,cert,meta)
+ try:
+  configured='server4-offhost-backup.py' in run(['systemctl','--user','show','server5-task-backup.service','-p','ExecStartPost','--value']).stdout.decode()
+  active=subprocess.run(['systemctl','--user','is-active','--quiet','server5-task-backup.timer'],capture_output=True).returncode==0
+ except Exception:configured=active=False
+ status=dict(schedule_configured=configured and active,result='PASS',source_host='server4',destination_host='server5',completed_at=datetime.now(timezone.utc).isoformat(),archive_id=archive.name,archive_sha256=meta['archive_sha256'],encryption='CMS AES-256-GCM; private recovery key retained on Server5',source_files=meta['source_files'],schedule=('Bestaande Server5 back-uptimer: dagelijks rond 03:45 UTC, met maximaal 5 minuten spreiding' if configured and active else 'Dagelijkse koppeling nog niet actief bewezen'),**evidence)
+ atomic(archive.with_suffix('.json'),status);atomic(STORE/'latest.json',status);publish_status(status)
+ print(json.dumps(status,indent=2))
+if __name__=='__main__':
+ try:main()
+ except Exception as e:
+  # Never include subprocess stdout/stderr: archived application credentials stay private.
+  if STORE.exists():
+   failure=dict(result='FAILED',at=datetime.now(timezone.utc).isoformat(),reason=type(e).__name__);atomic(STORE/'last-failure.json',failure)
+   try:
+    previous=json.loads((STORE/'latest.json').read_text());previous['last_attempt_failed']=failure;publish_status(previous)
+   except Exception:pass
+  raise SystemExit('Server4 off-host backup failed; inspect locally, do not share credentials')

@@ -1,0 +1,10 @@
+test_accounting_preparation_does_not_claim_external_validation (__main__.DeliveryTest.test_accounting_preparation_does_not_claim_external_validation) ... ok
+test_administration_accepts_empty_material_controls_but_not_price_changes (__main__.DeliveryTest.test_administration_accepts_empty_material_controls_but_not_price_changes) ... ok
+test_individual_acceptance_and_demo_distinction (__main__.DeliveryTest.test_individual_acceptance_and_demo_distinction) ... ok
+test_owner_decisions_are_explicit_versioned_and_restricted (__main__.DeliveryTest.test_owner_decisions_are_explicit_versioned_and_restricted) ... ok
+test_shop_routes_money_inventory_and_access (__main__.DeliveryTest.test_shop_routes_money_inventory_and_access) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 3.875s
+
+OK

@@ -1,0 +1,7 @@
+test_invoice_credit_receipt_and_refund_stay_linked_in_snapshot (__main__.AccountingAdapter.test_invoice_credit_receipt_and_refund_stay_linked_in_snapshot) ... ok
+test_package_neutral_export_preserves_existing_contract_and_does_not_mutate (__main__.AccountingAdapter.test_package_neutral_export_preserves_existing_contract_and_does_not_mutate) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.008s
+
+OK

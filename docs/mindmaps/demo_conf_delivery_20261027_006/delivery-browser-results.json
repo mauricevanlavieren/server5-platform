@@ -1,0 +1,28 @@
+{
+  "result": "PASS",
+  "results": [
+    {
+      "scenario": "proefvoorstel-keuzes-en-eerlijk-boekhoudhandwerk",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "monteur-eigen-opdracht-zelfstandig-overdragen",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "winkel-verkoop-deelretour-en-eigen-beoordeling",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "administratie-van-overdracht-tot-betaling-en-afstemming",
+      "result": "geslaagd"
+    },
+    {
+      "scenario": "proefvoorstel-op-mobiel-en-demoknop-behouden",
+      "result": "geslaagd"
+    }
+  ],
+  "job": "W116",
+  "part": "TEST browser winkel 1793116836131",
+  "environment": "Isolated fictitious state; browser accounts are test accounts, no real employee acceptance"
+}

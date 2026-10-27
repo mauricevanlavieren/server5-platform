@@ -1,0 +1,744 @@
+{
+  "label": "Current Projects",
+  "task_id": "demo_conf_delivery_20261027_006",
+  "used_ids": [
+    "CP-DIAG-20261024",
+    "CP-DIAG-20261024-SOURCE",
+    "CP-DIAG-20261024-HASH",
+    "CP-DIAG-20261024-CAUSE",
+    "CP-DIAG-20261024-REPORT",
+    "AI-OVERDRACHT-PROJECT",
+    "AI-OVERDRACHT-CONTEXT",
+    "AI-OVERDRACHT-BEGIN",
+    "AI-OVERDRACHT-DOEL",
+    "AI-OVERDRACHT-AFSPRAAK",
+    "AI-OVERDRACHT-ONTWERP-V1",
+    "AI-OVERDRACHT-BEVESTIGD",
+    "AI-OVERDRACHT-GRENS",
+    "AI-OVERDRACHT-ONTWERP",
+    "AI-OVERDRACHT-INVENTARISATIE",
+    "AI-OVERDRACHT-BESLUITEN",
+    "AI-OVERDRACHT-TAKEN",
+    "AI-OVERDRACHT-CODEX",
+    "AI-OVERDRACHT-BRONNEN",
+    "AI-OVERDRACHT-OPSLAG",
+    "AI-OVERDRACHT-HAALBAARHEID",
+    "AI-OVERDRACHT-REVIEW",
+    "AI-OVERDRACHT-REVIEW-BRON",
+    "AI-OVERDRACHT-REVIEW-BESLUIT",
+    "AI-OVERDRACHT-BOUW",
+    "AI-OVERDRACHT-STATUSUPDATES",
+    "AI-OVERDRACHT-OPHALEN",
+    "AI-OVERDRACHT-TEST",
+    "AI-OVERDRACHT-CHATTEST",
+    "AI-OVERDRACHT-HERSTELTEST",
+    "AI-OVERDRACHT-AFRONDEN",
+    "CURRENT-PROJECTS",
+    "CP-PLUGIN-REPAIR",
+    "CP-PLUGIN-SOURCE",
+    "CP-PLUGIN-STATUS",
+    "CP-PLUGIN-CHECK",
+    "CP-PLUGIN-REPORT",
+    "CP-DIAG-20261024-VERIFY-LIVE",
+    "CP-DIAG-20261024-CLOSE-LIVE",
+    "AI-OVERDRACHT-CHATTEST-BEWIJS",
+    "AI-OVERDRACHT-CHATTEST-AFRONDEN",
+    "AUTO-MINDMAP",
+    "AUTO-PLAN",
+    "AUTO-BUILD",
+    "AUTO-CHECK",
+    "AUTO-ACTIVATE",
+    "AUTO-PLAN-VERIFY",
+    "server5_autonomous_live_acceptance_20261024_001",
+    "LIVE-SOURCE",
+    "LIVE-HASH",
+    "LIVE-STATUS",
+    "LIVE-ENDPOINT-REPAIR-CHECK",
+    "server5_autonomous_recovery_20261024_001",
+    "REC-INSPECT",
+    "REC-BUILD",
+    "REC-ACCEPT",
+    "REC-CLOSE",
+    "server5_autonomous_recovery_20261024_001-recovery-1-diagnose",
+    "server5_autonomous_recovery_20261024_001-recovery-1-fix",
+    "server5_autonomous_recovery_20261024_001-recovery-1-retry",
+    "server5_codex_activity_dot_20261024_001",
+    "DOT-1",
+    "DOT-2",
+    "DOT-3",
+    "DOT-4",
+    "server5_codex_activity_dot_20261024_001-recovery-1-diagnose",
+    "server5_codex_activity_dot_20261024_001-recovery-1-fix",
+    "server5_codex_activity_dot_20261024_001-recovery-1-retry",
+    "server5_close_dot_recovery_20261024_001",
+    "CLOSE24-A",
+    "CLOSE24-B",
+    "CLOSE24-REPORT",
+    "server5_close_dot_recovery_20261024_001-recovery-1-diagnose",
+    "server5_close_dot_recovery_20261024_001-recovery-1-fix",
+    "server5_close_dot_recovery_20261024_001-recovery-1-retry",
+    "CP-INJECT-PLAN",
+    "CP-INJECT-LIVE",
+    "CP-INJECT-FINAL",
+    "server5_cp_injection_live_20261024_001",
+    "CPI-LIVE-CHECK",
+    "CPI-LIVE-CONTINUE",
+    "CPI-LIVE-FINAL",
+    "server5_cp_injection_live_20261024_001-recovery-1-diagnose",
+    "server5_cp_injection_live_20261024_001-recovery-1-fix",
+    "server5_cp_injection_live_20261024_001-recovery-1-retry",
+    "server5_current_projects_prune_20261024_001",
+    "CP-PRUNE-WORK-20261024",
+    "CP-PRUNE-EVIDENCE-20261024",
+    "CP-PRUNE-MERGE-20261024",
+    "CP-PRUNE-VERIFY-20261024",
+    "CP-TECH-SUMMARY-20261024",
+    "AI-REVIEW-PREP-20261024",
+    "AI-REVIEW-READ-20261024",
+    "AI-REVIEW-PUBLISH-20261024",
+    "AI-OWNER-HASH-20261024",
+    "AI-OWNER-RECORD-20261024",
+    "AI-OWNER-VERIFY-20261024",
+    "CP-FINAL-PRUNE-WORK-20261024",
+    "server5_persistent_mindmap_lifecycle_20261024_001",
+    "CP-SERVERKLOK-20261024",
+    "KLOK-1",
+    "KLOK-2",
+    "KLOK-3",
+    "KLOK-4",
+    "KLOK-5",
+    "server5_recovery_package_20261024_001",
+    "recovery-inventory",
+    "recovery-package",
+    "recovery-push",
+    "server5_server4_wol_ssh_probe_20261024_001",
+    "S4-INVENTORY-20261024",
+    "server5_server4_wol_diagnose_20261024_001",
+    "S4-WOL-DIAG-STEP-20261024",
+    "server5_server4_ssh_auth_fix_20261024_001",
+    "server5_server4_ssh_auth_fix_20261024_001-check",
+    "server5_server4_restore_readiness_20261024_001",
+    "server5_server4_codex_privileges_20261024_001",
+    "server5_server4_sudo_verify_20261024_001",
+    "server5_mindmap_pruning_rootcause_20261024_001",
+    "server5_server4_autonomous_prep_20261024_001",
+    "server5_server4_codex_login_verify_20261024_001",
+    "server5_server4_zero_intervention_preflight_20261024_001",
+    "server5_server4_empty_test_restore_20261024_001",
+    "server5_server4_empty_test_restore_20261024_001-recovery-1-diagnose",
+    "server5_server4_empty_test_restore_20261024_001-recovery-1-fix",
+    "server5_server4_empty_test_restore_20261024_001-recovery-1-retry",
+    "server5_server4_empty_test_restore_20261024_001-recovery-2-diagnose",
+    "server5_server4_empty_test_restore_20261024_001-recovery-2-fix",
+    "server5_server4_empty_test_restore_20261024_001-recovery-2-retry",
+    "server4_host_header_browser_fix_20261024_001",
+    "server4_test_access_code_location_20261024_001",
+    "server5_mindmap_clear_button_20261024_001",
+    "CLEAR-IMPLEMENT",
+    "server5_mindmap_clear_button_20261024_001-recovery-1-diagnose",
+    "server5_mindmap_clear_button_20261024_001-recovery-1-fix",
+    "server5_mindmap_clear_button_20261024_001-recovery-1-retry",
+    "server5_mindmap_clear_button_20261024_001-recovery-2-diagnose",
+    "server5_mindmap_clear_button_20261024_001-recovery-2-fix",
+    "server5_mindmap_clear_button_20261024_001-recovery-2-retry",
+    "server5_clear_button_activate_restart_20261024_001",
+    "server4_software_inventory_mindmap_20261024_001",
+    "S4-SOFTWARE-20261024-21",
+    "S4-SOFTWARE-20261024-7",
+    "S4-SOFTWARE-20261024-1",
+    "S4-SOFTWARE-20261024-2",
+    "S4-SOFTWARE-20261024-3",
+    "S4-SOFTWARE-20261024-4",
+    "S4-SOFTWARE-20261024-5",
+    "S4-SOFTWARE-20261024-6",
+    "S4-SOFTWARE-20261024-10",
+    "S4-SOFTWARE-20261024-8",
+    "S4-SOFTWARE-20261024-9",
+    "S4-SOFTWARE-20261024-15",
+    "S4-SOFTWARE-20261024-11",
+    "S4-SOFTWARE-20261024-12",
+    "S4-SOFTWARE-20261024-13",
+    "S4-SOFTWARE-20261024-14",
+    "S4-SOFTWARE-20261024-20",
+    "S4-SOFTWARE-20261024-16",
+    "S4-SOFTWARE-20261024-17",
+    "S4-SOFTWARE-20261024-18",
+    "S4-SOFTWARE-20261024-19",
+    "server5_red_restart_block_diagnosis_20261024_001",
+    "server5_clear_restart_postcheck_20261024_001",
+    "server4_mindmap_plan_20261024_01",
+    "S4-MOBILE-AI-PLAN-20261024",
+    "S4PLAN-0",
+    "S4PLAN-0-0",
+    "S4PLAN-0-1",
+    "S4PLAN-0-2",
+    "S4PLAN-1",
+    "S4PLAN-1-0",
+    "S4PLAN-1-1",
+    "S4PLAN-1-2",
+    "S4PLAN-1-3",
+    "S4PLAN-1-4",
+    "S4PLAN-2",
+    "S4PLAN-2-0",
+    "S4PLAN-2-1",
+    "S4PLAN-2-2",
+    "S4PLAN-2-3",
+    "S4PLAN-3",
+    "S4PLAN-3-0",
+    "S4PLAN-3-1",
+    "S4PLAN-3-2",
+    "S4PLAN-4",
+    "S4PLAN-4-0",
+    "S4PLAN-4-1",
+    "S4PLAN-4-2",
+    "S4PLAN-4-3",
+    "S4PLAN-5",
+    "S4PLAN-5-0",
+    "S4PLAN-5-1",
+    "S4PLAN-5-2",
+    "S4PLAN-5-3",
+    "S4PLAN-6",
+    "S4PLAN-6-0",
+    "S4PLAN-6-1",
+    "S4PLAN-6-2",
+    "S4PLAN-6-3",
+    "S4PLAN-7",
+    "S4PLAN-7-0",
+    "S4PLAN-7-1",
+    "S4PLAN-7-2",
+    "S4PLAN-7-3",
+    "S4PLAN-8",
+    "S4PLAN-8-0",
+    "S4PLAN-8-1",
+    "S4PLAN-8-2",
+    "S4PLAN-8-3",
+    "S4PLAN-9",
+    "S4PLAN-9-0",
+    "S4PLAN-9-1",
+    "S4PLAN-9-2",
+    "S4PLAN-9-3",
+    "S4PLAN-10",
+    "S4PLAN-10-0",
+    "S4PLAN-10-1",
+    "S4PLAN-10-2",
+    "S4PLAN-10-3",
+    "S4PLAN-10-4",
+    "S4PLAN-10-5",
+    "server4_mindmap_plan_20261024_01-verify",
+    "server4_mindmap_plan_20261024_01-check",
+    "server4_notionsync_preflight_20261024_01",
+    "server4_notionsync_preflight_20261024_01-scope",
+    "server4_notionsync_preflight_20261024_01-lego",
+    "server4_notionsync_preflight_20261024_01-reliability",
+    "server4_notionsync_preflight_20261024_01-phases",
+    "server4_approved_cleanup_20261024_01",
+    "server4_cleanup_execution_20261024_02",
+    "server4_cleanup_execution_20261024_02-verify",
+    "server4_cleanup_execution_20261024_02-step",
+    "server4_cleanup_scoped_autonomous_20261024_04",
+    "s4scope04-check",
+    "s4scope04-step",
+    "server4_build_until_blocked_20261024_01",
+    "server4_build_until_blocked_20261024_01-step",
+    "server4_build_until_blocked_20261024_01-build",
+    "server4_ai_business_demo_dashboard_20261026_001",
+    "server4_ai_business_demo_dashboard_20261026_001-scope",
+    "server4_interactive_case_demo_20261026_001",
+    "server4_interactive_case_demo_20261026_001-step",
+    "server4_demo_refine_multiuser_20261026_001",
+    "server4_demo_refine_multiuser_20261026_001-step",
+    "server4_two_tabs_acceptance_record_20261026_001",
+    "server4_separate_windows_accept_20261026_001",
+    "server4_action_first_ux_20261026_001",
+    "server4_action_first_ux_20261026_001-step",
+    "server4_task_completion_ux_20261026_001",
+    "server4_task_completion_ux_20261026_001-step",
+    "server4_multi_job_workflow_20261026_001",
+    "MULTIJOB-WORK",
+    "server5-server4-permission-20261026-01",
+    "server4-permission-step",
+    "server5-server4-permission-reload-20261026-01",
+    "permission-reload-step",
+    "server4_w104_w106_workflows_20261026_002",
+    "W104106-BUILD",
+    "server4_henk_product_build_20261026_001",
+    "server4_henk_product_build_20261026_001-step",
+    "server4_henk_dashboard_workflows_20261026_001",
+    "server4_henk_dashboard_workflows_20261026_001-step",
+    "server4_henk_ux_finance_fix_20261026_001",
+    "server4_henk_ux_finance_fix_20261026_001-step",
+    "server4_henk_w105_save_fix_20261026_001",
+    "server4_henk_w105_save_fix_20261026_001-step",
+    "server4_henk_daily_operations_20261026_002",
+    "server4_henk_daily_operations_20261026_002-step",
+    "server4_henk_workflow_polish_20261026_001",
+    "server4_henk_workflow_polish_20261026_001-step",
+    "server4_henk_workday_consistency_20261026_001",
+    "HENK-WORKDAY-STEP",
+    "server4_henk_full_workday_20261026_001",
+    "HENK-FULL-DAY-STEP",
+    "server4_henk_parts_followup_20261026_001",
+    "server4_henk_parts_followup_20261026_001-step",
+    "server4_henk_received_part_sync_20261026_001",
+    "server4_henk_received_part_sync_20261026_001-step",
+    "server4_henk_timeline_invoice_flow_20261026_001",
+    "server4_henk_timeline_invoice_flow_20261026_001-step",
+    "server4_henk_invoice_variance_20261026_001",
+    "server4_henk_invoice_variance_20261026_001-step",
+    "server4_henk_compact_finance_20261026_001",
+    "compact-finance-check",
+    "server4_henk_new_job_invoice_proof_20261026_001",
+    "server4_henk_new_job_invoice_proof_20261026_001-step",
+    "server4_henk_material_workorder_20261026_001",
+    "server4_henk_material_workorder_20261026_001-step",
+    "server4_henk_quote_billing_guard_20261026_001",
+    "server4_henk_quote_billing_guard_20261026_001-step",
+    "server4_henk_end_to_end_guided_20261026_001",
+    "server4_henk_end_to_end_guided_20261026_001-step",
+    "demo_conf_20261026_001",
+    "demo_conf_20261026_001-step",
+    "server4_demo_connection_diagnosis_20261026_001",
+    "server4_demo_connection_diagnosis_20261026_001-step",
+    "demo_conf_review_20261026_002",
+    "demo_conf_review_20261026_002-step",
+    "demo_conf_operations_20261026_003",
+    "demo_conf_operations_20261026_003-step",
+    "demo_conf_dashboard_20261027_001",
+    "demo_conf_dashboard_20261027_001-step",
+    "demo_conf_daily_20261027_002",
+    "demo_conf_daily_20261027_002-step",
+    "demo_conf_sales_20261027_003",
+    "demo_conf_sales_20261027_003-step",
+    "demo_conf_pilot_20261027_004",
+    "demo_conf_pilot_20261027_004-step",
+    "demo_access_button_20261027_005",
+    "demo_access_button_20261027_005-step",
+    "demo_conf_delivery_20261027_006",
+    "demo_conf_delivery_20261027_006-step"
+  ],
+  "root": {
+    "id": "CURRENT-PROJECTS",
+    "title": "Current Projects",
+    "status": "pending",
+    "children": [
+      {
+        "id": "S4-MOBILE-AI-PLAN-20261024",
+        "title": "Server4 mobiele AI-demo — gebouwd; private telefoontoegang en acceptatie open",
+        "status": "pending",
+        "children": [
+          {
+            "id": "server4_build_until_blocked_20261024_01",
+            "title": "Server4 productfase 1 — mobiele AI-demo bouwen en testen",
+            "status": "pending",
+            "children": [
+              {
+                "id": "server4_build_until_blocked_20261024_01-step",
+                "title": "🔄 HUIDIGE STAP — 🔴 GEBLOKKEERD: private telefoonroute en telefoon-/spraakacceptatie",
+                "status": "blocked",
+                "children": [],
+                "block": {
+                  "cause": "ROOD GEBLOKKEERD: demo lokaal werkend op Server4, maar geen private HTTPS/identiteitsroute of bewezen eigen telefoontunnel beschikbaar. Server4 heeft geen Tailscale-installatie. Echte telefoon- en microfoonacceptatie daardoor niet uitvoerbaar; besluit na 60 s onbeantwoord.",
+                  "solution": "Eigenaar verzorgt eigen private identiteit/toegang: Tailscale-login op Server4 na provisioning of bevestigt bestaande geautoriseerde SSH-forward op de telefoon. Geen tokens/wachtwoorden/sleutels delen of Server5-identiteit kopiëren. Besluit-ID server4-phase1-private-phone-route-20261024-01.",
+                  "next_action": "Hervat met hetzelfde besluit-ID; provision uitsluitend Server4 indien nodig en laat eigenaar zelf aanmelden. Maak daarna private telefoonroute naar 127.0.0.1:8764, test vier tegels/details, getypte vraag, microfoon/transcriptie of tekstfallback en demobeheer op echte telefoon. Geen publieke poorten."
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "demo_conf_delivery_20261027_006",
+        "title": "Server4 praktijkproef — levering en medewerkersacceptatie",
+        "status": "pending",
+        "children": [
+          {
+            "id": "demo_conf_delivery_20261027_006-step",
+            "title": "🔄 HUIDIGE STAP — proefvoorstel, boekhoudvoorbereiding, backupbewijs en winkelrol",
+            "status": "active",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "updated_at": "2026-10-27T15:35:40.885729+00:00",
+  "broker_seq": 456,
+  "broker_status": "running",
+  "project_id": "demo_conf_delivery_20261027_006",
+  "recovery_attempts": {
+    "server5_autonomous_recovery_20261024_001": [
+      {
+        "node_id": "REC-ACCEPT",
+        "cause": "Acceptatie exit 1: fixture actual=not-ready wijkt af van expected=ready",
+        "ids": [
+          "server5_autonomous_recovery_20261024_001-recovery-1-diagnose",
+          "server5_autonomous_recovery_20261024_001-recovery-1-fix",
+          "server5_autonomous_recovery_20261024_001-recovery-1-retry"
+        ]
+      }
+    ],
+    "server5_codex_activity_dot_20261024_001": [
+      {
+        "node_id": "DOT-2",
+        "cause": "Build aangeroepen vanuit projectroot; buildscript staat in mindmap/",
+        "ids": [
+          "server5_codex_activity_dot_20261024_001-recovery-1-diagnose",
+          "server5_codex_activity_dot_20261024_001-recovery-1-fix",
+          "server5_codex_activity_dot_20261024_001-recovery-1-retry"
+        ]
+      }
+    ],
+    "server5_close_dot_recovery_20261024_001": [
+      {
+        "node_id": "CLOSE24-B",
+        "cause": "Onschuldige eigen fixture: actual=not-ready, expected=ready; controle exit 1",
+        "ids": [
+          "server5_close_dot_recovery_20261024_001-recovery-1-diagnose",
+          "server5_close_dot_recovery_20261024_001-recovery-1-fix",
+          "server5_close_dot_recovery_20261024_001-recovery-1-retry"
+        ]
+      }
+    ],
+    "server5_cp_injection_live_20261024_001": [
+      {
+        "node_id": "CPI-LIVE-CHECK",
+        "cause": "Eigen fixture actual=not-ready versus expected=ready; echte controle exit 1",
+        "ids": [
+          "server5_cp_injection_live_20261024_001-recovery-1-diagnose",
+          "server5_cp_injection_live_20261024_001-recovery-1-fix",
+          "server5_cp_injection_live_20261024_001-recovery-1-retry"
+        ]
+      }
+    ],
+    "server5_server4_empty_test_restore_20261024_001": [
+      {
+        "node_id": "server5_server4_empty_test_restore_20261024_001",
+        "cause": "Acceptatieharnas gebruikte ongehashte tijdelijke sessie-ID; HTTP401 vóór taakindiening",
+        "ids": [
+          "server5_server4_empty_test_restore_20261024_001-recovery-1-diagnose",
+          "server5_server4_empty_test_restore_20261024_001-recovery-1-fix",
+          "server5_server4_empty_test_restore_20261024_001-recovery-1-retry"
+        ]
+      },
+      {
+        "node_id": "server5_server4_empty_test_restore_20261024_001",
+        "cause": "Server4 usermanager stopt na laatste SSH-logout; linger nodig om geautoriseerde service bereikbaar te houden",
+        "ids": [
+          "server5_server4_empty_test_restore_20261024_001-recovery-2-diagnose",
+          "server5_server4_empty_test_restore_20261024_001-recovery-2-fix",
+          "server5_server4_empty_test_restore_20261024_001-recovery-2-retry"
+        ]
+      }
+    ],
+    "server5_mindmap_clear_button_20261024_001": [
+      {
+        "node_id": "CLEAR-IMPLEMENT",
+        "cause": "Build vanuit projectroot zoekt buildscript op verkeerde locatie; script staat in mindmap/",
+        "ids": [
+          "server5_mindmap_clear_button_20261024_001-recovery-1-diagnose",
+          "server5_mindmap_clear_button_20261024_001-recovery-1-fix",
+          "server5_mindmap_clear_button_20261024_001-recovery-1-retry"
+        ]
+      },
+      {
+        "node_id": "CLEAR-IMPLEMENT",
+        "cause": "Validatieharnas gaf datetime in plaats van epoch aan snapshot.wall; dienst HTTP direct na restart nog niet gereed",
+        "ids": [
+          "server5_mindmap_clear_button_20261024_001-recovery-2-diagnose",
+          "server5_mindmap_clear_button_20261024_001-recovery-2-fix",
+          "server5_mindmap_clear_button_20261024_001-recovery-2-retry"
+        ]
+      }
+    ]
+  },
+  "completion_history": [
+    {
+      "task_id": "server5_server4_sudo_verify_20261024_001",
+      "closed_node": "server5_server4_codex_privileges_20261024_001",
+      "proof": "docs/mindmaps/server5_server4_sudo_verify_20261024_001/ssh-check.json: hostname server4; hostname && sudo -n true exit 0"
+    },
+    {
+      "task_id": "server5_server4_sudo_verify_20261024_001",
+      "closed_node": "server5_server4_sudo_verify_20261024_001",
+      "proof": "docs/mindmaps/server5_server4_sudo_verify_20261024_001/ssh-check.json: hostname server4; hostname && sudo -n true exit 0",
+      "migration": "Archived obsolete green task receipt after pruning contract fix"
+    },
+    {
+      "task_id": "server5_mindmap_pruning_rootcause_20261024_001",
+      "closed_node": "server5_mindmap_pruning_rootcause_20261024_001",
+      "proof": "docs/mindmaps/server5_mindmap_pruning_rootcause_20261024_001/report.md; gerichte lifecyclecontrole: 1 test OK, rode review behouden, eigen taak verdwenen, lege verzameling groen blad; broncode en contract gecorrigeerd"
+    },
+    {
+      "task_id": "server5_server4_codex_login_verify_20261024_001",
+      "closed_node": "server5_server4_codex_login_verify_20261024_001",
+      "proof": "docs/mindmaps/server5_server4_codex_login_verify_20261024_001/ssh-check.json; venv-check.txt; login/prerequisites bewezen, restore-readiness blijft open"
+    },
+    {
+      "task_id": "server5_server4_zero_intervention_preflight_20261024_001",
+      "closed_node": "server5_server4_zero_intervention_preflight_20261024_001",
+      "proof": "docs/mindmaps/server5_server4_zero_intervention_preflight_20261024_001/report.md: read-only preflight afgerond; ongewijzigde testinstallatie NO-GO, readiness-blokkade behouden"
+    },
+    {
+      "task_id": "server5_server4_empty_test_restore_20261024_001",
+      "closed_node": "server5_server4_empty_test_restore_20261024_001",
+      "proof": "docs/mindmaps/server5_server4_empty_test_restore_20261024_001/report.md; server4-evidence.json: Server4 HTTP200, bind127.0.0.1:8795, worker succeeded exit0 SERVER4_TEST_OK; Server5 HTTP200 behouden"
+    },
+    {
+      "task_id": "server4_host_header_browser_fix_20261024_001",
+      "closed_node": "server4_host_header_browser_fix_20261024_001",
+      "proof": "docs/mindmaps/server4_host_header_browser_fix_20261024_001/report.md; server4-evidence.json: beide Host-poorten HTTP200 hostname server4, loopbackbind behouden, onbekende Host403"
+    },
+    {
+      "task_id": "server4_test_access_code_location_20261024_001",
+      "closed_node": "server4_test_access_code_location_20261024_001",
+      "proof": "docs/mindmaps/server4_test_access_code_location_20261024_001/report.md: servicebron en AST plaintext-schrijfpad bevestigd, bestand bestaat mode0600; geheime inhoud niet gelezen"
+    },
+    {
+      "task_id": "server5_mindmap_clear_button_20261024_001",
+      "closed_node": "server5_mindmap_clear_button_20261024_001",
+      "proof": "docs/mindmaps/current-projects/server5_mindmap_clear_button_20261024_001/report.md; Clear live LAN, geïsoleerd confirm/cancel/persistent clear bewezen; commandcenter herstart pas na workerexit"
+    },
+    {
+      "task_id": "server4_software_inventory_mindmap_20261024_001",
+      "closed_node": "server4_software_inventory_mindmap_20261024_001",
+      "proof": "docs/mindmaps/server4_software_inventory_mindmap_20261024_001/inventory.json; completeness.json; python-extra.json: read-only Server4 inventaris, blijvend resultaat apart van uitvoering"
+    },
+    {
+      "task_id": "server5_red_restart_block_diagnosis_20261024_001",
+      "closed_node": "server5_red_restart_block_diagnosis_20261024_001",
+      "proof": "docs/mindmaps/server5_red_restart_block_diagnosis_20261024_001/report.md"
+    },
+    {
+      "task_id": "server5_clear_restart_postcheck_20261024_001",
+      "closed_node": "server5_clear_restart_postcheck_20261024_001",
+      "proof": "docs/mindmaps/server5_clear_restart_postcheck_20261024_001/verification.json; dialog-check.txt: read-only verificatie geslaagd, oude blokkade opgelost"
+    },
+    {
+      "task_id": "server5_clear_restart_postcheck_20261024_001",
+      "closed_node": "server5_clear_button_activate_restart_20261024_001",
+      "proof": "docs/mindmaps/server5_clear_restart_postcheck_20261024_001/verification.json"
+    },
+    {
+      "task_id": "server4_mindmap_plan_20261024_01",
+      "closed_node": "server4_mindmap_plan_20261024_01",
+      "proof": "docs/mindmaps/server4_mindmap_plan_20261024_01/replacement-validation.json; docs/archives/server4-software-2026-10-24/; docs/server4-mobiele-ai-demo-plan-2026-10-24.md — planning en archivering bewezen; volledige Notion-bron en uitvoeringsgoedkeuring blijven open."
+    },
+    {
+      "task_id": "server4_notionsync_preflight_20261024_01",
+      "closed_node": "server4_notionsync_preflight_20261024_01",
+      "proof": "docs/mindmaps/server4_notionsync_preflight_20261024_01/report.md; preflight.txt; extra.json; volledige bron vergeleken, uitsluitend read-only controles; toekomstige backup/behoudpoort blijft geblokkeerd"
+    },
+    {
+      "task_id": "server4_cleanup_scoped_autonomous_20261024_04",
+      "closed_node": "server4_cleanup_scoped_autonomous_20261024_04",
+      "proof": "docs/mindmaps/server4_cleanup_scoped_autonomous_20261024_04/report.md; disk-execution.txt; app-execution.txt; postcheck.txt"
+    },
+    {
+      "task_id": "server4_ai_business_demo_resume_20261026_001",
+      "closed_node": "server4_ai_business_demo_dashboard_20261026_001",
+      "proof": "Zeven dashboardtegels, consistent fictief dossier, open-werkfilter, zes conceptverhaalstappen; HTTP/data/loopback en DOM-harness PASS. Bewijs docs/mindmaps/server4_ai_business_demo_resume_20261026_001; telefoonproject ongewijzigd."
+    },
+    {
+      "task_id": "server4_interactive_case_demo_20261026_001",
+      "closed_node": "server4_interactive_case_demo_20261026_001",
+      "proof": "docs/mindmaps/server4_interactive_case_demo_20261026_001/report.md en server4-manifest.json; interactieve W105-workflow bewezen, eigen taak afronden; telefoonproject behouden"
+    },
+    {
+      "task_id": "server4_two_tabs_acceptance_record_20261026_001",
+      "accepted_scope": "two_browser_tabs",
+      "project_id": "server4_demo_refine_multiuser_20261026_001",
+      "proof": "Eigenaar rapporteert acceptatie in twee browsertabs (geen aparte vensters/apparaten): tab1 Bram uren 2→2,5 opgeslagen, materiaal 0; tab2 Administratie automatisch zonder refresh bijgewerkt, melding Wijziging uit andere sessie opgehaald; conceptfactuur €150 excl./€181,50 incl. btw; vorige controle vervallen, status gereed voor administratie.",
+      "evidence": "docs/mindmaps/server4_two_tabs_acceptance_record_20261026_001/owner-acceptance.json"
+    },
+    {
+      "task_id": "server4_two_tabs_acceptance_record_20261026_001",
+      "closed_node": "server4_two_tabs_acceptance_record_20261026_001",
+      "proof": "docs/mindmaps/server4_two_tabs_acceptance_record_20261026_001/owner-acceptance.json; administratieve registratie voltooid; aanvullende acceptatie en telefoontak behouden"
+    },
+    {
+      "task_id": "server4_separate_windows_accept_20261026_001",
+      "owner_quote": "ja werkt",
+      "accepted_scope": "two_separate_browser_windows",
+      "context": "Na instructie: in venster 1 Bram uren wijzigen; in venster 2 Administratie automatische synchronisatie en factuurupdate bekijken. Eigenaar bevestigt dat de gevraagde controle werkt.",
+      "limits": "Geen specifieke conflictproefresultaten of twee-apparatenacceptatie bevestigd. Geen nieuwe tests uitgevoerd. Telefoon buiten scope.",
+      "closed_node": "server4_demo_refine_multiuser_20261026_001",
+      "proof": "docs/mindmaps/server4_separate_windows_accept_20261026_001/owner-acceptance.json"
+    },
+    {
+      "task_id": "server4_separate_windows_accept_20261026_001",
+      "closed_node": "server4_separate_windows_accept_20261026_001",
+      "proof": "docs/mindmaps/server4_separate_windows_accept_20261026_001/owner-acceptance.json; gerichte tak gesloten op eigenaarbevestiging, telefoonproject behouden"
+    },
+    {
+      "task_id": "server4_action_first_ux_20261026_001",
+      "closed_node": "server4_action_first_ux_20261026_001",
+      "proof": "docs/mindmaps/server4_action_first_ux_20261026_001/report.md: alle zes verbeteringen; functionele route en opgelost voorraadtekort bewezen; oorspronkelijke demostaat behouden"
+    },
+    {
+      "task_id": "server4_task_completion_ux_20261026_001",
+      "closed_node": "server4_task_completion_ux_20261026_001",
+      "proof": "Gerichte zeven UX-punten uitgevoerd, geïsoleerde E2E PASS; bewijs en rollback docs/mindmaps/server4_task_completion_ux_20261026_001/report.md"
+    },
+    {
+      "task_id": "server4_multi_job_workflow_20261026_001",
+      "closed_node": "server4_multi_job_workflow_20261026_001",
+      "proof": "docs/mindmaps/server4_multi_job_workflow_20261026_001/report.md; W104 openen-notitie-terug en W105 read-only/hercontrole/werkvoorraad bewezen"
+    },
+    {
+      "task_id": "server5-server4-permission-20261026-01",
+      "closed_node": "server5-server4-permission-20261026-01",
+      "proof": "Instructies en toolmetadata aangepast, MCP herladen; lokale controle geslaagd. ChatGPT-cache en reeds draaiende broker RULES niet geverifieerd; zie report.md."
+    },
+    {
+      "task_id": "server5-server4-permission-reload-20261026-01",
+      "closed_node": "server5-server4-permission-reload-20261026-01",
+      "proof": "docs/mindmaps/server5-server4-permission-20261026-01/report.md en reload-scheduled.json: veilige herlading ingepland, uitvoering nog niet geclaimd"
+    },
+    {
+      "task_id": "server4_w104_w106_workflows_20261026_002",
+      "closed_node": "server4_w104_w106_workflows_20261026_002",
+      "proof": "docs/mindmaps/server4_w104_w106_workflows_20261026_002/report.md; functional-evidence.json"
+    },
+    {
+      "task_id": "server4_henk_product_build_20261026_001",
+      "closed_node": "server4_henk_product_build_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_product_build_20261026_001/report.md en functional-evidence.json: geteste fictieve productstap geleverd; resterende producteisen expliciet vastgelegd"
+    },
+    {
+      "task_id": "server4_henk_dashboard_workflows_20261026_001",
+      "closed_node": "server4_henk_dashboard_workflows_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_dashboard_workflows_20261026_001/report.md"
+    },
+    {
+      "task_id": "server4_henk_ux_finance_fix_20261026_001",
+      "closed_node": "server4_henk_ux_finance_fix_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_ux_finance_fix_20261026_001/report.md"
+    },
+    {
+      "task_id": "server4_henk_w105_save_fix_20261026_001",
+      "closed_node": "server4_henk_w105_save_fix_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_w105_save_fix_20261026_001/report.md"
+    },
+    {
+      "task_id": "server4_henk_daily_operations_20261026_002",
+      "closed_node": "server4_henk_daily_operations_20261026_002",
+      "proof": "docs/mindmaps/server4_henk_daily_operations_20261026_002/report.md; functioneel scenario en HTTP200; volledige live state behouden"
+    },
+    {
+      "task_id": "server4_henk_workflow_polish_20261026_001",
+      "closed_node": "server4_henk_workflow_polish_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_workflow_polish_20261026_001/report.md; execution.txt, ui-evidence.json, final-health.json"
+    },
+    {
+      "task_id": "server4_henk_workday_consistency_20261026_001",
+      "closed_node": "server4_henk_workday_consistency_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_workday_consistency_20261026_001/report.md; gerichte controle en HTTP-health geslaagd, W106 gepland, originele testdata behouden"
+    },
+    {
+      "task_id": "server4_henk_resume_after_broker_20261026_001",
+      "closed_node": "server4_henk_full_workday_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_resume_after_broker_20261026_001/report.md; volledige bestaande taak bewezen afgerond en live gegevens behouden"
+    },
+    {
+      "task_id": "server4_henk_parts_followup_20261026_001",
+      "closed_node": "server4_henk_parts_followup_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_parts_followup_20261026_001/report.md; verbonden workflow, geïsoleerd scenario en zes HTTP200 bewezen"
+    },
+    {
+      "task_id": "server4_henk_received_part_sync_20261026_001",
+      "closed_node": "server4_henk_received_part_sync_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_received_part_sync_20261026_001/report.md; drie correcties live bewezen, HTTP200 en ongewijzigde I1/R1/uren/historie"
+    },
+    {
+      "task_id": "server4_henk_timeline_invoice_flow_20261026_001",
+      "closed_node": "server4_henk_timeline_invoice_flow_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_timeline_invoice_flow_20261026_001/report.md; functioneel PASS, HTTP200, volledige live staat ongewijzigd"
+    },
+    {
+      "task_id": "server4_henk_invoice_variance_20261026_001",
+      "closed_node": "server4_henk_invoice_variance_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_invoice_variance_20261026_001/report.md; functioneel en HTTP bewezen"
+    },
+    {
+      "task_id": "server4_henk_compact_finance_20261026_001",
+      "closed_node": "server4_henk_compact_finance_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_compact_finance_20261026_001/report.md; functioneel en HTTP bewezen"
+    },
+    {
+      "task_id": "server4_henk_new_job_invoice_proof_20261026_001",
+      "closed_node": "server4_henk_new_job_invoice_proof_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_new_job_invoice_proof_20261026_001/report.md; check-evidence.json; ui-evidence.json; deployment-health.json"
+    },
+    {
+      "task_id": "server4_henk_material_workorder_20261026_001",
+      "closed_node": "server4_henk_material_workorder_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_material_workorder_20261026_001/report.md; geïsoleerd functioneel PASS, HTTP200, live state behouden"
+    },
+    {
+      "task_id": "server4_henk_quote_billing_guard_20261026_001",
+      "closed_node": "server4_henk_quote_billing_guard_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_quote_billing_guard_20261026_001/report.md; geïsoleerde factuurcontrole en HTTP200; live state behouden"
+    },
+    {
+      "task_id": "server4_henk_end_to_end_guided_20261026_001",
+      "closed_node": "server4_henk_end_to_end_guided_20261026_001",
+      "proof": "docs/mindmaps/server4_henk_end_to_end_guided_20261026_001/report.md; W111 administratief afgerond demo; CF111 9075 cent betaald fictief; behoud CF106/107/108 R1-R3; HTTP200"
+    },
+    {
+      "task_id": "demo_conf_20261026_001",
+      "closed_node": "demo_conf_20261026_001",
+      "proof": "docs/mindmaps/demo_conf_20261026_001/report.md; browser-results.json: tien scenario’s PASS; deployment-results.json: live state identiek; live-browser-results.json: PASS"
+    },
+    {
+      "task_id": "server4_demo_connection_diagnosis_20261026_001",
+      "closed_node": "server4_demo_connection_diagnosis_20261026_001",
+      "proof": "docs/mindmaps/server4_demo_connection_diagnosis_20261026_001/report.md; Server4 gezond, laptopforward als volgende actie"
+    },
+    {
+      "task_id": "demo_conf_review_20261026_002",
+      "closed_node": "demo_conf_review_20261026_002",
+      "proof": "docs/mindmaps/demo_conf_review_20261026_002/report.md; negen klantreizen PASS; twee echte browservensters PASS; export en live behoud PASS"
+    },
+    {
+      "task_id": "demo_conf_operations_20261026_003",
+      "closed_node": "demo_conf_operations_20261026_003",
+      "proof": "docs/mindmaps/demo_conf_operations_20261026_003/report.md; zes acceptatiecategorieën en aanvullende routes PASS; export sluit aan; live gegevens behouden"
+    },
+    {
+      "task_id": "demo_conf_dashboard_20261027_001",
+      "closed_node": "demo_conf_dashboard_20261027_001",
+      "proof": "docs/mindmaps/demo_conf_dashboard_20261027_001/report.md; zes bedrijfsprocessen PASS; live browser 1366/760/390 PASS; live workflow byte-identiek; Notion snapshot teruggelezen"
+    },
+    {
+      "task_id": "demo_conf_daily_20261027_002",
+      "closed_node": "demo_conf_daily_20261027_002",
+      "proof": "docs/mindmaps/demo_conf_daily_20261027_002/report.md; zes bedrijfsprocessen PASS; 122 afstemmingscontroles; live browser 1366/760/390 PASS; live workflow byte-identiek; Notion snapshot teruggelezen"
+    },
+    {
+      "task_id": "demo_conf_sales_20261027_003",
+      "closed_node": "demo_conf_sales_20261027_003",
+      "proof": "docs/mindmaps/demo_conf_sales_20261027_003/report.md; drie klantreizen PASS; twee aparte vensters/conflict/herstel PASS; 211 afstemmingschecks; live workflow byte-identiek; geen externe publicatie volgens opdracht"
+    },
+    {
+      "task_id": "demo_conf_pilot_20261027_004",
+      "closed_node": "demo_conf_pilot_20261027_004",
+      "proof": "docs/mindmaps/demo_conf_pilot_20261027_004/report.md; deployment-results.json, live-restore-results.json, unit-results.txt en browserresultaten; externe opslag/import en commerciele voorwaarden blijven expliciet open"
+    },
+    {
+      "task_id": "demo_access_button_20261027_005",
+      "closed_node": "demo_access_button_20261027_005",
+      "proof": "docs/mindmaps/demo_access_button_20261027_005/report.md; werkende knop zonder inloggegevens, zichtbare demomodus, afgeschermd accountbeheer en afmelden live bewezen"
+    }
+  ],
+  "task_history": [
+    {
+      "task_id": "server4_multi_job_workflow_20261026_001",
+      "status": "queued"
+    },
+    {
+      "task_id": "server4_multi_job_workflow_20261026_001",
+      "status": "succeeded",
+      "evidence": "docs/mindmaps/server4_multi_job_workflow_20261026_001/report.md"
+    }
+  ]
+}

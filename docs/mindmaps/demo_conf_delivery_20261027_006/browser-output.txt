@@ -1,0 +1,5 @@
+PASS proefvoorstel-keuzes-en-eerlijk-boekhoudhandwerk
+PASS monteur-eigen-opdracht-zelfstandig-overdragen
+PASS winkel-verkoop-deelretour-en-eigen-beoordeling
+PASS administratie-van-overdracht-tot-betaling-en-afstemming
+PASS proefvoorstel-op-mobiel-en-demoknop-behouden

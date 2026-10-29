@@ -5,6 +5,10 @@ import os
 import shutil
 import sqlite3
 import subprocess
+import socket
+import concurrent.futures
+import shlex
+import time
 
 
 def dashboard_status():
@@ -87,3 +91,88 @@ def network_center():
         'measured_at': None, 'source': 'mindmap/serve.py (bestaand bindadres)',
         'historical': 'Bekende lokale configuratie; geen bereikbaarheidsmeting'}
     return sorted(hosts.values(), key=lambda host: (host['hostname'], host['ip']))
+
+
+FLEET = {
+    'server1': ('192.168.1.201', None),
+    'server2': ('192.168.1.138', None),
+    'server3': ('192.168.1.224', None),
+    'server4': ('192.168.1.163', 'server4'),
+    'server5': ('192.168.1.245', None),
+    'server6': ('192.168.1.15', '192.168.1.175'),
+}
+
+REMOTE_METRICS = (
+    "import time,json,shutil; "
+    "r=lambda: tuple(map(int,open('/proc/stat').readline().split()[1:8])); "
+    "a=r(); time.sleep(.25); b=r(); "
+    "total=sum(b)-sum(a); idle=(b[3]+b[4])-(a[3]+a[4]); "
+    "m={x.split(':')[0]:int(x.split()[1])*1024 for x in open('/proc/meminfo') if x.startswith(('MemTotal:','MemAvailable:'))}; "
+    "d=shutil.disk_usage('/'); "
+    "print(json.dumps({'cpu_percent':round(100*(total-idle)/total,1) if total else None,'ram_percent':round(100*(m['MemTotal']-m['MemAvailable'])/m['MemTotal'],1),'disk_percent':round(100*(d.total-d.free)/d.total,1)}))"
+)
+
+
+def _local_metrics():
+    def cpu():
+        return tuple(map(int, Path('/proc/stat').read_text().splitlines()[0].split()[1:8]))
+    try:
+        first = cpu()
+        time.sleep(.25)
+        second = cpu()
+        total = sum(second) - sum(first)
+        idle = second[3] + second[4] - first[3] - first[4]
+        mem = {line.split(':')[0]: int(line.split()[1]) * 1024
+               for line in Path('/proc/meminfo').read_text().splitlines()
+               if line.startswith(('MemTotal:', 'MemAvailable:'))}
+        disk = shutil.disk_usage('/')
+        return {'cpu_percent': round(100 * (total - idle) / total, 1) if total else None,
+                'ram_percent': round(100 * (mem['MemTotal'] - mem['MemAvailable']) / mem['MemTotal'], 1),
+                'disk_percent': round(100 * (disk.total - disk.free) / disk.total, 1)}
+    except (OSError, ValueError, KeyError, ZeroDivisionError):
+        return None
+
+
+def _fleet_host(item):
+    name, (ip, host_key_alias) = item
+    measured = datetime.now(timezone.utc).isoformat()
+    if name == 'server5':
+        metrics = _local_metrics()
+        return {'name': name, 'ip': ip, 'status': 'online', 'metrics': metrics,
+                'measured_at': measured, 'source': 'lokale /proc en statvfs'}
+    try:
+        with socket.create_connection((ip, 22), timeout=1.2):
+            status = 'online'
+    except ConnectionRefusedError:
+        return {'name': name, 'ip': ip, 'status': 'offline', 'metrics': None,
+                'measured_at': measured, 'source': 'SSH-poort geweigerd'}
+    except OSError:
+        return {'name': name, 'ip': ip, 'status': 'unknown', 'metrics': None,
+                'measured_at': measured, 'source': 'SSH-bereikbaarheid niet vastgesteld'}
+    options = ['ssh', '-F', '/dev/null', '-i', '/home/mau/.ssh/id_ed25519_server5_servers12',
+               '-o', 'IdentitiesOnly=yes', '-o', 'IdentityAgent=none',
+               '-o', 'StrictHostKeyChecking=yes', '-o', 'BatchMode=yes',
+               '-o', 'ConnectTimeout=2', '-o', 'ConnectionAttempts=1']
+    if host_key_alias:
+        options += ['-o', 'HostKeyAlias=' + host_key_alias]
+    options += ['mau@' + ip, 'python3 -c ' + shlex.quote(REMOTE_METRICS)]
+    try:
+        probe = subprocess.run(options, capture_output=True, text=True, timeout=4)
+        if probe.returncode == 0:
+            import json
+            metrics = json.loads(probe.stdout)
+            if not all(isinstance(metrics.get(key), (int, float)) for key in
+                       ('cpu_percent', 'ram_percent', 'disk_percent')):
+                raise ValueError('invalid metrics')
+            return {'name': name, 'ip': ip, 'status': status, 'metrics': metrics,
+                    'measured_at': datetime.now(timezone.utc).isoformat(), 'source': 'SSH read-only'}
+    except (OSError, subprocess.TimeoutExpired, ValueError):
+        pass
+    return {'name': name, 'ip': ip, 'status': status, 'metrics': None,
+            'measured_at': measured, 'source': 'host bereikbaar; actuele metrics niet beschikbaar'}
+
+
+def fleet_status():
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+        hosts = list(pool.map(_fleet_host, FLEET.items()))
+    return {'observed_at': datetime.now(timezone.utc).isoformat(), 'hosts': hosts}
